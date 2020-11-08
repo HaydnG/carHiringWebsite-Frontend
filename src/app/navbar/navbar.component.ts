@@ -10,10 +10,10 @@ import {User} from '../user/User';
     <div class="spacer"></div>
 
 
-      <app-login *ngIf="!loggedIn; else elseBlock"></app-login>
+      <app-login *ngIf="!this.user.Email; else elseBlock"></app-login>
 
     <ng-template #elseBlock>
-      <div>Welcome back {{this.username}}</div>
+      <div>Welcome back {{this.user.FullName}}</div>
     </ng-template>
   </div>
 
@@ -40,13 +40,16 @@ import {User} from '../user/User';
 })
 export class NavbarComponent implements OnInit {
 
-  public loggedIn: boolean;
-  public username: string;
+  public user: User;
+  public userSubscription;
 
   private itemList: any;
   constructor(private userService: UserService) {
-      this.loggedIn = userService.getLoggedIn();
-      this.username = userService.getUsername();
+    this.user = new User();
+
+    this.userSubscription = this.userService.userChange.subscribe((value) => {
+      this.user = value;
+    });
   }
 
 

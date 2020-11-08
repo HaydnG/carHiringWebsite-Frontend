@@ -1,4 +1,10 @@
 export class User {
-  username = 'haydn';
-  loggedIn = false;
+  Blacklisted: boolean;
+  CreatedAt: Date;
+  DOB: Date;
+  Email: string;
+  FullName: string;
+  Repeat: boolean;
+  SessionToken: string;
+  Verified: boolean;
 }
