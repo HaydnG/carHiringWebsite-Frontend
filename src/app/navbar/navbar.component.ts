@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {UserService} from '../user/user.service';
 import {User} from '../user/User';
+import {HttpClient} from '@angular/common/http';
+import {CookieService} from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-navbar',
@@ -44,12 +46,21 @@ export class NavbarComponent implements OnInit {
   public userSubscription;
 
   private itemList: any;
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private cookieService: CookieService) {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
       this.user = value;
+
+      this.cookieService.set('session-token', this.user.SessionToken);
+      if (this.user.Email === ''){
+        this.cookieService.delete('session-token');
+        console.log('Removing sessionToken');
+      }
     });
+
+    const session = this.cookieService.get('session-token');
+    this.userService.InitSession(session);
   }
 
 

@@ -1,13 +1,17 @@
 import {User} from './User';
 import {Injectable, Directive} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable, Subject} from 'rxjs';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {observable, Observable, of, Subject} from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import {catchError} from 'rxjs/operators';
+import {throwError} from 'rxjs';
 
 @Injectable()
 export class UserService {
   private url = 'http://localhost:8080/userService/';
 
   userChange: Subject<User> = new Subject<User>();
+
 
   constructor(private http: HttpClient) {}
 
@@ -18,4 +22,17 @@ export class UserService {
     });
   }
 
+  InitSession(session: string): void {
+    if (session === ''){
+      return;
+    }
+
+    this.http.get<User>(this.url + 'sessionCheck?token=' + session).pipe(catchError(this.errorHandler)).subscribe(data => {
+      this.userChange.next(data);
+    });
+  }
+
+  errorHandler(error: HttpErrorResponse): Observable<User>  {
+    return new Observable<User>();
+  }
 }
