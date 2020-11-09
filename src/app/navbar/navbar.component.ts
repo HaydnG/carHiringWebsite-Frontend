@@ -15,54 +15,69 @@ import {CookieService} from 'ngx-cookie-service';
       <app-login *ngIf="!this.user.Email; else elseBlock"></app-login>
 
     <ng-template #elseBlock>
-      <div>Welcome back {{this.user.FullName}}</div>
+      <div>Welcome back {{this.user.FullName}} | <a (click)="logout()">Logout</a></div>
     </ng-template>
   </div>
 
   `,
-  styles: [`/*Style sheet*/
-.navbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  background-color: #042A2B;
-  color: #FCFCFC;
-  min-height: 55px;
-  font-weight: 600;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-.spacer {
+  styles: [`/*Style sheet https://coolors.co/77878b-305252-373e40-488286-b7d5d4*/
+  .navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    background-color: #305252;
+    color: #D8E8E8;
+    min-height: 55px;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  .spacer {
     flex: 1;
-}
+  }
   `],
 })
 export class NavbarComponent implements OnInit {
 
   public user: User;
   public userSubscription;
+  public session;
 
   private itemList: any;
   constructor(private userService: UserService, private cookieService: CookieService) {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
-      this.user = value;
-
-      this.cookieService.set('session-token', this.user.SessionToken);
-      if (this.user.Email === ''){
+      if (value === null){
+        this.user = new User();
+      }else {
+        this.user = value;
+      }
+      this.session = this.user.SessionToken;
+      this.cookieService.set('session-token', this.session);
+      if (this.session === '0'){
         this.cookieService.delete('session-token');
         console.log('Removing sessionToken');
       }
     });
 
-    const session = this.cookieService.get('session-token');
-    this.userService.InitSession(session);
+    this.session = this.cookieService.get('session-token');
+    if (this.session !== '' && this.session !== undefined){
+      this.userService.InitSession(this.session);
+    }
   }
 
+  logout(): void{
+    this.userService.Logout(this.session);
+  }
 
 
   ngOnInit(): void {

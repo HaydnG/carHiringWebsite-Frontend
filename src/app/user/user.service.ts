@@ -22,6 +22,13 @@ export class UserService {
     });
   }
 
+  Logout(sessionToken: string): void {
+    this.http.get<User>(this.url + 'logout?token=' + sessionToken).subscribe(data => {
+      this.userChange.next(data);
+      console.log(data);
+    });
+  }
+
   InitSession(session: string): void {
     if (session === ''){
       return;
