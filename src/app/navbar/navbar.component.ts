@@ -63,7 +63,7 @@ export class NavbarComponent implements OnInit {
       }
       this.session = this.user.SessionToken;
       this.cookieService.set('session-token', this.session);
-      if (this.session === '0'){
+      if (this.session === '0' || this.session === undefined){
         this.cookieService.delete('session-token');
         console.log('Removing sessionToken');
       }
