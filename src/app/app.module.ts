@@ -9,17 +9,21 @@ import { NavbarComponent } from './navbar/navbar.component';
 
 import { UserService } from './user/user.service';
 import {ReactiveFormsModule} from '@angular/forms';
+import { RegistrationComponent } from './registration/registration.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    NavbarComponent
+    NavbarComponent,
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
   ],
   providers: [UserService],
   bootstrap: [AppComponent]

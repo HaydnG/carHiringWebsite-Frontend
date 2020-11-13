@@ -15,7 +15,7 @@ import {CookieService} from 'ngx-cookie-service';
       <app-login *ngIf="!this.user.Email; else elseBlock"></app-login>
 
     <ng-template #elseBlock>
-      <div>Welcome back {{this.user.FullName}} | <a (click)="logout()">Logout</a></div>
+      <div>Welcome back {{this.user.FirstName}} | <a (click)="logout()">Logout</a></div>
     </ng-template>
   </div>
 

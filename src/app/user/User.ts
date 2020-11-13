@@ -3,7 +3,8 @@ export class User {
   CreatedAt: Date;
   DOB: Date;
   Email: string;
-  FullName: string;
+  FirstName: string;
+  Names: string;
   Repeat: boolean;
   SessionToken: string;
   Verified: boolean;
