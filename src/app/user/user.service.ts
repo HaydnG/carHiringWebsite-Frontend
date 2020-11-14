@@ -29,6 +29,14 @@ export class UserService {
     });
   }
 
+  Register(firstname: string, names: string, email: string, password: string, dobstring: string): void {
+    this.http.get<User>(this.url + 'register?firstname=' + firstname + '&names=' + names + '&email=' +
+      email + '&password=' + password + '&dob=' + dobstring).subscribe(data => {
+      this.userChange.next(data);
+      console.log(data);
+    });
+  }
+
   InitSession(session: string): void {
     if (session === ''){
       return;

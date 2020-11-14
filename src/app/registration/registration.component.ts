@@ -3,6 +3,7 @@ import {UserService} from '../user/user.service';
 import {FormBuilder} from '@angular/forms';
 import {EventEmitter} from 'events';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {User} from '../user/User';
 
 @Component({
   selector: 'app-registration',
@@ -32,6 +33,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
             <div class="form-group row">
               <div class="col">
                 <input id="email" class="form-control" placeholder="Email" formControlName="email">
+                <div *ngIf="this.errors['email']" class="errorMessage" > Please enter a valid email address </div>
               </div>
             </div>
 
@@ -44,25 +46,28 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
             <div class="form-group row">
               <div class="col">
                 <input id="password" class="form-control" placeholder="Password" type="password" formControlName="password">
+                <div *ngIf="this.errors['password']" class="errorMessage" >{{this.passwordMessage}}</div>
               </div>
             </div>
             <div class="form-group row">
               <div class="col">
                 <input id="password2" class="form-control" placeholder="Re-type Password" type="password" formControlName="password2">
-                <div *ngIf="matchError" class="errorMessage" > Passwords do not match </div>
+                <div *ngIf="this.errors['match']" class="errorMessage" > Passwords do not match </div>
               </div>
             </div>
 
             <div class="form-group row">
               <div class="col">
                 <button class="button btn btn-primary form-control" type="submit">Register</button>
-                <div *ngIf="requiredError" class="errorMessage"> Please fill in the required feilds </div>
+                <div *ngIf="this.errors['required']" class="errorMessage"> Please fill in the required feilds </div>
               </div>
             </div>
           </div>
 
         </form>
       </div>
+
+      <div *ngIf="this.successMessage" class="successMessage"> Successfully created a new user with the email: {{this.user.Email}} You can now sign in</div>
 `,
   styles: [`
     @keyframes slideInFromLeft {
@@ -79,20 +84,50 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
       }
     }
 
-    .errorMessage{
+    .successMessage {
+      text-align: center;
+      top: 100%;
+      left: 0% !important;
+      position: absolute;
+      width: 100%;
+      background: #2b6b02;
+      padding: 3px;
+      /* margin: 2px; */
+      border-radius: 10px;
+      color: white;
+      animation: 0.5s ease-out 0s 1 slideInFromLeft;
+    }
+
+    .errorMessage {
       position: absolute;
       left: 96.5% !important;
       top: 0%;
       width: 50%;
       background: #800101;
-      padding: 2px;
+      padding: 3px;
       /* margin: 2px; */
       border-radius: 0 10px 10px 10px;
       color: white;
       animation: 0.5s ease-out 0s 1 slideInFromLeft;
     }
 
-    .close{
+    @media screen and (max-width: 860px) {
+      .errorMessage {
+        position: absolute;
+        left: 3% !important;
+        top: 85%;
+        opacity: 0.9;
+        width: 90%;
+        background: #800101;
+        padding: 1px;
+        /* margin: 2px; */
+        border-radius: 0 10px 10px 10px;
+        color: white;
+        animation: 0.5s ease-out 0s 1 slideInFromLeft;
+      }
+    }
+
+    .close {
       padding: 0px;
       position: absolute;
       right: 5%;
@@ -100,16 +135,31 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
     }
 
     .ng-invalid:not(form) {
-        border: 1px solid red !important;
+      border: 1px solid red !important;
     }
-`]
+  `]
 })
 export class RegistrationComponent implements OnInit {
 
-  errorActive = false;
-  matchError; requiredError;
+  errors: { [id: string]: boolean; } = {
+    email: false,
+    password: false,
+    required: false,
+    match: false,
+  };
+  errorsActive: { [id: string]: boolean; } = {
+    email: false,
+    password: false,
+    required: false,
+    match: false,
+  };
+
+  user: User;
+  successMessage;
+  passwordMessage;
   now;
   registrationForm;
+  userSubscription;
 
   constructor(private userService: UserService, private formBuilder: FormBuilder, private activeModal: NgbActiveModal) {
 
@@ -123,6 +173,27 @@ export class RegistrationComponent implements OnInit {
       password: '',
       password2: '',
     });
+
+    this.userSubscription = this.userService.userChange.subscribe((value) => {
+      if (value === null){
+        return;
+      }
+      this.user = value;
+
+      if (this.user.SessionToken !== '0' && this.user.SessionToken !== undefined){
+        (async () => {
+          // Do something before delay
+
+          this.successMessage = true;
+
+          await this.delay(2000);
+
+          this.successMessage = false;
+          this.closeRegister();
+
+        })();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -131,43 +202,90 @@ export class RegistrationComponent implements OnInit {
   onSubmit(userData): void {
     console.warn('sending registration', userData);
 
-    const errors: Array<boolean> = [];
+    const errors: Array<string> = [];
+    let required = false;
+
 
     Object.keys(this.registrationForm.controls).forEach(key => {
 
       if (this.registrationForm.controls[key].value === '' || this.registrationForm.controls[key] ===  undefined){
         this.registrationForm.controls[key].setErrors({incorrect: true});
-        errors.push(this.requiredError);
-        console.log(this.registrationForm.controls[key]);
+        required = true;
+        return;
       }else{
         this.registrationForm.controls[key].setErrors(null);
       }
     });
 
-    if (userData.password !== userData.password2){
-      errors.push(this.matchError);
-      return;
+    if (required){
+      errors.push('required');
     }
 
-    this.blinkMatchError(errors);
+    const emailValid = '^[a-zA-Z0-9.!#$%&\'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$';
+    if (!userData.email.match(emailValid)){
+      errors.push('email');
+    }
 
+    if (this.invalidPassword(userData.password)){
+      errors.push('password');
+    }
+
+    if (userData.password !== userData.password2){
+      errors.push('match');
+    }
+
+    if (errors.length > 0){
+      this.blinkError(errors);
+    }else {
+      this.userService.Register(userData.firstname, userData.names, userData.email, userData.password,
+        (new Date(userData.dob).getTime() / 1000) + '');
+    }
   }
 
-  blinkMatchError(errors: Array<boolean>): void{
-    if (!this.errorActive){
-      this.errorActive = true;
+  blinkError(errorList: Array<string>): void{
+
+    errorList.forEach(type => {
       (async () => {
         // Do something before delay
+        if (!this.errorsActive[type]) {
+          this.errors[type] = true;
+          this.errorsActive[type] = true;
 
-        this.matchError = true;
+          await this.delay(3000);
 
-        await this.delay(4000);
+          this.errors[type] = false;
+          this.errorsActive[type] = false;
+        }
 
-        this.matchError = false;
-
-        this.errorActive = false;
       })();
+    });
+  }
+
+  invalidPassword(password: string): boolean{
+    if (password.length < 8){
+      this.passwordMessage = 'The password must exceed 8 characters';
+      return true;
     }
+
+    const lowerCaseLetters = /[a-z]/g;
+    if (!password.match(lowerCaseLetters)){
+      this.passwordMessage = 'The password must contain a lowercase character';
+      return true;
+    }
+
+    const upperCaseLetters = /[A-Z]/g;
+    if (!password.match(upperCaseLetters)){
+      this.passwordMessage = 'The password must contain a uppercase character';
+      return true;
+    }
+
+    const numbers = /[0-9]/g;
+    if (!password.match(numbers)){
+      this.passwordMessage = 'The password must contain a number';
+      return true;
+    }
+
+    return false;
   }
 
   delay(ms: number): Promise<unknown> {

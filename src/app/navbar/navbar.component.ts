@@ -12,7 +12,7 @@ import {CookieService} from 'ngx-cookie-service';
     <div class="spacer"></div>
 
 
-      <app-login *ngIf="!this.user.Email; else elseBlock"></app-login>
+      <app-login *ngIf="!this.user.SessionToken; else elseBlock"></app-login>
 
     <ng-template #elseBlock>
       <div>Welcome back {{this.user.FirstName}} | <a (click)="logout()">Logout</a></div>
