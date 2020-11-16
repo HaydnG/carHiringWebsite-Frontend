@@ -11,13 +11,17 @@ import { UserService } from './user/user.service';
 import {ReactiveFormsModule} from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CarListComponent } from './car-list/car-list.component';
+import { CarCardComponent } from './car-card/car-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     NavbarComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    CarListComponent,
+    CarCardComponent
   ],
   imports: [
     BrowserModule,

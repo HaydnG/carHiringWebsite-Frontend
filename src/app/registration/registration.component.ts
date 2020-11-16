@@ -66,7 +66,7 @@ import {User} from '../user/User';
 
         </form>
       </div>
-
+      <div *ngIf="this.failMessage" class="failMessage"> Registration failed, please try again or contact support</div>
       <div *ngIf="this.successMessage" class="successMessage"> Successfully created a new user with the email: {{this.user.Email}} You can now sign in</div>
 `,
   styles: [`
@@ -82,6 +82,20 @@ import {User} from '../user/User';
         transform: translateX(0);
         opacity: 1;
       }
+    }
+
+    .failMessage {
+      text-align: center;
+      top: 100%;
+      left: 0% !important;
+      position: absolute;
+      width: 100%;
+      background: #800101;
+      padding: 3px;
+      /* margin: 2px; */
+      border-radius: 10px;
+      color: white;
+      animation: 0.5s ease-out 0s 1 slideInFromLeft;
     }
 
     .successMessage {
@@ -155,6 +169,7 @@ export class RegistrationComponent implements OnInit {
   };
 
   user: User;
+  failMessage;
   successMessage;
   passwordMessage;
   now;
@@ -176,6 +191,16 @@ export class RegistrationComponent implements OnInit {
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
       if (value === null){
+        (async () => {
+          // Do something before delay
+
+          this.failMessage = true;
+
+          await this.delay(3000);
+
+          this.failMessage = false;
+        })();
+
         return;
       }
       this.user = value;

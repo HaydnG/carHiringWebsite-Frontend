@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import {UserService} from '../user/user.service';
 import {User} from '../user/User';
 import {HttpClient} from '@angular/common/http';
@@ -7,7 +7,7 @@ import {CookieService} from 'ngx-cookie-service';
 @Component({
   selector: 'app-navbar',
   template: `
-  <div class="navbar" role="banner" >
+  <div class="navbar" #stickyMenu [class.sticky] = "sticky" role="banner" >
     <span>Banger and Co</span>
     <div class="spacer"></div>
 
@@ -30,11 +30,18 @@ import {CookieService} from 'ngx-cookie-service';
     align-items: center;
     background-color: #305252;
     color: #D8E8E8;
-    min-height: 55px;
+    min-height: 75px;
     font-weight: 600;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0px 10px;
   }
+
+  .sticky{
+    position: fixed;
+    top: 0;
+    overflow: hidden;
+    z-index: 10;
+  }
+
 
   a {
     cursor: pointer;
@@ -45,11 +52,14 @@ import {CookieService} from 'ngx-cookie-service';
   }
   `],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, AfterViewInit {
 
+  @ViewChild('stickyMenu') menuElement: ElementRef;
+  sticky = false;
   public user: User;
   public userSubscription;
   public session;
+  menuPosition: any;
 
   private itemList: any;
   constructor(private userService: UserService, private cookieService: CookieService) {
@@ -79,6 +89,19 @@ export class NavbarComponent implements OnInit {
     this.userService.Logout(this.session);
   }
 
+  ngAfterViewInit(): void{
+    this.menuPosition = this.menuElement.nativeElement.offsetTop;
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  handleScroll(): void{
+    const windowScroll = window.pageYOffset;
+    if (windowScroll >= this.menuPosition){
+      this.sticky = true;
+    } else {
+      this.sticky = false;
+    }
+  }
 
   ngOnInit(): void {
   }

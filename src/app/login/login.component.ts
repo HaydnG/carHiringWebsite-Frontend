@@ -31,7 +31,7 @@ import {RegistrationComponent} from '../registration/registration.component';
 `,
   styles: [`
     :host {
-      width: 25%;
+      width: 30%;
     }
 
     .center {
@@ -39,6 +39,7 @@ import {RegistrationComponent} from '../registration/registration.component';
     }
 
     .auth {
+      font-size: 14px;
       margin: 5px 5px 5px 0px;
       height: 30px;
       border-radius: 2px;

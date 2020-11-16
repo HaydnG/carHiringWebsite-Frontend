@@ -31,7 +31,9 @@ export class UserService {
 
   Register(firstname: string, names: string, email: string, password: string, dobstring: string): void {
     this.http.get<User>(this.url + 'register?firstname=' + firstname + '&names=' + names + '&email=' +
-      email + '&password=' + password + '&dob=' + dobstring).subscribe(data => {
+      email + '&password=' + password + '&dob=' + dobstring).pipe(catchError(error => {
+        return of(null);
+    })).subscribe(data => {
       this.userChange.next(data);
       console.log(data);
     });
