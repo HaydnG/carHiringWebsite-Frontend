@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {Car} from '../car/Car';
 
 @Component({
   selector: 'app-car-card',
@@ -11,11 +12,11 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
         </div>
         <div class="col">
           <div class="card-block px-2">
-            <h4 class="card-title">{{this.carType}}</h4>
+            <h4 class="card-title">{{this.car.CarType.Description}}</h4>
             <hr>
-            <p class="card-text">{{this.fuelType}}, {{this.gearType}}, {{this.size}}, {{this.colour}}</p>
+            <p class="card-text">{{this.car.FuelType.Description}}, {{this.car.GearType.Description}}, {{this.car.Size.Description}}, {{this.car.Colour.Description}}</p>
             <div class="row">
-              <div class="col-6 cost">£10/day</div>
+              <div class="col-6 cost">£{{this.car.Cost}}/day</div>
               <div class="col-6"><a href="#" class="btn btn-success">View Car</a></div>
             </div>
           </div>
@@ -37,13 +38,13 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
     }
     img{
       border-radius: 4px;
-      height: 126px;
-      width: 126px;
+      height: 125px;
+      width: 125px;
     }
   .card {
     color: #373E40;
-    width: 330px;
-    height: 126px;
+    width: 326px;
+    height: 125px;
     border-radius: .20rem;
     margin: 10px 10px 10px 10px;
   }
@@ -54,6 +55,11 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
   .card-title {
     margin-bottom: 0px;
+    height: 25px;
+    width: 183px;
+    font-size: 19px;
+    word-break: break-all;
+    overflow: hidden;
   }
 
   .card-text {
@@ -80,17 +86,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 export class CarCardComponent implements OnInit {
 
   @Input()
-  fuelType;
-  @Input()
-  gearType;
-  @Input()
-  carType;
-  @Input()
-  size;
-  @Input()
-  colour;
-  @Input()
-  description;
+  car: Car;
 
   constructor() { }
 

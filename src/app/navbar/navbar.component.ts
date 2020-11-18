@@ -8,7 +8,7 @@ import {CookieService} from 'ngx-cookie-service';
   selector: 'app-navbar',
   template: `
 
-    <div class="col" #stickyMenu [class.sticky] = "sticky">
+    <div class="col sticky" >
       <div class="row">
         <div class="navbar" role="banner" >
           <div class="col">
@@ -24,7 +24,7 @@ import {CookieService} from 'ngx-cookie-service';
         </div>
       </div>
       <div class="row">
-        <input  id="search" class="form-control" placeholder="Search">
+        <input  id="search" class="form-control searchbar" placeholder="Search">
       </div>
     </div>
 
@@ -43,16 +43,8 @@ import {CookieService} from 'ngx-cookie-service';
     padding: 0px 10px;
     width: 100%;
   }
-  .search{
-    top: 76px;
-    left: 0px;
-    background-color: white;
-    color: black;
-    width: 100%;
-    height: 84px;
-    position: absolute;
-    text-align: center;
-    font-size: 37px;
+  .searchbar{
+    border-radius: 0px;
   }
 
   .sticky{
@@ -72,14 +64,11 @@ import {CookieService} from 'ngx-cookie-service';
   }
   `],
 })
-export class NavbarComponent implements OnInit, AfterViewInit {
+export class NavbarComponent implements OnInit {
 
-  @ViewChild('stickyMenu') menuElement: ElementRef;
-  sticky = false;
   public user: User;
   public userSubscription;
   public session;
-  menuPosition: any;
 
   private itemList: any;
   constructor(private userService: UserService, private cookieService: CookieService) {
@@ -110,17 +99,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void{
-    this.menuPosition = this.menuElement.nativeElement.offsetTop;
-  }
 
-  @HostListener('window:scroll', ['$event'])
-  handleScroll(): void{
-    const windowScroll = window.pageYOffset;
-    if (windowScroll >= this.menuPosition){
-      this.sticky = true;
-    } else {
-      this.sticky = false;
-    }
   }
 
   ngOnInit(): void {

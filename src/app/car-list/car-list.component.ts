@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {UserService} from '../user/user.service';
+import {CarService} from '../car/car.service';
+import {User} from '../user/User';
+import {Car} from '../car/Car';
 
 @Component({
   selector: 'app-car-list',
@@ -8,12 +12,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
     <div class="card-deck" >
       <div *ngFor="let car of cars">
         <app-car-card
-          [fuelType]="car.fuelType"
-          [gearType]="car.gearType"
-          [carType]="car.carType"
-          [size]="car.size"
-          [colour]="car.colour"
-          [description]="car.description"
+          [car]="car"
         ></app-car-card>
       </div>
     </div>
@@ -32,11 +31,16 @@ export class CarListComponent implements OnInit {
 
   cars = [];
 
-  constructor() {
-    for (let i = 0; i < 100; i++){
-      this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-        description: 'A medium van, great for the storage and transportation of goods'});
-    }
+  public carListSubscription;
+
+  constructor(private carService: CarService) {
+    this.carListSubscription = this.carService.carListChange.subscribe((value) => {
+      if (value === null){
+      }else {
+        this.cars = value;
+      }
+    });
+    this.carService.Get();
   }
 
   ngOnInit(): void {
