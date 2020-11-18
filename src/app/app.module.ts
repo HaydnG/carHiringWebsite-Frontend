@@ -13,6 +13,8 @@ import { RegistrationComponent } from './registration/registration.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarListComponent } from './car-list/car-list.component';
 import { CarCardComponent } from './car-card/car-card.component';
+import { HeaderComponent } from './header/header.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { CarCardComponent } from './car-card/car-card.component';
     NavbarComponent,
     RegistrationComponent,
     CarListComponent,
-    CarCardComponent
+    CarCardComponent,
+    HeaderComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,

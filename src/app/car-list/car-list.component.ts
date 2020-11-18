@@ -33,38 +33,10 @@ export class CarListComponent implements OnInit {
   cars = [];
 
   constructor() {
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-    this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
-      description: 'A medium van, great for the storage and transportation of goods'});
-
-
-
+    for (let i = 0; i < 100; i++){
+      this.cars.push({fuelType: 'Diesel', gearType: 'Manuel', carType: 'Van', colour: 'Black', size: 'Medium',
+        description: 'A medium van, great for the storage and transportation of goods'});
+    }
   }
 
   ngOnInit(): void {
