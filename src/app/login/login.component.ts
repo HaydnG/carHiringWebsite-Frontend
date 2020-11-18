@@ -31,9 +31,8 @@ import {RegistrationComponent} from '../registration/registration.component';
 `,
   styles: [`
     :host {
-      width: 30%;
+      width: 100%;
     }
-
     .center {
       left: 50%;
     }

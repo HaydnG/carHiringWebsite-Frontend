@@ -7,22 +7,30 @@ import {CookieService} from 'ngx-cookie-service';
 @Component({
   selector: 'app-navbar',
   template: `
-  <div class="navbar" #stickyMenu [class.sticky] = "sticky" role="banner" >
-    <span>Banger and Co</span>
-    <div class="spacer"></div>
 
+    <div class="col" #stickyMenu [class.sticky] = "sticky">
+      <div class="row">
+        <div class="navbar" role="banner" >
+          <div class="col">
+            <span>Banger and Co</span>
+          </div>
+          <div class="col">
+            <app-login *ngIf="!this.user.SessionToken; else elseBlock"></app-login>
 
-      <app-login *ngIf="!this.user.SessionToken; else elseBlock"></app-login>
+            <ng-template #elseBlock>
+              <div>Welcome back {{this.user.FirstName}} | <a (click)="logout()">Logout</a></div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <input  id="search" class="form-control" placeholder="Search">
+      </div>
+    </div>
 
-    <ng-template #elseBlock>
-      <div>Welcome back {{this.user.FirstName}} | <a (click)="logout()">Logout</a></div>
-    </ng-template>
-  </div>
-
-  `,
+`,
   styles: [`/*Style sheet https://coolors.co/77878b-305252-373e40-488286-b7d5d4*/
   .navbar {
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -33,6 +41,18 @@ import {CookieService} from 'ngx-cookie-service';
     min-height: 75px;
     font-weight: 600;
     padding: 0px 10px;
+    width: 100%;
+  }
+  .search{
+    top: 76px;
+    left: 0px;
+    background-color: white;
+    color: black;
+    width: 100%;
+    height: 84px;
+    position: absolute;
+    text-align: center;
+    font-size: 37px;
   }
 
   .sticky{
