@@ -3,6 +3,7 @@ import {UserService} from '../user/user.service';
 import {User} from '../user/User';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
+import {PageService, PageType} from '../page/page.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,7 @@ import {CookieService} from 'ngx-cookie-service';
       <div class="row">
         <div class="navbar" role="banner" >
           <div class="col">
-            <span>Banger and Co</span>
+            <a (click)="home()"><span>Banger and Co</span></a>
           </div>
           <div class="col">
             <app-login *ngIf="!this.user.SessionToken; else elseBlock"></app-login>
@@ -69,9 +70,10 @@ export class NavbarComponent implements OnInit {
   public user: User;
   public userSubscription;
   public session;
+  pageEnum = PageType;
 
   private itemList: any;
-  constructor(private userService: UserService, private cookieService: CookieService) {
+  constructor(private userService: UserService, private cookieService: CookieService, private pageService: PageService) {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
@@ -98,11 +100,11 @@ export class NavbarComponent implements OnInit {
     this.userService.Logout(this.session);
   }
 
-  ngAfterViewInit(): void{
-
+  ngOnInit(): void {
   }
 
-  ngOnInit(): void {
+  home(): void{
+    this.pageService.ChangePage(this.pageEnum.carList, null);
   }
 
 }

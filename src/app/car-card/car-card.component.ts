@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Car} from '../car/Car';
+import {PageService, PageType} from '../page/page.service';
 
 @Component({
   selector: 'app-car-card',
@@ -17,7 +18,7 @@ import {Car} from '../car/Car';
             <p class="card-text">{{this.car.FuelType.Description}}, {{this.car.GearType.Description}}, {{this.car.Size.Description}}, {{this.car.Colour.Description}}</p>
             <div class="row">
               <div class="col-6 cost">£{{this.car.Cost}}/day</div>
-              <div class="col-6"><a href="#" class="btn btn-success">View Car</a></div>
+              <div class="col-6"><a (click)="change()" class="btn btn-success">View Car</a></div>
             </div>
           </div>
         </div>
@@ -87,10 +88,15 @@ export class CarCardComponent implements OnInit {
 
   @Input()
   car: Car;
+  pageEnum = PageType;
 
-  constructor() { }
+  constructor(private pageService: PageService) { }
 
   ngOnInit(): void {
+  }
+
+  change(): void{
+    this.pageService.ChangePage(this.pageEnum.carView, this.car);
   }
 
 }

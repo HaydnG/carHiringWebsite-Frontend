@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
 
+import { PageService } from './page/page.service';
 import { UserService } from './user/user.service';
 import { CarService } from './car/car.service';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -30,9 +31,9 @@ import { SearchComponent } from './search/search.component';
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
   ],
-  providers: [UserService, CarService],
+  providers: [UserService, CarService, PageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
