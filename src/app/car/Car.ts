@@ -8,6 +8,7 @@ export class Car {
   Cost: number;
   Description: string;
   Image: string;
+  Seats: number;
 }
 
 class Attribute {

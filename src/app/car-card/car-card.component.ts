@@ -15,7 +15,17 @@ import {PageService, PageType} from '../page/page.service';
           <div class="card-block px-2">
             <h4 class="card-title">{{this.car.CarType.Description}}</h4>
             <hr>
-            <p class="card-text">{{this.car.FuelType.Description}}, {{this.car.GearType.Description}}, {{this.car.Size.Description}}, {{this.car.Colour.Description}}</p>
+            <p class="card-text">{{this.car.FuelType.Description}}, {{this.car.GearType.Description}}, {{this.car.Size.Description}}</p>
+            <div class="row">
+              <div class="col-1">
+                <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                </svg>
+              </div>
+              <div class="col-1">
+                <div class="seat-text">{{this.car.Seats}}</div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-6 cost">£{{this.car.Cost}}/day</div>
               <div class="col-6"><a (click)="change()" class="btn btn-success">View Car</a></div>
@@ -23,7 +33,8 @@ import {PageService, PageType} from '../page/page.service';
           </div>
         </div>
       </div>
-    </div>`,
+    </div>
+  `,
   styles: [`      hr {
     border: solid;
     border-width: 0.1px;
@@ -32,6 +43,13 @@ import {PageService, PageType} from '../page/page.service';
     left: -1px;
     color: #373E40;
     margin: 0px;
+  }
+  .seat-text{
+    display: inline;
+    font-weight: bolder;
+    margin-top: 1px;
+    left: 9px;
+    position: absolute;
   }
     .col-auto{
       left: -1px;
@@ -65,7 +83,7 @@ import {PageService, PageType} from '../page/page.service';
 
   .card-text {
     width: 182px;
-    height: 45px;
+    height: 20px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
