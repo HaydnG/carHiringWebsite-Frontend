@@ -14,7 +14,6 @@ import {CookieService} from 'ngx-cookie-service';
       <app-car-list *ngSwitchCase="this.PageEnum.carList"></app-car-list>
       <app-car-page *ngSwitchCase="this.PageEnum.carView"
                     [car]="this.pageData"
-                    style='margin-top: 100px;width: 70%;'
       ></app-car-page>
   </div>`,
   styleUrls: ['./app.component.css']

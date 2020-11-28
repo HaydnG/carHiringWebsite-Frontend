@@ -5,12 +5,12 @@ import {Car} from '../car/Car';
   selector: 'app-car-page',
   template: `
     <div class="container-fluid" style=" background-color: #fff; padding: 11px;">
-      <div class="row">
+      <div class="row" style="margin: 5px;">
 
-        <div class="col-lg-3 order-lg-1 order-2">
+        <div class="col-lg-3 order-lg-1 order-1">
           <img class="car-img" src="https://via.placeholder.com/130x130">
         </div>
-        <div class="col-lg-9 order-lg-2 order-1">
+        <div class="col-lg-9 order-lg-2 order-2" style="min-height: 270px;">
             <div class="row car-title">
               {{this.car.CarType.Description}}
             </div>
@@ -22,12 +22,12 @@ import {Car} from '../car/Car';
               {{this.car.Description}}
             </div>
             <div class="row car-stats">
-              <div class="col-1" style="    text-align: center;">
+              <div style="    text-align: center;">
                 <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                 </svg>
               </div>
-              <div class="col-1 seat-text">{{this.car.Seats}}</div>
+              <div class="seat-text">{{this.car.Seats}}</div>
             </div>
 
             <div class="row car-cost">
@@ -42,6 +42,29 @@ import {Car} from '../car/Car';
       </div>
     </div>`,
   styles: [`
+    :host{
+      margin-top: 100px;
+      width: 80%;
+  }
+    @media screen and (max-width: 1100px){
+      :host{
+        margin-top: 100px;
+        width: 90%;
+      }
+    }
+    @media screen and (max-width: 800px){
+      :host{
+        margin-top: 100px;
+        width: 95%;
+      }
+    }
+    @media screen and (max-width: 500px){
+      :host{
+        margin-top: 100px;
+        width: 100%;
+      }
+    }
+
   .car-img{
     width: 100%;
   }
@@ -55,8 +78,8 @@ import {Car} from '../car/Car';
   }
   .seat-text{
     position: relative;
-    top: 1px;
-    left: -33px;
+    left: 2px;
+    top: 2px;
     font-weight: bolder;
   }
   .car-stats{

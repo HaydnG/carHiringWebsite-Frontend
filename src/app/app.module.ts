@@ -16,8 +16,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarListComponent } from './car-list/car-list.component';
 import { CarCardComponent } from './car-card/car-card.component';
 import { SearchComponent } from './search/search.component';
-import { CalendarComponent } from './calendar/calendar.component';
 import { CarPageComponent } from './car-page/car-page.component';
+import {CalendarHComponent} from './calendarH/calendarH.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,7 @@ import { CarPageComponent } from './car-page/car-page.component';
     CarListComponent,
     CarCardComponent,
     SearchComponent,
-    CalendarComponent,
+    CalendarHComponent,
     CarPageComponent
   ],
   imports: [
@@ -36,8 +39,11 @@ import { CarPageComponent } from './car-page/car-page.component';
     HttpClientModule,
     ReactiveFormsModule,
     NgbModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    BrowserAnimationsModule,
   ],
-  providers: [UserService, CarService, PageService],
+  providers: [UserService, CarService, PageService, MatDatepickerModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
