@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {UserService} from '../user/user.service';
-import {User} from '../user/User';
+import {UserService} from '../../services/user/user.service';
+import {User} from '../../services/user/User';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
-import {PageService, PageType} from '../page/page.service';
-
+import {Router} from '@angular/router';
+import {ScreenService} from '../../services/screen/screen.service';
 @Component({
   selector: 'app-navbar',
   template: `
@@ -12,11 +12,11 @@ import {PageService, PageType} from '../page/page.service';
     <div class="col sticky" >
       <div class="row">
         <div class="navbar" role="banner" >
-          <div class="col">
+          <div class="col-2">
             <a (click)="home()"><span>Banger and Co</span></a>
           </div>
-          <div class="col">
-            <app-login *ngIf="!this.user.SessionToken; else elseBlock"></app-login>
+          <div [class.col-10]="this.screenService.isScreenSmall" [class.col-7]="!this.screenService.isScreenSmall" style="text-align: right">
+            <app-login *ngIf="!this.userService.loggedIn; else elseBlock"></app-login>
 
             <ng-template #elseBlock>
               <div>Welcome back {{this.user.FirstName}} | <a (click)="logout()">Logout</a></div>
@@ -70,10 +70,12 @@ export class NavbarComponent implements OnInit {
   public user: User;
   public userSubscription;
   public session;
-  pageEnum = PageType;
+
+  isScreenSmall;
 
   private itemList: any;
-  constructor(private userService: UserService, private cookieService: CookieService, private pageService: PageService) {
+  constructor(public userService: UserService, private cookieService: CookieService, private router: Router,
+              public screenService: ScreenService) {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
@@ -101,10 +103,11 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
   }
 
   home(): void{
-    this.pageService.ChangePage(this.pageEnum.carList, null);
+    this.router.navigate(['']);
   }
 
 }

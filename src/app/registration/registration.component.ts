@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../user/user.service';
+import {UserService} from '../../services/user/user.service';
 import {FormBuilder} from '@angular/forms';
-import {EventEmitter} from 'events';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {User} from '../user/User';
+import {User} from '../../services/user/User';
 
 @Component({
   selector: 'app-registration',
@@ -39,7 +38,7 @@ import {User} from '../user/User';
 
             <div class="form-group row">
               <div class="col">
-                <input class="form-control" type="date" value="" id="dob" formControlName="dob">
+                <input class="form-control" placeholder="D.O.B" type="date" value="" id="dob" formControlName="dob">
               </div>
             </div>
 

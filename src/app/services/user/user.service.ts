@@ -8,23 +8,26 @@ import {throwError} from 'rxjs';
 
 @Injectable()
 export class UserService {
-  private url = 'http://localhost:8080/userService/';
+  private url = 'http://' + window.location.hostname + ':8080/userService/';
 
   userChange: Subject<User> = new Subject<User>();
 
+  loggedIn = false;
 
   constructor(private http: HttpClient) {}
 
   Login(email: string, password: string): void {
     this.http.get<User>(this.url + 'login?email=' + email + '&password=' + password).subscribe(data => {
       this.userChange.next(data);
+      this.loggedIn = data.SessionToken.length > 10;
       console.log(data);
     });
   }
 
   Logout(sessionToken: string): void {
-    this.http.get<User>(this.url + 'logout?token=' + sessionToken).subscribe(data => {
+    this.http.get<User>(this.url + 'logout', { withCredentials: true }).subscribe(data => {
       this.userChange.next(data);
+      this.loggedIn = false;
       console.log(data);
     });
   }
@@ -44,8 +47,9 @@ export class UserService {
       return;
     }
 
-    this.http.get<User>(this.url + 'sessionCheck?token=' + session).pipe(catchError(this.errorHandler)).subscribe(data => {
+    this.http.get<User>(this.url + 'sessionCheck', { withCredentials: true }).pipe(catchError(this.errorHandler)).subscribe(data => {
       this.userChange.next(data);
+      this.loggedIn = data.SessionToken.length > 10;
     });
   }
 
