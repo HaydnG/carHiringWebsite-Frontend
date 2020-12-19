@@ -27,6 +27,7 @@ import {ScreenService} from './services/screen/screen.service';
 import {CurrencyService} from './services/currency/currency.service';
 import {BookingService} from './services/booking/booking.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {PaymentComponent} from './payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     CarCardComponent,
     SearchComponent,
     CalendarHComponent,
-    CarPageComponent
+    CarPageComponent,
+    PaymentComponent
   ],
   imports: [
     BrowserModule,

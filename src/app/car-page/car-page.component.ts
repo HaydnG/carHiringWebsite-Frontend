@@ -67,14 +67,19 @@ import {BookingService} from '../services/booking/booking.service';
 
       </div>
       <hr>
-      <div class="row">
+      <div class="row" style="width: 100.3%;
+    left: 14.4px;
+    position: relative;">
         <app-calendar [class.col-10]="!this.screenService.isScreenSmall" [carID]="this.carID" style="    padding: 0px;"
                       [car]="this.car" [bookings]="this.bookings" [start]="this.start" [end]="this.end" [now]="this.now"
                       [event]="this.moveCalendar.asObservable()"
                       (onDatePicked)="updateCalenders($event)"
                       (onReset)="resetDates()">
         </app-calendar>
-        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="max-height: 434px;    border: 1px solid #191c1c !important;">
+        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="    background-color: #cecece;
+    left: -2px;
+    max-height: 434px;
+    border: 1px solid #191c1c !important;">
           <div class="priceTitle">
             Pricing information
           </div>
@@ -84,10 +89,14 @@ import {BookingService} from '../services/booking/booking.service';
           <div>
             <div style="    text-align: center;margin-top: 5px;">
               <div style="margin-left: 5px;font-weight: 400;
-          font-size: 17px;    display: inline;">
+          font-size: 15px;    display: inline;">
                 Day(s):
               </div>
-              <div style=" margin-left: 5px;display: inline;font-weight: 700;"> {{this.getAmountofdays()}}</div>
+              <ng-template #maxday>Max booking (2 weeks) Extensions increase days to show price increase</ng-template>
+              <div style=" margin-left: 5px;display: inline;font-weight: 700;"> {{this.getAmountofdays()}} <span [ngbTooltip]="maxday"
+                                                                                                                 placement="top"
+                                                                                                                 style="font-size: 11px;font-weight: 400; color: darkred">(Max 14)</span>
+              </div>
             </div>
 
             <div style="    text-align: center;margin-top: 5px;">
@@ -101,19 +110,27 @@ import {BookingService} from '../services/booking/booking.service';
               <div style=" margin-left: 5px;display: inline;font-weight: 700;">Pickup: 8:00am</div>
             </div>
             <div style="    text-align: center;margin-top: 5px;">
-              <div style=" margin-left: 5px;display: inline;font-weight: 700;">Return: <span *ngIf="!this.extension.value">1:00pm</span>
-                <span *ngIf="this.extension.value">4:00pm</span></div>
+              <div style=" margin-left: 5px;display: inline;font-weight: 700;">Return: <span
+                *ngIf="!this.extension.value && !this.lateReturn.value || this.isNextDayBooked()">1:00pm</span>
+                <span *ngIf="this.extension.value && !this.lateReturn.value && !this.isNextDayBooked()">4:00pm</span>
+                <span *ngIf="this.lateReturn.value && !this.isNextDayBooked()">>6:00pm</span></div>
             </div>
-            <div class="row">
+            <ng-template #nextday>These options are only availble if the next day is not booked</ng-template>
+
+            <div class="row" [disableTooltip]="!this.isNextDayBooked()" [ngbTooltip]="nextday">
               <ng-template #extensionTIP>Extend booking until 4PM (Costs an additional half a day)</ng-template>
-              <div class="col-7" [ngbTooltip]="extensionTIP" style="  padding: 0px 0px 0px 10px;  text-align: center;margin-top: 2px;">
-                <input id="checkbox_extension" type="checkbox" [(ngModel)]="this.extension.value">
+              <div [disableTooltip]="this.isNextDayBooked()" [ngbTooltip]="extensionTIP" placement="bottom" [class.col-7]="this.userService.repeat"
+                   [class.col]="!this.userService.repeat" style="  padding: 0px 0px 0px 10px;  text-align: center;margin-top: 2px;">
+                <input [disabled]="this.lateReturn.value || this.isNextDayBooked()" id="checkbox_extension" type="checkbox"
+                       [(ngModel)]="this.extension.value">
                 <label class="checklabel" for="checkbox_extension" style="font-size: 14px; margin-left: 4px;   margin-bottom: 0px;">Extension</label>
               </div>
               <ng-template #lateReturnTIP>This option is only for repeat customers.
-                Option to drop keys through letterbox after hours.</ng-template>
-              <div placement="left" [ngbTooltip]="lateReturnTIP" class="col-5" style="  padding: 0px 10px 0px 0px;  text-align: center;margin-top: 2px;" *ngIf="this.userService.repeat">
-                <input id="checkbox_late" type="checkbox" [(ngModel)]="this.lateReturn.value">
+                Option to drop keys through letterbox after 6:00PM.
+              </ng-template>
+              <div [disableTooltip]="this.isNextDayBooked()"  [ngbTooltip]="lateReturnTIP" placement="bottom" class="col-5"
+                   style="  padding: 0px 10px 0px 0px;  text-align: center;margin-top: 2px;" *ngIf="this.userService.repeat">
+                <input [disabled]="this.isNextDayBooked()" id="checkbox_late" type="checkbox" [(ngModel)]="this.lateReturn.value" (change)="this.lateReturnEvent()">
 
                 <label class="checklabel" for="checkbox_late" style="font-size: 14px;margin-left: 4px;    margin-bottom: 0px;">Late</label>
               </div>
@@ -147,7 +164,10 @@ import {BookingService} from '../services/booking/booking.service';
       </div>
       <div>
         <form [formGroup]="dateRangeForm" (ngSubmit)="onSubmit(dateRangeForm.value)" style="    margin: 0px;">
-          <div class="row" style="padding: 11px;
+          <div class="row" style="width: 100%;
+    position: relative;
+    left: 15px;
+    padding: 11px;
     background-color: #b7b7b7;">
 
             <div class="form-group col">
@@ -311,7 +331,6 @@ import {BookingService} from '../services/booking/booking.service';
     :host {
       margin-top: 38px;
       width: 80%;
-      overflow: hidden;
       border-radius: 3px;
     }
 
@@ -319,7 +338,7 @@ import {BookingService} from '../services/booking/booking.service';
       width: 100%;
     }
 
-    @media screen and (max-width: 1100px) {
+    @media screen and (max-width: 1200px) {
       :host {
         margin-top: 38px;
         width: 90%;
@@ -415,6 +434,7 @@ export class CarPageComponent implements OnInit {
 
   extension = {value: false } ;
   lateReturn = {value: false } ;
+  nextDayBooked = {value: false } ;
   totalCost = {value: '' } ;
   daysSelected = {value: 0 } ;
 
@@ -427,6 +447,8 @@ export class CarPageComponent implements OnInit {
   bookings;
 
   carID;
+
+  selectionInit = false;
 
   dateRangeForm;
   ngbModalOptions: NgbModalOptions;
@@ -456,7 +478,9 @@ export class CarPageComponent implements OnInit {
     this.carService.carBookingsChange.subscribe((value) => {
       if (value !== null){
         this.bookings = value;
-        this.initDates();
+        if (!this.selectionInit){
+          this.initDates();
+        }
       }
     });
 
@@ -520,6 +544,10 @@ export class CarPageComponent implements OnInit {
         end.day = end.day - 1;
       }
     }
+    if (start.day === 0 || end.day === 0){
+      return;
+    }
+
     this.dateRangeForm.get('start').setValue(start);
     this.dateRangeForm.get('end').setValue(end);
 
@@ -545,6 +573,30 @@ export class CarPageComponent implements OnInit {
 
     return inRange;
   }
+
+  isNextDayBooked(): boolean {
+
+    const nextDay = this.end + (60 * 60 * 24);
+
+    let inRange = false;
+
+    if (this.bookings === undefined){
+      return false;
+    }
+
+    this.bookings.forEach(( range ) => {
+      if (nextDay >= range.Start && nextDay <= range.End){
+        inRange = true;
+        return;
+      }
+    });
+
+    this.nextDayBooked.value = inRange;
+
+    return inRange;
+  }
+
+
 
 
   isSelected(date: NgbDate): boolean {
@@ -580,6 +632,8 @@ export class CarPageComponent implements OnInit {
       return;
     }
 
+    this.getAmountofdays();
+
     const data = {
       start: bookingData.start,
       end: bookingData.end,
@@ -588,7 +642,8 @@ export class CarPageComponent implements OnInit {
       totalCost: this.totalCost,
       car: this.car,
       extension: this.extension,
-      lateReturn: this.lateReturn};
+      lateReturn: this.lateReturn,
+      nextDayBooked: this.nextDayBooked};
 
     if (this.userService.loggedIn){
       this.bookingModal = this.modalService.open(BookingComponent, this.ngbModalOptions);
@@ -653,6 +708,14 @@ export class CarPageComponent implements OnInit {
         this.end = end;
       }
     }
+    const jvstart = new Date(this.start * 1000);
+    const ngstart = new NgbDate(jvstart.getFullYear(), jvstart.getMonth() + 1, jvstart.getDate());
+    const jvend = new Date(this.end * 1000);
+    const ngend = new NgbDate(jvend.getFullYear(), jvend.getMonth() + 1, jvend.getDate());
+
+    this.dateRangeForm.get('start').setValue(ngstart);
+    this.dateRangeForm.get('end').setValue(ngend);
+
     this.moveCalender(date);
 
     return invalid;
@@ -699,8 +762,12 @@ export class CarPageComponent implements OnInit {
 
     let value = (( end - start ) / 1000 / 60 / 60 / 24);
 
-    if (!this.extension.value){
+    if ((!this.extension.value && !this.lateReturn.value) || this.isNextDayBooked()){
       value = value - 0.5;
+    }
+
+    if (this.lateReturn.value && !this.isNextDayBooked()){
+      value = value + 0.1;
     }
 
 
@@ -716,6 +783,10 @@ export class CarPageComponent implements OnInit {
     this.totalCost.value = this.currencyService.FormatValue(this.getAmountofdays() * this.car.Cost);
 
     return this.totalCost.value;
+  }
+
+  lateReturnEvent(): void {
+
   }
 }
 

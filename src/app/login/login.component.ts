@@ -51,6 +51,7 @@ import {RegistrationComponent} from '../registration/registration.component';
     }
 
     .close {
+      z-index: 100;
       adding: 0px;
       position: absolute;
       right: 7%;

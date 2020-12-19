@@ -12,8 +12,12 @@ import {BookingService} from '../services/booking/booking.service';
   template: `
 
     <div class="cal">
-      <div class="row" style="    min-width: 592px;    width: 100%;
-    margin: auto;background-color: #4b7979;">
+      <div class="row" style="min-width: 592px;
+    position: relative;
+    left: 0px;
+    width: 99.9%;
+    margin: auto;
+    background-color: #4b7979;">
         <div class="col no-pad"><a (click)="modifyMonth(-1)" class="cal-but previous">&laquo; Month</a></div>
         <div class="col"><a (click)="modifyYear(-1)" class="cal-but previous">&laquo; Year</a></div>
 
@@ -30,7 +34,12 @@ import {BookingService} from '../services/booking/booking.service';
         <div class="col"><a (click)="modifyYear(1)" class="cal-but next">Year &raquo;</a></div>
         <div class="col no-pad"><a (click)="modifyMonth(1)" class="cal-but next">Month &raquo;</a></div>
       </div>
-      <table class="table" style="width: 100.05%;    min-width: 592px;    margin-bottom: 0px;">
+      <table class="table" style="    width: 100.12%;
+    min-width: 592px;
+    position: relative;
+    left: -0.4px;
+    /* margin-bottom: 0px; */
+    margin: 0px 0px 0px -1px;">
         <thead class="head">
         <tr>
           <th class="border" scope="col">Sunday</th>
@@ -364,7 +373,14 @@ export class CalendarHComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.eventsSubscription = this.event.subscribe((value) => this.initCalendar(value));
+    this.eventsSubscription = this.event.subscribe((value) => {
+
+      if (this.now.getMonth() === value.getMonth() && this.now.getFullYear() === value.getFullYear()){
+        return;
+      }
+
+      this.initCalendar(value);
+    });
 
     this.route.paramMap.subscribe(params => {
       this.carID = +params.get('id');
@@ -461,8 +477,20 @@ export class CalendarHComponent implements OnInit {
       this.start = fallback;
       this.end = fallback;
     }else{
-      this.start = start;
-      this.end = end;
+
+      if ((end - start) > (60 * 60 * 24 * 13 )){
+
+        if (start === this.start){
+            this.start = end - (60 * 60 * 24 * 13 );
+            this.end = end;
+        }else if (end === this.end){
+          this.end = start + (60 * 60 * 24 * 13 );
+          this.start = start;
+        }
+      }else {
+        this.start = start;
+        this.end = end;
+      }
     }
 
     return;

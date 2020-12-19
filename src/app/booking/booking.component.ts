@@ -1,19 +1,30 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {UserService} from '../services/user/user.service';
 import {FormArray, FormBuilder} from '@angular/forms';
-import {NgbActiveModal, NgbCalendar, NgbDate} from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbCalendar, NgbDate, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {User} from '../services/user/User';
 import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
+import {PaymentComponent} from '../payment/payment.component';
 
 @Component({
-  selector: 'app-registration',
+  selector: 'app-booking',
   template: `
     <div class="modal-header" xmlns="http://www.w3.org/1999/html">
       <button type="button" class="close" aria-label="Close" (click)="closeBooking()">
         <span aria-hidden="true">&times;</span>
       </button>
-      <h1 style="text-align: center;">Booking</h1>
+      <div class="col">
+        <div class="row" style="
+    text-align: center;"><h1 style="text-align: center;    margin: auto;">Booking</h1></div>
+        <HR *ngIf="this.data.nextDayBooked.value">
+        <div style="font-size: 13px;
+    color: darkred;
+    text-align: center;" class="row" *ngIf="this.data.nextDayBooked.value"> The next day has a booking, and so this booking requires an early return.
+        You can move your booking back 1 day, to recieve extension options.</div>
+      </div>
+
+
       <HR>
     </div>
 
@@ -79,18 +90,20 @@ import {BookingService} from '../services/booking/booking.service';
                   <div style=" margin-left: 5px;display: inline;font-weight: 700;">Pickup: 8:00am</div>
                 </div>
                 <div style="    text-align: center;margin-top: 7px;">
-                  <div style=" margin-left: 5px;display: inline;font-weight: 700;">Return: <span *ngIf="!this.data.extension.value">1:00pm</span>
-                    <span *ngIf="this.data.extension.value">4:00pm</span> </div>
+                  <div style=" margin-left: 5px;display: inline;font-weight: 700;">Return: <span *ngIf="!this.data.extension.value && !this.data.lateReturn.value || this.data.nextDayBooked.value">1:00pm</span>
+                    <span *ngIf="this.data.extension.value && !this.data.lateReturn.value && !this.data.nextDayBooked.value">4:00pm</span>
+                    <span *ngIf="this.data.lateReturn.value && !this.data.nextDayBooked.value">>6:00pm</span></div>
                 </div>
 
-                <div class="row">
-                  <div class="col" style="    text-align: center;margin-top: 7px;" [ngbTooltip]="extensionTIPbooking">
+                <ng-template #nextday>These options are only availble if the next day is not booked</ng-template>
+                <div class="row" placement="bottom"[disableTooltip]="!this.data.nextDayBooked.value" [ngbTooltip]="nextday">
+                  <div [disableTooltip]="this.data.nextDayBooked.value" placement="bottom" class="col" style="    text-align: center;margin-top: 7px;" [ngbTooltip]="extensionTIPbooking">
                     <ng-template #extensionTIPbooking>Extend booking until 4PM (Costs an additional half a day)</ng-template>
-                    <input id="checkbox_extension_booking" type="checkbox" [(ngModel)]="this.data.extension.value">
+                    <input [disabled]="this.data.lateReturn.value || this.data.nextDayBooked.value" id="checkbox_extension_booking" type="checkbox" [(ngModel)]="this.data.extension.value">
                     <label class="checklabel" for="checkbox_extension_booking" style="    margin-bottom: 0px;">Extension</label>
                   </div>
-                  <div class="col" style="    text-align: center;margin-top: 7px;" *ngIf="this.userService.repeat" [ngbTooltip]="tipContentbooking">
-                    <input id="checkbox_late_booking" type="checkbox" [(ngModel)]="this.data.lateReturn.value">
+                  <div [disableTooltip]="this.data.nextDayBooked.value" placement="bottom" class="col" style="    text-align: center;margin-top: 7px;" *ngIf="this.userService.repeat" [ngbTooltip]="tipContentbooking">
+                    <input [disabled]="this.data.nextDayBooked.value" id="checkbox_late_booking" type="checkbox" [(ngModel)]="this.data.lateReturn.value">
                     <ng-template #tipContentbooking>This option is only for repeat customers.
                     Option to drop keys through letterbox after hours.</ng-template>
                     <label class="checklabel" for="checkbox_late_booking" style="    margin-bottom: 0px;">Late Return <span
@@ -143,6 +156,7 @@ import {BookingService} from '../services/booking/booking.service';
     }
 
     .close {
+      z-index: 100;
       padding: 0px;
       position: absolute;
       right: 5%;
@@ -169,10 +183,25 @@ export class BookingComponent implements OnInit {
 
   data;
   now;
-
+  ngbModalOptions;
 
   constructor(private calendar: NgbCalendar, public userService: UserService, private activeModal: NgbActiveModal,
-              public currencyService: CurrencyService, private bookingService: BookingService) {
+              public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal) {
+    this.bookingService.bookingAccepted.subscribe((value) => {
+      if (value.ID !== 0 && value.processID === 1){
+        console.log(value);
+        this.modalService.dismissAll();
+        const payment = this.modalService.open(PaymentComponent, this.ngbModalOptions);
+        payment.componentInstance.bookingData = value;
+
+      }
+    });
+
+    this.ngbModalOptions = {
+      backdrop: 'static',
+      keyboard: false
+    };
+
   }
 
   ngOnInit(): void {
@@ -180,6 +209,7 @@ export class BookingComponent implements OnInit {
 
   onSubmit(): void {
     console.log('sending booking', this.data);
+
     this.bookingService.CreateBooking(this.data);
 
   }

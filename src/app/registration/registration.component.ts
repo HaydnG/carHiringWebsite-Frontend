@@ -145,6 +145,7 @@ import {User} from '../services/user/User';
       position: absolute;
       right: 5%;
       top: 6%;
+      z-index: 100;
     }
 
     .ng-invalid:not(form) {
