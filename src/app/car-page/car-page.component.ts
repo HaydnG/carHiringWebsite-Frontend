@@ -456,6 +456,7 @@ export class CarPageComponent implements OnInit {
     this.carService.carBookingsChange.subscribe((value) => {
       if (value !== null){
         this.bookings = value;
+        this.initDates();
       }
     });
 
