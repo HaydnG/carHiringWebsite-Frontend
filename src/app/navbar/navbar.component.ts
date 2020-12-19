@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {UserService} from '../../services/user/user.service';
-import {User} from '../../services/user/User';
+import {UserService} from '../services/user/user.service';
+import {User} from '../services/user/User';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {Router} from '@angular/router';
-import {ScreenService} from '../../services/screen/screen.service';
+import {ScreenService} from '../services/screen/screen.service';
 @Component({
   selector: 'app-navbar',
   template: `

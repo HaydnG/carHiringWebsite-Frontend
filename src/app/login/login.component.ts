@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../../services/user/user.service';
+import {UserService} from '../services/user/user.service';
 import {FormBuilder} from '@angular/forms';
 import {NgbActiveModal, NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
-import {RegistrationComponent} from '../../registration/registration.component';
+import {RegistrationComponent} from '../registration/registration.component';
 
 
 @Component({

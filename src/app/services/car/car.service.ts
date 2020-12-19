@@ -2,7 +2,7 @@ import {Accessory, Car} from './Car';
 import {Injectable, Directive} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {observable, Observable, of, Subject} from 'rxjs';
-import {TimeRange} from '../car-page/TimeRange';
+import {TimeRange} from '../../car-page/TimeRange';
 
 
 @Injectable()

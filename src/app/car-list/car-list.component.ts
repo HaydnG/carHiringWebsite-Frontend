@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {UserService} from '../user/user.service';
-import {CarService} from '../car/car.service';
-import {User} from '../user/User';
-import {Car} from '../car/Car';
+import {CarService} from '../services/car/car.service';
 
 @Component({
   selector: 'app-car-list',
@@ -20,11 +16,16 @@ import {Car} from '../car/Car';
   styles: [`
     .card-deck{
       justify-content: center;
+      display: flex;
+      flex-flow: row wrap;
+      margin-right: -15px;
+      margin-left: -15px;
     }
 
     :host {
+      overflow: hidden;
     width: 100%;
-      margin-top: 80px;
+      margin-top: 50px;
   }`]
 })
 export class CarListComponent implements OnInit {
@@ -40,7 +41,7 @@ export class CarListComponent implements OnInit {
         this.cars = value;
       }
     });
-    this.carService.Get();
+    this.carService.LoadCars();
   }
 
   ngOnInit(): void {

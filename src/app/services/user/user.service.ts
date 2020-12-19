@@ -12,6 +12,7 @@ export class UserService {
 
   userChange: Subject<User> = new Subject<User>();
 
+  repeat = false;
   loggedIn = false;
 
   constructor(private http: HttpClient) {}
@@ -19,6 +20,7 @@ export class UserService {
   Login(email: string, password: string): void {
     this.http.get<User>(this.url + 'login?email=' + email + '&password=' + password).subscribe(data => {
       this.userChange.next(data);
+      this.repeat = data.Repeat;
       this.loggedIn = data.SessionToken.length > 10;
       console.log(data);
     });
@@ -28,6 +30,7 @@ export class UserService {
     this.http.get<User>(this.url + 'logout', { withCredentials: true }).subscribe(data => {
       this.userChange.next(data);
       this.loggedIn = false;
+      this.repeat = false;
       console.log(data);
     });
   }
@@ -49,6 +52,7 @@ export class UserService {
 
     this.http.get<User>(this.url + 'sessionCheck', { withCredentials: true }).pipe(catchError(this.errorHandler)).subscribe(data => {
       this.userChange.next(data);
+      this.repeat = data.Repeat;
       this.loggedIn = data.SessionToken.length > 10;
     });
   }

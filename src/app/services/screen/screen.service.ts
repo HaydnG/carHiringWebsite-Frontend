@@ -1,10 +1,5 @@
-import {User} from './User';
 import {Injectable, Directive} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {observable, Observable, of, Subject} from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
-import {catchError} from 'rxjs/operators';
-import {throwError} from 'rxjs';
 
 @Injectable()
 export class ScreenService {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../../services/user/user.service';
+import {UserService} from '../services/user/user.service';
 import {FormBuilder} from '@angular/forms';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {User} from '../../services/user/User';
+import {User} from '../services/user/User';
 
 @Component({
   selector: 'app-registration',

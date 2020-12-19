@@ -2,17 +2,19 @@ import {Injectable, Directive} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
-export class ScreenService {
-  private url = 'http://' + window.location.hostname + ':8080/userService/';
+export class CurrencyService {
 
-  isScreenSmall;
 
-  constructor(private http: HttpClient) {
-    this.isScreenSmall = window.innerWidth <= 1000;
-    window.onresize = () => {
-      this.isScreenSmall = window.innerWidth <= 1000;
-    };
+  private Currformatter = new Intl.NumberFormat('en-UK', {
+    style: 'currency',
+    currency: 'GBP',
+  });
+
+  constructor(private http: HttpClient) {}
+
+
+  FormatValue(value: number): string{
+    return this.Currformatter.format(value);
   }
-
 
 }
