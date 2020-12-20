@@ -11,21 +11,43 @@ import {ScreenService} from '../services/screen/screen.service';
 
     <div class="col sticky" >
       <div class="row">
-        <div class="navbar" role="banner" >
-          <div class="col-2">
-            <a (click)="home()"><span>Banger and Co</span></a>
-          </div>
-          <div [class.col-10]="this.screenService.isScreenSmall" [class.col-7]="!this.screenService.isScreenSmall" style="text-align: right">
-            <app-login *ngIf="!this.userService.loggedIn; else elseBlock"></app-login>
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" (click)="home()"><span>Banger and Co</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <ng-template #elseBlock>
-              <div>Welcome back {{this.user.FirstName}} | <a (click)="logout()">Logout</a></div>
-            </ng-template>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <input  id="search" class="form-control searchbar" placeholder="Search">
+            <div class="collapse navbar-collapse" id="navbarText">
+
+              <app-login style="    margin-left: auto;max-width: 500px;" *ngIf="!this.userService.loggedIn; else elseBlock"></app-login>
+
+              <ng-template #elseBlock>
+
+                <ul class="navbar-nav mr-auto">
+
+                </ul>
+
+
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['booking']">My Bookings</a>
+                  </li>
+
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Welcome back {{this.user.FirstName}}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" [routerLink]="['']">Account details</a>
+                      <a class="dropdown-item" [routerLink]="['']">Ask for help</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" (click)="logout()"> Logout</a>
+                    </div>
+                  </li>
+                </ul>
+              </ng-template>
+            </div>
+          </nav>
       </div>
     </div>
 
@@ -38,20 +60,32 @@ import {ScreenService} from '../services/screen/screen.service';
     display: flex;
     align-items: center;
     background-color: #305252;
-    color: #D8E8E8;
     min-height: 75px;
     font-weight: 600;
     padding: 0px 10px;
     width: 100%;
+    font-size: 16px;
   }
-  .searchbar{
-    border-radius: 0px;
+
+  .navbar-nav .dropdown-menu {
+    position: absolute !important;
+    float: none;
+  }
+
+  .nav-link{
+    color: #D8E8E8 !important;
+  }
+
+  .navbar-brand{
+    color: #D8E8E8 !important;
+  }
+
+  .navbar-text{
+    color: #D8E8E8 !important;
   }
 
   .sticky{
-    position: fixed;
     top: 0;
-    overflow: hidden;
     z-index: 10;
   }
 
@@ -100,6 +134,7 @@ export class NavbarComponent implements OnInit {
 
   logout(): void{
     this.userService.Logout(this.session);
+    this.home();
   }
 
   ngOnInit(): void {

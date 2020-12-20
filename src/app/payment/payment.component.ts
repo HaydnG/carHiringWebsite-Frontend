@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbCalendar, NgbDate, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CurrencyService} from '../services/currency/currency.service';
+import {BookingService} from '../services/booking/booking.service';
+import {Booking} from '../services/booking/Booking';
 
 
 @Component({
@@ -72,27 +74,83 @@ import {CurrencyService} from '../services/currency/currency.service';
           </div>
         </div>
         <HR *ngIf="this.bookingData.accessories.length > 0">
-        <div class="row" style="text-align: center; margin-top: 15px; margin-bottom: 10px">
-          <div class="col">
-            Total Cost: <span class="money">{{this.currencyService.FormatValue(this.bookingData.totalCost)}}</span>
-          </div>
 
-          <div class="col">
-            Amount Paid: <span class="money">{{this.currencyService.FormatValue(this.bookingData.amountPaid)}}</span>
+        <div class="row" style="margin: auto;">
+          <div class="col" style="    display: flex;">
+            <div class="col-7 paymentrow">
+              <div class="row payment">
+                Per Day:
+              </div>
+              <div class="row payment" style="font-size: 14px;">
+                Cost * Days:
+              </div>
+              <div class="row payment"> </div>
+              <div class="row payment"> </div>
+              <div class="row payment">
+                Total Cost:
+              </div>
+            </div>
+            <div class="col-5 paymentrow">
+              <div class="row payment">
+                <span class="money"> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}}</span>
+              </div>
+              <div class="row payment calc">
+                <span class=""> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}} x {{this.bookingData.bookingLength}}</span>
+              </div>
+              <div class="row payment"></div>
+              <div class="row payment"></div>
+              <div class="row payment">
+                <span class="money"> {{this.currencyService.FormatValue(this.bookingData.totalCost)}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col" style="    display: flex;">
+            <div class="col-6 paymentrow">
+              <div class="row payment">
+                Days booked:
+              </div>
+              <div class="row payment">
+                Extra:
+              </div>
+              <div class="row payment">
+                Total Days:
+              </div>
+              <div class="row payment"></div>
+              <div class="row payment">
+                Amount Paid:
+              </div>
+            </div>
+            <div class="col-6 paymentrow">
+              <div class="row payment">
+                <span class="money"> {{this.getBookingLength()}} day(s)</span>
+              </div>
+              <div class="row payment calc" >
+                <span *ngIf="this.bookingData.extension" class=""> Extension(+0.5)</span>
+                <span *ngIf="this.bookingData.lateReturn"class=""> LateReturn(+0.6)</span>
+                <span *ngIf="!this.bookingData.lateReturn && !this.bookingData.extension"class=""> 0</span>
+              </div>
+              <div class="row payment">
+                <span class="money"> {{this.bookingData.bookingLength}} day(s)</span>
+              </div>
+              <div class="row payment"></div>
+              <div class="row payment">
+                <span class="money"> {{this.currencyService.FormatValue(this.bookingData.amountPaid)}}</span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="row form-group" style="    width: 80%;
     margin: auto;">
           <div class="col">
-            <input id="nothing" class="form-control" placeholder="Payment details (Fake for example)">
+            <input id="nothingOne" class="form-control" placeholder="Payment details (Fake for example)">
           </div>
 
         </div>
         <div class="row form-group" style="    width: 80%;
              margin: auto;">
           <div class="col">
-            <input id="nothing" class="form-control" placeholder="Payment details (Fake for example)">
+            <input id="nothingTwo" class="form-control" placeholder="Payment details (Fake for example)">
           </div>
 
         </div>
@@ -108,6 +166,21 @@ import {CurrencyService} from '../services/currency/currency.service';
 
   `,
   styles: [`
+    .calc{
+      font-weight: bold;
+      font-size: 13px;
+      line-height: 24px;
+    }
+    .paymentrow{
+      padding: 0px;
+    }
+
+    .payment{
+      margin: auto;
+      padding: 0px;
+      height: 24px;
+    }
+
     .money{
       font-weight: bold;
       font-size: 16px;
@@ -168,7 +241,7 @@ import {CurrencyService} from '../services/currency/currency.service';
 export class PaymentComponent implements OnInit {
 
 
-  bookingData;
+  bookingData: Booking;
   ngbModalOptions;
 
   startDate: Date;
@@ -179,7 +252,7 @@ export class PaymentComponent implements OnInit {
   endFormatted: string;
 
   constructor(private activeModal: NgbActiveModal, public currencyService: CurrencyService,
-              private modalService: NgbModal) {
+              private modalService: NgbModal, private bookingService: BookingService) {
 
 
     this.ngbModalOptions = {
@@ -200,13 +273,25 @@ export class PaymentComponent implements OnInit {
 
   }
 
+  getBookingLength(): string{
+    let length = this.bookingData.bookingLength;
 
+    if (this.bookingData.extension){
+      length = length - 0.5;
+    }else if (this.bookingData.lateReturn){
+      length = length - 0.6;
+    }
+    return length.toFixed(1);
+  }
 
   closePayment(): void{
     this.activeModal.dismiss();
   }
 
-  onSubmit() {
+  onSubmit(): void {
+    this.bookingService.MakePayment(this.bookingData.ID, data => {
+      this.activeModal.dismiss();
 
+    });
   }
 }

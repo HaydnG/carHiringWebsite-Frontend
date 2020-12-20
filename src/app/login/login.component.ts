@@ -8,7 +8,7 @@ import {RegistrationComponent} from '../registration/registration.component';
 @Component({
   selector: 'app-login',
   template: `
-    <div *ngIf="this.isModal" class="modal-header">
+    <div *ngIf="this.isModal" class="modal-header" >
       <button type="button" class="close" aria-label="Close" (click)="closeLogin()">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -16,7 +16,7 @@ import {RegistrationComponent} from '../registration/registration.component';
       <HR>
     </div>
 
-    <div [class.isModal]="isModal">
+    <div [class.isModal]="isModal"  [class.notModal]="!isModal" style="    padding-left: 5px;">
 
       <div style="min-width: 169px;
     text-align: left;
@@ -47,7 +47,11 @@ import {RegistrationComponent} from '../registration/registration.component';
 `,
   styles: [`
     .isModal{
-      padding: 11px 6px 16px 30px;
+      padding: 11px 6px 16px 30px !important;
+    }
+
+    .notModal{
+      color: #d8e8e8;
     }
 
     .close {
@@ -74,20 +78,8 @@ import {RegistrationComponent} from '../registration/registration.component';
       display: inline-block;
       cursor: pointer;
       text-align: center;
-    }
-
-    @media screen and (max-width: 600px){
-        .BUTTON{
-          left: 17px;
-          position: relative;
-          width: 58px;
-          height: 50px;
-        }
-      .auth{
-        width: 100px;
-        left: 12px;
-        position: relative;
-      }
+      position: relative;
+      left: 10px;
     }
     .center {
       left: 50%;

@@ -28,6 +28,8 @@ import {CurrencyService} from './services/currency/currency.service';
 import {BookingService} from './services/booking/booking.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {PaymentComponent} from './payment/payment.component';
+import {BookingPageComponent} from './booking-page/booking-page.component';
+import {BookingCardComponent} from './booking-card/booking-card.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import {PaymentComponent} from './payment/payment.component';
     SearchComponent,
     CalendarHComponent,
     CarPageComponent,
-    PaymentComponent
+    PaymentComponent,
+    BookingPageComponent,
+    BookingCardComponent
   ],
   imports: [
     BrowserModule,

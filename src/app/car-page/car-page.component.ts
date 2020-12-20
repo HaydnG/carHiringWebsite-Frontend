@@ -29,7 +29,7 @@ import {BookingService} from '../services/booking/booking.service';
 @Component({
   selector: 'app-car-page',
   template: `
-    <div class="container-fluid" style=" background-color: #e0e0e0;color: rgb(64,64,64); padding: 2px 0px 0px 0px;"
+    <div class="container-fluid" style="    border-radius: 8px; background-color: #e0e0e0;color: rgb(64,64,64); padding: 2px 0px 0px 0px;"
          *ngIf="car !== undefined">
       <div class="row" style="margin: 5px;">
 
@@ -66,7 +66,8 @@ import {BookingService} from '../services/booking/booking.service';
         </div>
 
       </div>
-      <hr>
+      <hr style="    width: 100%;
+    left: -18px;">
       <div class="row" style="width: 100.3%;
     left: 14.4px;
     position: relative;">
@@ -76,16 +77,18 @@ import {BookingService} from '../services/booking/booking.service';
                       (onDatePicked)="updateCalenders($event)"
                       (onReset)="resetDates()">
         </app-calendar>
-        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="    background-color: #cecece;
+        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="background-color: #cecece;
     left: -2px;
-    max-height: 434px;
-    border: 1px solid #191c1c !important;">
+    height: 459px;
+    top: -1px;
+    border: 2px solid #191c1c !important;
+    margin-bottom: -1px;">
           <div class="priceTitle">
             Pricing information
           </div>
-          <hr style="left: -22px;
-    top: -1px;
-    width: 110%;">
+          <hr style="left: -16%;
+    top: -2px;
+    width: 118%;">
           <div>
             <div style="    text-align: center;margin-top: 5px;">
               <div style="margin-left: 5px;font-weight: 400;
@@ -138,9 +141,9 @@ import {BookingService} from '../services/booking/booking.service';
 
           </div>
 
-          <hr style="left: -22px;
+          <hr style="left: -12%;
         top: -1px;
-        width: 110%;">
+        width: 113%;">
 
           <div class="accTitle">
             Accessories
@@ -329,7 +332,6 @@ import {BookingService} from '../services/booking/booking.service';
     }
 
     :host {
-      margin-top: 38px;
       width: 80%;
       border-radius: 3px;
     }
@@ -340,7 +342,6 @@ import {BookingService} from '../services/booking/booking.service';
 
     @media screen and (max-width: 1200px) {
       :host {
-        margin-top: 38px;
         width: 90%;
       }
 
@@ -352,7 +353,6 @@ import {BookingService} from '../services/booking/booking.service';
 
     @media screen and (max-width: 800px) {
       :host {
-        margin-top: 60px;
         width: 95%;
       }
 
@@ -364,7 +364,6 @@ import {BookingService} from '../services/booking/booking.service';
 
     @media screen and (max-width: 500px) {
       :host {
-        margin-top: 60px;
         width: 100%;
       }
 
@@ -480,6 +479,7 @@ export class CarPageComponent implements OnInit {
         this.bookings = value;
         if (!this.selectionInit){
           this.initDates();
+          this.selectionInit = true;
         }
       }
     });
@@ -547,12 +547,19 @@ export class CarPageComponent implements OnInit {
     if (start.day === 0 || end.day === 0){
       return;
     }
+    const startNum = new Date(start.year, start.month - 1, start.day).getTime() / 1000;
+    const endNum = new Date(end.year, end.month - 1, end.day).getTime() / 1000;
+
+    if (this.checkValidDates(startNum, endNum)){
+      return;
+    }
+
 
     this.dateRangeForm.get('start').setValue(start);
     this.dateRangeForm.get('end').setValue(end);
 
-    this.start = new Date(start.year, start.month - 1, start.day).getTime() / 1000;
-    this.end = new Date(end.year, end.month - 1, end.day).getTime() / 1000;
+    this.start = startNum;
+    this.end = endNum;
   }
 
   isDisabled = (date: NgbDate, current: {month: number, year: number}) => date.month !== current.month;

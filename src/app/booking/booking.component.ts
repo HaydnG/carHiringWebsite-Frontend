@@ -6,6 +6,7 @@ import {User} from '../services/user/User';
 import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
 import {PaymentComponent} from '../payment/payment.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-booking',
@@ -107,7 +108,7 @@ import {PaymentComponent} from '../payment/payment.component';
                     <ng-template #tipContentbooking>This option is only for repeat customers.
                     Option to drop keys through letterbox after hours.</ng-template>
                     <label class="checklabel" for="checkbox_late_booking" style="    margin-bottom: 0px;">Late Return <span
-                                                                                                        style="    font-size: 11px;
+                      style="    font-size: 11px;
     color: green;">(Repeat Only)</span></label>
                   </div>
                 </div>
@@ -186,13 +187,15 @@ export class BookingComponent implements OnInit {
   ngbModalOptions;
 
   constructor(private calendar: NgbCalendar, public userService: UserService, private activeModal: NgbActiveModal,
-              public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal) {
+              public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal,
+              private router: Router) {
     this.bookingService.bookingAccepted.subscribe((value) => {
       if (value.ID !== 0 && value.processID === 1){
         console.log(value);
-        this.modalService.dismissAll();
+        this.activeModal.dismiss();
         const payment = this.modalService.open(PaymentComponent, this.ngbModalOptions);
         payment.componentInstance.bookingData = value;
+        this.router.navigate(['booking']);
 
       }
     });

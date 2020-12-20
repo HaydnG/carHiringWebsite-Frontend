@@ -206,7 +206,7 @@ import {BookingService} from '../services/booking/booking.service';
     }
 
     .cell {
-      height: 56px;
+      height: 60px;
       text-align: center;
       vertical-align: middle;
     }
@@ -282,11 +282,6 @@ export class CalendarHComponent implements OnInit {
   cal: Cell[][];
 
   constructor(private carService: CarService, private route: ActivatedRoute, private bookingService: BookingService) {
-
-    this.bookingService.bookingAccepted.subscribe((value) => {
-      this.initCalendar(this.now);
-
-    });
 
     this.now = new Date();
 
@@ -413,19 +408,11 @@ export class CalendarHComponent implements OnInit {
 
     const unix = new Date(date.year, date.month, date.day).getTime() / 1000;
 
-    if (this.start === 0 || this.start === undefined){
-      this.setStartAndEnd(unix, this.end, unix);
+    if (this.start === 0 || this.start === undefined || this.end === 0 || this.end === undefined){
+      this.setStartAndEnd(unix, unix, unix);
       return;
     }
-    if (this.end === 0 || this.end === undefined){
-      if (unix <= this.start){
-        this.setStartAndEnd(unix, this.start, unix);
-      }else{
-        this.setStartAndEnd(this.start, unix, unix);
-      }
 
-      return;
-    }
 
     if (this.lastClicked === unix){
       if (this.wasStart){

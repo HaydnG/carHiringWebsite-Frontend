@@ -12,6 +12,7 @@ export class Booking {
   extension: boolean;
   created: number;
   processID: number;
+  bookingLength: number;
   carData: Car;
   accessories: Accessory[];
 }

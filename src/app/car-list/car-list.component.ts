@@ -25,7 +25,6 @@ import {CarService} from '../services/car/car.service';
     :host {
       overflow: hidden;
     width: 100%;
-      margin-top: 50px;
   }`]
 })
 export class CarListComponent implements OnInit {

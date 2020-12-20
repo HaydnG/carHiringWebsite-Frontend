@@ -12,8 +12,10 @@ export class UserService {
 
   userChange: Subject<User> = new Subject<User>();
 
+
   repeat = false;
   loggedIn = false;
+
 
   constructor(private http: HttpClient) {}
 
@@ -51,13 +53,13 @@ export class UserService {
     }
 
     this.http.get<User>(this.url + 'sessionCheck', { withCredentials: true }).pipe(catchError(this.errorHandler)).subscribe(data => {
-      this.userChange.next(data);
       this.repeat = data.Repeat;
       this.loggedIn = data.SessionToken.length > 10;
+      this.userChange.next(data);
     });
   }
 
   errorHandler(error: HttpErrorResponse): Observable<User>  {
-    return new Observable<User>();
+    return throwError('invalid session');
   }
 }

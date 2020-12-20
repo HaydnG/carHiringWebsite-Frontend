@@ -41,4 +41,13 @@ export class BookingService {
 
     });
   }
+
+  MakePayment(bookingID: number, callback?: (value: Booking) => void): void{
+    this.http.get<Booking>(this.url + 'makePayment?bookingID=' + bookingID,
+      { withCredentials: true }).subscribe(callback);
+  }
+
+  GetUsersBookings(callback?: (value: Record<number, Partial<Booking>>) => void): void{
+    this.http.get<Record<number, Partial<Booking>>>(this.url + 'getUserBookings', { withCredentials: true }).subscribe(callback);
+  }
 }
