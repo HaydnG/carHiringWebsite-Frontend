@@ -216,7 +216,7 @@ import {Booking} from '../services/booking/Booking';
           padding: 2px;
           position: absolute;
           right: 5%;
-          top: 12%;
+          top: 4%;
           font-size: 28px;
           z-index: 100;
         }

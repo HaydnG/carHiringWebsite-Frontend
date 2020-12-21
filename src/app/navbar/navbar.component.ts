@@ -11,7 +11,7 @@ import {ScreenService} from '../services/screen/screen.service';
 
     <div class="col sticky" >
       <div class="row">
-          <nav class="navbar navbar-expand-lg navbar-light">
+          <nav class="navbar navbar-expand-md navbar-light">
             <a class="navbar-brand" (click)="home()"><span>Banger and Co</span></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -33,7 +33,7 @@ import {ScreenService} from '../services/screen/screen.service';
                     <a class="nav-link" [routerLink]="['booking']">My Bookings</a>
                   </li>
 
-                  <li class="nav-item dropdown">
+                  <li class="nav-item dropdown" style="margin-right: 30px">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Welcome back {{this.user.FirstName}}
                     </a>
@@ -53,6 +53,9 @@ import {ScreenService} from '../services/screen/screen.service';
 
 `,
   styles: [`/*Style sheet https://coolors.co/77878b-305252-373e40-488286-b7d5d4*/
+  .nav-item {
+    margin: 0px 15px 0px 15px;
+  }
   .navbar {
     top: 0;
     left: 0;

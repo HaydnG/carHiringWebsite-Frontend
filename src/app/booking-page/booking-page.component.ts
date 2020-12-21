@@ -13,11 +13,13 @@ import {Booking} from '../services/booking/Booking';
         <h2>My Bookings page</h2>
       </div>
 
-      <div class="card-body" *ngIf="this.hasBookings(); else elseBlock">
-        <div class="card-group" *ngIf="this.bookings[1] !== undefined && this.bookings[1].length > 0">
-          <div class="card-subtitle">
-            <h5>Awaiting payment</h5>
-            <div *ngFor="let booking of this.bookings[1]">
+      <div class="card-body" style="    padding-top: 5px;" *ngIf="this.hasBookings(); else elseBlock">
+        <div class="row" *ngIf="this.bookings[1] !== undefined && this.bookings[1].length > 0">
+          <div class="col">
+            <div class="row">
+              <h5>Awaiting payment</h5>
+            </div>
+            <div class="row" *ngFor="let booking of this.bookings[1]">
               <app-booking-card
                 [booking]="booking"
               ></app-booking-card>
@@ -25,10 +27,12 @@ import {Booking} from '../services/booking/Booking';
           </div>
         </div>
         <hr *ngIf="this.bookings[1] !== undefined && this.bookings[1].length > 0">
-        <div class="card-group" *ngIf="this.bookings[3] !== undefined && this.bookings[3].length > 0">
-          <div class="card-subtitle">
-            <h5>Awaiting Confirmation</h5>
-            <div *ngFor="let booking of this.bookings[3]">
+        <div class="row" *ngIf="this.bookings[3] !== undefined && this.bookings[3].length > 0">
+          <div class="col">
+            <div class="row">
+              <h5>Awaiting Confirmation</h5>
+            </div>
+            <div class="row" *ngFor="let booking of this.bookings[3]">
               <app-booking-card
                 [booking]="booking"
               ></app-booking-card>
@@ -36,10 +40,12 @@ import {Booking} from '../services/booking/Booking';
           </div>
         </div>
         <hr *ngIf="this.bookings[3] !== undefined && this.bookings[3].length > 0">
-        <div class="card-group" *ngIf="this.bookings[4] !== undefined && this.bookings[4].length > 0">
-          <div class="card-subtitle">
-            <h5>Confirmed</h5>
-            <div *ngFor="let booking of this.bookings[4]">
+        <div class="row" *ngIf="this.bookings[4] !== undefined && this.bookings[4].length > 0">
+          <div class="col">
+            <div class="row">
+              <h5>Confirmed</h5>
+            </div>
+            <div class="row" *ngFor="let booking of this.bookings[4]">
               <app-booking-card
                 [booking]="booking"
               ></app-booking-card>
@@ -47,9 +53,11 @@ import {Booking} from '../services/booking/Booking';
           </div>
         </div>
         <hr *ngIf="this.bookings[4] !== undefined && this.bookings[4].length > 0">
-        <div class="card-group" *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
-          <div class="card-subtitle">
-            <h5>Completed</h5>
+        <div class="row" *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
+          <div class="col">
+            <div class="row">
+              <h5>Completed</h5>
+            </div>
           </div>
         </div>
         <hr *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
@@ -66,6 +74,15 @@ import {Booking} from '../services/booking/Booking';
     </div>
     `,
   styles: [`
+    hr{
+      margin: 5px 0px 5px 0px;
+    }
+    h5{
+      font-size: 25px;
+      margin-bottom: 10px !important;
+      margin: auto;
+    }
+
     :host {
       width: 80%;
       overflow: hidden;
