@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {observable, Observable, of, Subject} from 'rxjs';
 import {TimeRange} from '../../car-page/TimeRange';
 import {Booking} from './Booking';
-import {Car} from '../car/Car';
+import {Accessory, Car} from '../car/Car';
 import {catchError} from 'rxjs/operators';
 import {UserService} from '../user/user.service';
 
@@ -51,6 +51,16 @@ export class BookingService {
 
   MakePayment(bookingID: number, callback?: (value: Booking) => void): void{
     this.http.get<Booking>(this.url + 'makePayment?bookingID=' + bookingID,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<Booking>();
+    })).subscribe(callback);
+  }
+
+  EditBooking(bookingID: number, remove: Accessory[], add: Accessory[], lateReturn: boolean, extension: boolean,
+              callback?: (value: any) => void): void{
+    this.http.get<Booking>(this.url + 'editBooking?bookingID=' + bookingID + '&remove=' + Object.keys(remove).map((k) => k).join(',')
+      + '&add=' + Object.keys(add).map((k) => k).join(',') + '&lateReturn=' + lateReturn + '&extension=' + extension,
       { withCredentials: true }).pipe(catchError(error => {
       this.userService.handleError(error);
       return new Observable<Booking>();

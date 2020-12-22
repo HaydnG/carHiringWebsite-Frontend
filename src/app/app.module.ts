@@ -32,6 +32,7 @@ import {BookingPageComponent} from './booking-page/booking-page.component';
 import {BookingCardComponent} from './booking-card/booking-card.component';
 import {EditBookingComponent} from './edit-booking/edit-booking.component';
 import {DetailsComponent} from './booking-details/booking-details.component';
+import {CancelBookingComponent} from './cancel-booking/cancel-booking.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import {DetailsComponent} from './booking-details/booking-details.component';
     BookingPageComponent,
     BookingCardComponent,
     EditBookingComponent,
-    DetailsComponent
+    DetailsComponent,
+    CancelBookingComponent
   ],
   imports: [
     BrowserModule,

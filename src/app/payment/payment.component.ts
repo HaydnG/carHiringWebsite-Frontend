@@ -26,6 +26,9 @@ import {Booking} from '../services/booking/Booking';
     padding: 10px 20px  10px  20px">
       <div class="col">
         <div class="row" style="padding: 5px 25px 5px 25px;">
+          <div style="position: absolute; font-size: 14px;
+                    right: 5px;">BookingID: <span style="font-weight: bold">{{this.bookingData.ID}} </span>
+          </div>
           <div class="col">
             <div class="row header">
               Collection:
@@ -263,8 +266,6 @@ export class PaymentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.bookingData);
-
     this.startDate = new Date(this.bookingData.start * 1000);
     this.endDate = new Date(this.bookingData.end * 1000);
 

@@ -8,6 +8,8 @@ import {PaymentComponent} from '../payment/payment.component';
 import {BookingService} from '../services/booking/booking.service';
 import {DetailsComponent} from '../booking-details/booking-details.component';
 import {BookingComponent} from '../booking/booking.component';
+import {EditBookingComponent} from '../edit-booking/edit-booking.component';
+import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component';
 
 @Component({
   selector: 'app-booking-card',
@@ -19,13 +21,16 @@ import {BookingComponent} from '../booking/booking.component';
               <div class="row carClick" style="    padding: 0px 20px 1px 10px;
     top: -2px;
     position: relative;" (click)="change(this.booking.carData.ID)">
-                <div class="col-6 titleTag" style="    padding: 0px 0px 0px 13px;   font-weight: 800;">Model: <span class="dataTag"> {{this.booking.carData.CarType.Description}}</span></div>
-                <div class="col-5 titleTag" style="    padding: 0px;     font-weight: 800;   padding-left: 5px;">GearType: <span class="dataTag">{{this.booking.carData.GearType.Description}}</span></div>
+                <div class="col-4 col-auto" style="    font-weight: 600;">
+                  {{this.created | date:'medium'}}
+                </div>
+                <div class="col-auto titleTag" style="    min-width: 192px !important;    padding: 0px 0px 0px 13px;   font-weight: 700;">Model: <span class="dataTag"> {{this.booking.carData.CarType.Description}}</span></div>
+                <div class="col-auto titleTag" style="  min-width: 192px !important;    padding: 0px 0px 0px 13px;     font-weight: 700;">GearType: <span class="dataTag">{{this.booking.carData.GearType.Description}}</span></div>
               </div>
               <hr style="margin: -2px 0px 2px 0px;">
               <div class="row" style="padding: 0px 25px 5px 25px;">
                 <div style="position: absolute;
-                    right: 5px;">OrderID: <span style="font-weight: bold">{{this.booking.ID}} </span>
+                    right: 5px;">BookingID: <span style="font-weight: bold">{{this.booking.ID}} </span>
                 </div>
                 <div class="col-6 col-auto">
                   <div class="row header">
@@ -104,78 +109,49 @@ import {BookingComponent} from '../booking/booking.component';
 
               <div class="row" style="    padding: 2px 18px 18px 18px;">
                 <div class="col-auto col-6 borderB" style="min-width: 330px !important;    height: 41px;">
-                  <div class="row" *ngIf="this.booking.accessories.length > 0">
-                    <div class="col" style="display: contents;">
-                      <div class="accessory" *ngFor="let object of this.booking.accessories">
+                  <div class="row">
+                    <div class="col" *ngIf="this.booking.accessories.length > 0" style="height: 41px;
+    display: flex;">
+                      <div  class="accessory" *ngFor="let object of this.booking.accessories">
                         {{object.Description}}
                       </div>
                     </div>
                   </div>
+
                 </div>
                 <div class=".col-auto col-6" style="padding: 0px; min-width: 330px !important;height: 41px;">
-                    <button style="width: 20%;    height: 100%" data-toggle="modal" data-target="#exampleModal" class="button btn btn-danger form-control" >Cancel</button>
-                    <button style="width: 30%;    height: 100%" class="button btn btn-success form-control" (click)="this.onSubmit()" >EDIT</button>
-                    <button style="width: 50%;    font-size: 104%;
+                    <button [class.disabled]="this.booking.processID===10" [disabled]="this.booking.processID===10" style="width: 20%;    height: 100%"  (click)="this.cancel()" class="button btn btn-danger form-control" >Cancel</button>
+                  <button style="width: 20%; height: 100%"  class="button btn history form-control" >History</button>
+                    <button [class.disabled]="this.booking.processID===10"[disabled]="this.booking.processID===10" style="width: 25%;    height: 100%" class="button btn btn-success form-control" (click)="this.edit()" >EDIT</button>
+                    <button style="width: 35%;    font-size: 104%;
     padding: 0px;    height: 100%" *ngIf="this.booking.processID === 1" class="button btn btn-primary form-control" (click)="this.onSubmit()" >Make payment ({{this.currencyService.FormatValue(this.booking.totalCost)}})</button>
-                    <button style="width: 50%;    height: 100%"  *ngIf="this.booking.processID > 1"class="button btn btn-info form-control" (click)="this.details()">Details</button>
+                    <button style="width: 35%;    height: 100%"  *ngIf="this.booking.processID > 1"class="button btn btn-info form-control" (click)="this.details()">Details</button>
                 </div>
               </div>
 
             </div>
 
 
-        </div>
-      </div>
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Booking cancellation</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="col">
-                <div class="row" style="padding: 25px;font-weight: 600;font-size: 19px;">
-                  Are you sure you want to cancel your booking?
-                </div>
-                <hr>
-                <div class="row" style="padding: 0px 25px 5px 25px;">
-                  <div style="position: absolute;
-                    right: 5px;">OrderID: <span style="font-weight: bold">{{this.booking.ID}} </span>
-                  </div>
-                  <div class="col-6 col-auto">
-                    <div class="row header">
-                      Collection: <span class="day"> {{this.dayNames[this.endDate.getDay()]}}</span>
-                    </div>
-                    <div class="row dates">
-                      {{this.startFormatted}} - <span class="time start"> From 08:00AM</span>
-                    </div>
-                  </div>
-                  <div class="col-auto">
-                    <div class="row header">
-                      Return: <span class="day"> {{this.dayNames[this.startDate.getDay()]}}</span>
-                    </div>
-                    <div class="row dates">
-                      {{this.endFormatted}} - <span class="time end" *ngIf="!this.booking.extension && !this.booking.lateReturn"> At 1:00pm</span>
-                      <span class="time end"*ngIf="this.booking.extension && !this.booking.lateReturn"> At 4:00pm <span class="endtext">- Extended booking</span></span>
-                      <span class="time end"*ngIf="!this.booking.extension && this.booking.lateReturn"> After 6:00pm <span class="endtext">- Late Return</span></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancel()">Cancel booking</button>
-            </div>
-          </div>
         </div>
       </div>
   `,
   styles: [`
+    .disabled {
+      color: #cbcbcb;
+      opacity: 20%;
+    }
+
+    .history {
+      color: white;
+      background-color: #f57700;
+      border-color: #f57700;
+    }
+
+    .history:hover {
+      color: white;
+      background-color: #b55700;
+    }
+
     .carClick {
       cursor: pointer;
     }
@@ -267,25 +243,25 @@ import {BookingComponent} from '../booking/booking.component';
       border-radius: 10px;
       overflow: hidden;
       padding: 0px;
-      height: 178px;
+      height: 174px;
       background-color: #dcdcdc;
     }
 
     @media screen and (max-width: 818px) {
       .booking {
-        height: 260px !important;
+        height: 281px !important;
       }
     }
 
     @media screen and (max-width: 682px) {
       .booking {
-        height: 301px !important;
+        height: 323px !important;
       }
     }
 
-    @media screen and (max-width: 418px) {
+    @media screen and (max-width: 424px) {
       .booking {
-        height: 324px !important;
+        height: 344px !important;
       }
     }
 
@@ -324,6 +300,7 @@ export class BookingCardComponent implements OnInit {
   endFormatted;
 
   ngbModalOptions;
+  created;
 
   constructor(private router: Router, public currencyService: CurrencyService, private modalService: NgbModal,
               private bookingService: BookingService) {
@@ -336,32 +313,33 @@ export class BookingCardComponent implements OnInit {
   ngOnInit(): void {
     this.startDate = new Date(this.booking.start * 1000);
     this.endDate = new Date(this.booking.end * 1000);
+    this.created = new Date(this.booking.created * 1000);
 
     this.startFormatted = this.startDate.toISOString().split('T')[0];
     this.endFormatted = this.endDate.toISOString().split('T')[0];
   }
 
   onSubmit(): void{
-    const data = {
-      start: this.booking.start,
-      end: this.booking.end,
-      accessories: this.booking.accessories,
-      daysSelected: this.booking.bookingLength,
-      totalCost: this.booking.totalCost,
-      car: this.booking.carData,
-      extension: this.booking.extension,
-      lateReturn: this.booking.lateReturn,
-      nextDayBooked: false};
 
-    const booking = this.modalService.open(BookingComponent, this.ngbModalOptions);
-    booking.componentInstance.data = data;
+    const booking = this.modalService.open(PaymentComponent, this.ngbModalOptions);
+    booking.componentInstance.bookingData = this.booking;
+  }
+
+  edit(): void{
+    if (this.booking.processID === 10){
+      return;
+    }
+
+    const booking = this.modalService.open(EditBookingComponent, this.ngbModalOptions);
+    booking.componentInstance.booking = this.booking;
   }
 
   cancel(): void {
-    this.bookingService.CancelBooking(this.booking.ID, data => {
-      this.bookingService.GetUsersBookings();
-    });
-    console.log('Canceling booking');
+    if (this.booking.processID === 10){
+      return;
+    }
+    const details = this.modalService.open(CancelBookingComponent, this.ngbModalOptions);
+    details.componentInstance.booking = this.booking;
   }
 
   details(): void{

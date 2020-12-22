@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from '../services/user/user.service';
 import {FormArray, FormBuilder} from '@angular/forms';
 import {NgbActiveModal, NgbCalendar, NgbDate, NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -7,24 +7,23 @@ import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
 import {PaymentComponent} from '../payment/payment.component';
 import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-booking',
   template: `
     <div class="modal-header" xmlns="http://www.w3.org/1999/html">
-      <button type="button" class="close" aria-label="Close" (click)="closeBooking()">
+      <h5 class="modal-title" id="exampleModalLabel" style="text-align: center;
+    width: 93%;
+    font-size: 30px;">Booking</h5>
+      <button type="button" class="close" (click)="this.closeBooking()" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="col">
-        <div class="row" style="
-    text-align: center;"><h1 style="text-align: center;    margin: auto;">Booking</h1></div>
         <HR *ngIf="this.data.nextDayBooked.value">
         <div style="font-size: 13px;
     color: darkred;
     text-align: center;" class="row" *ngIf="this.data.nextDayBooked.value"> The next day has a booking, and so this booking requires an early return.
         You can move your booking back 1 day, to recieve extension options.</div>
-      </div>
-
 
       <HR>
     </div>
@@ -155,15 +154,6 @@ import {Router} from '@angular/router';
       display: inline-block;
       text-align: center;
     }
-
-    .close {
-      z-index: 100;
-      padding: 0px;
-      position: absolute;
-      right: 5%;
-      top: 6%;
-    }
-
     .checklabel{
       margin-left: 6px;
       -webkit-touch-callout: none; /* iOS Safari */
@@ -179,17 +169,18 @@ import {Router} from '@angular/router';
     }
   `]
 })
-export class BookingComponent implements OnInit {
+export class BookingComponent implements OnInit, OnDestroy {
 
 
   data;
   now;
   ngbModalOptions;
+  acceptedSubscription: Subscription;
 
   constructor(private calendar: NgbCalendar, public userService: UserService, private activeModal: NgbActiveModal,
               public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal,
               private router: Router) {
-    this.bookingService.bookingAccepted.subscribe((value) => {
+    this.acceptedSubscription = this.bookingService.bookingAccepted.subscribe((value) => {
       if (value.ID !== 0 && value.processID === 1){
         console.log(value);
         this.activeModal.dismiss();
@@ -208,6 +199,13 @@ export class BookingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    if (this.acceptedSubscription !== undefined){
+      this.acceptedSubscription.unsubscribe();
+    }
+
   }
 
   onSubmit(): void {

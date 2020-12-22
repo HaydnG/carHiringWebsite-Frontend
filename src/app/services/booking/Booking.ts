@@ -6,6 +6,7 @@ export class Booking {
   userID: number;
   start: number;
   end: number;
+  finish: number;
   totalCost: number;
   amountPaid: number;
   lateReturn: boolean;

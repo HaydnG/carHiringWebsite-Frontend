@@ -9,13 +9,12 @@ import {Booking} from '../services/booking/Booking';
   selector: 'app-booking-details',
   template: `
     <div class="modal-header" xmlns="http://www.w3.org/1999/html">
-      <button type="button" class="close" aria-label="Close" (click)="closeDetails()">
+      <h5 class="modal-title" id="exampleModalLabel" style="text-align: center;
+    width: 93%;
+    font-size: 30px;">Details</h5>
+      <button type="button" class="close" (click)="this.closeDetails()" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="col">
-        <div class="row" style="
-    text-align: center;"><h1 style="text-align: center;    margin: auto;">Details</h1></div>
-      </div>
       <HR>
     </div>
 
@@ -191,15 +190,6 @@ import {Booking} from '../services/booking/Booking';
         .end{
           color: darkred;
         }
-        .close {
-          padding: 2px;
-          position: absolute;
-          right: 5%;
-          top: 4%;
-          font-size: 28px;
-          z-index: 100;
-        }
-
         .dataTag{
           font-size: 14px;
           font-weight: bold;

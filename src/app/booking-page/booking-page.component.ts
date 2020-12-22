@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CarService} from '../services/car/car.service';
 import {BookingService} from '../services/booking/booking.service';
 import {Booking} from '../services/booking/Booking';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-booking-page',
@@ -94,14 +95,12 @@ import {Booking} from '../services/booking/Booking';
   styles: [`
     .canceled{
       opacity: 30%;
-      pointer-events: none;
-      -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-      -khtml-user-select: none; /* Konqueror HTML */
-      -moz-user-select: none; /* Old versions of Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-      user-select: none;
       filter: blur(1px);
+      transition: 0.5s;
+    }
+    .canceled:hover{
+      opacity: 80%;
+      filter: blur(0px);
     }
 
     hr{
@@ -136,13 +135,15 @@ import {Booking} from '../services/booking/Booking';
     }
   `]
 })
-export class BookingPageComponent implements OnInit {
+export class BookingPageComponent implements OnInit, OnDestroy {
 
 
   bookings: Record<number, Partial<Booking>>;
 
+  userBookingSub: Subscription;
+
   constructor(private bookingService: BookingService) {
-      this.bookingService.userBookings.subscribe(data => {
+      this.userBookingSub = this.bookingService.userBookings.subscribe(data => {
         this.bookings = data;
         console.log(data);
       });
@@ -151,6 +152,12 @@ export class BookingPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void{
+    if (this.userBookingSub !== undefined){
+      this.userBookingSub.unsubscribe();
+    }
   }
 
   hasBookings(): boolean{
