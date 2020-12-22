@@ -5,6 +5,9 @@ import {Router} from '@angular/router';
 import {Booking} from '../services/booking/Booking';
 import {CurrencyService} from '../services/currency/currency.service';
 import {PaymentComponent} from '../payment/payment.component';
+import {BookingService} from '../services/booking/booking.service';
+import {DetailsComponent} from '../booking-details/booking-details.component';
+import {BookingComponent} from '../booking/booking.component';
 
 @Component({
   selector: 'app-booking-card',
@@ -13,11 +16,13 @@ import {PaymentComponent} from '../payment/payment.component';
         <div class="col-12 booking">
             <div class="background"></div>
             <div style="position: relative;top: -120px;">
-              <div class="row" style="padding: 0px 20px 0px 10px;">
+              <div class="row carClick" style="    padding: 0px 20px 1px 10px;
+    top: -2px;
+    position: relative;" (click)="change(this.booking.carData.ID)">
                 <div class="col-6 titleTag" style="    padding: 0px 0px 0px 13px;   font-weight: 800;">Model: <span class="dataTag"> {{this.booking.carData.CarType.Description}}</span></div>
                 <div class="col-5 titleTag" style="    padding: 0px;     font-weight: 800;   padding-left: 5px;">GearType: <span class="dataTag">{{this.booking.carData.GearType.Description}}</span></div>
               </div>
-              <hr>
+              <hr style="margin: -2px 0px 2px 0px;">
               <div class="row" style="padding: 0px 25px 5px 25px;">
                 <div style="position: absolute;
                     right: 5px;">OrderID: <span style="font-weight: bold">{{this.booking.ID}} </span>
@@ -60,8 +65,6 @@ import {PaymentComponent} from '../payment/payment.component';
                         <div class="row payment">
                           Per Day:
                         </div>
-                        <div class="row payment"> </div>
-                        <div class="row payment"> </div>
                         <div class="row payment">
                           Total Cost:
                         </div>
@@ -70,28 +73,24 @@ import {PaymentComponent} from '../payment/payment.component';
                         <div class="row payment">
                           <span class="money"> {{this.currencyService.FormatValue(this.booking.carData.Cost)}}</span>
                         </div>
-                        <div class="row payment"></div>
-                        <div class="row payment"></div>
                         <div class="row payment">
                           <span class="money"> {{this.currencyService.FormatValue(this.booking.totalCost)}}</span>
                         </div>
                       </div>
                     </div>
                     <div class="col" style="     padding: 0px 0px 0px 10px;   display: flex;">
-                      <div class="col-6 paymentrow">
+                      <div class="col-7 paymentrow" style="    margin-left: 2px;">
                         <div class="row payment">
                           Total Days:
                         </div>
-                        <div class="row payment"></div>
                         <div class="row payment">
                           Amount Paid:
                         </div>
                       </div>
-                      <div class="col-6 paymentrow">
+                      <div class="col-5 paymentrow">
                         <div class="row payment">
                           <span class="money"> {{this.booking.bookingLength}} day(s)</span>
                         </div>
-                        <div class="row payment"></div>
                         <div class="row payment">
                           <span class="money"> {{this.currencyService.FormatValue(this.booking.amountPaid)}}</span>
                         </div>
@@ -114,11 +113,11 @@ import {PaymentComponent} from '../payment/payment.component';
                   </div>
                 </div>
                 <div class=".col-auto col-6" style="padding: 0px; min-width: 330px !important;height: 41px;">
-                    <button style="width: 20%;    height: 100%" class="button btn btn-danger form-control" (click)="this.onSubmit()" >Cancel</button>
+                    <button style="width: 20%;    height: 100%" data-toggle="modal" data-target="#exampleModal" class="button btn btn-danger form-control" >Cancel</button>
                     <button style="width: 30%;    height: 100%" class="button btn btn-success form-control" (click)="this.onSubmit()" >EDIT</button>
                     <button style="width: 50%;    font-size: 104%;
     padding: 0px;    height: 100%" *ngIf="this.booking.processID === 1" class="button btn btn-primary form-control" (click)="this.onSubmit()" >Make payment ({{this.currencyService.FormatValue(this.booking.totalCost)}})</button>
-                    <button style="width: 50%;    height: 100%"  *ngIf="this.booking.processID > 1"class="button btn btn-info form-control" >Request help</button>
+                    <button style="width: 50%;    height: 100%"  *ngIf="this.booking.processID > 1"class="button btn btn-info form-control" (click)="this.details()">Details</button>
                 </div>
               </div>
 
@@ -127,65 +126,135 @@ import {PaymentComponent} from '../payment/payment.component';
 
         </div>
       </div>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Booking cancellation</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="col">
+                <div class="row" style="padding: 25px;font-weight: 600;font-size: 19px;">
+                  Are you sure you want to cancel your booking?
+                </div>
+                <hr>
+                <div class="row" style="padding: 0px 25px 5px 25px;">
+                  <div style="position: absolute;
+                    right: 5px;">OrderID: <span style="font-weight: bold">{{this.booking.ID}} </span>
+                  </div>
+                  <div class="col-6 col-auto">
+                    <div class="row header">
+                      Collection: <span class="day"> {{this.dayNames[this.endDate.getDay()]}}</span>
+                    </div>
+                    <div class="row dates">
+                      {{this.startFormatted}} - <span class="time start"> From 08:00AM</span>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div class="row header">
+                      Return: <span class="day"> {{this.dayNames[this.startDate.getDay()]}}</span>
+                    </div>
+                    <div class="row dates">
+                      {{this.endFormatted}} - <span class="time end" *ngIf="!this.booking.extension && !this.booking.lateReturn"> At 1:00pm</span>
+                      <span class="time end"*ngIf="this.booking.extension && !this.booking.lateReturn"> At 4:00pm <span class="endtext">- Extended booking</span></span>
+                      <span class="time end"*ngIf="!this.booking.extension && this.booking.lateReturn"> After 6:00pm <span class="endtext">- Late Return</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancel()">Cancel booking</button>
+            </div>
+          </div>
+        </div>
+      </div>
   `,
   styles: [`
-    .paymentrow {
-      padding: 0px 0px 0px 8px;
+    .carClick {
+      cursor: pointer;
     }
-    .accessory{
+
+    .carClick:hover {
+      background-blend-mode: color;
+      background-color: #a5a5a547;
+    }
+
+    .paymentrow {
+      padding: 0px 0px 0px 4px;
+    }
+
+    .accessory {
       text-align: center;
       width: 80px;
       margin: auto;
       font-size: 15px;
     }
-    .dataTag{
+
+    .dataTag {
       font-size: 15px;
       font-weight: bold;
     }
-    .titleTag{
+
+    .titleTag {
       font-size: 15px;
     }
-    .payment{
+
+    .payment {
       font-weight: 500;
     }
-    .money{
+
+    .money {
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13.5px;
+      line-height: 21px;
     }
-    .borderB{
+
+    .borderB {
       border: 1px solid rgb(191 191 191);
       border-radius: 5px;
     }
 
-    .col-auto{
+    .col-auto {
       min-width: 283px !important;
     }
-    .day{
+
+    .day {
       margin-left: 5px;
       font-weight: 500;
     }
-    hr{
+
+    hr {
       margin: 2px 0px 2px 0px;
     }
 
-    .dates{
+    .dates {
       font-weight: 500;
       min-width: 195px;
     }
 
-    .header{
+    .header {
       font-weight: bold;
     }
-    .start{
+
+    .start {
       color: green;
     }
-    .end{
+
+    .end {
       color: darkred;
     }
-    .endtext{
+
+    .endtext {
       color: black;
     }
-    .time{
+
+    .time {
       font-weight: bold;
       font-size: 14px;
       position: relative;
@@ -193,7 +262,7 @@ import {PaymentComponent} from '../payment/payment.component';
       line-height: 21px;
     }
 
-    .booking{
+    .booking {
       border: 2px solid rgb(0 0 0);
       border-radius: 10px;
       overflow: hidden;
@@ -203,25 +272,25 @@ import {PaymentComponent} from '../payment/payment.component';
     }
 
     @media screen and (max-width: 818px) {
-      .booking{
+      .booking {
         height: 260px !important;
       }
     }
 
     @media screen and (max-width: 682px) {
-      .booking{
+      .booking {
         height: 301px !important;
       }
     }
+
     @media screen and (max-width: 418px) {
-      .booking{
+      .booking {
         height: 324px !important;
       }
     }
 
 
-
-    .background{
+    .background {
       background-image: url(http://5.70.170.197:8080/cars/car1.jpg), linear-gradient(to bottom, #dcdcdce8, #dcdcdc);
       background-blend-mode: hue;
       background-size: cover;
@@ -231,11 +300,11 @@ import {PaymentComponent} from '../payment/payment.component';
       min-width: 600px;
     }
 
-    img{
+    img {
       width: 100%;
     }
 
-    :host{
+    :host {
       width: 90%;
       margin: 5px auto;
     }
@@ -256,7 +325,8 @@ export class BookingCardComponent implements OnInit {
 
   ngbModalOptions;
 
-  constructor(private router: Router, public currencyService: CurrencyService,private modalService: NgbModal) {
+  constructor(private router: Router, public currencyService: CurrencyService, private modalService: NgbModal,
+              private bookingService: BookingService) {
     this.ngbModalOptions = {
       backdrop: 'static',
       keyboard: false
@@ -272,8 +342,34 @@ export class BookingCardComponent implements OnInit {
   }
 
   onSubmit(): void{
-    const payment = this.modalService.open(PaymentComponent, this.ngbModalOptions);
-    payment.componentInstance.bookingData = this.booking;
+    const data = {
+      start: this.booking.start,
+      end: this.booking.end,
+      accessories: this.booking.accessories,
+      daysSelected: this.booking.bookingLength,
+      totalCost: this.booking.totalCost,
+      car: this.booking.carData,
+      extension: this.booking.extension,
+      lateReturn: this.booking.lateReturn,
+      nextDayBooked: false};
+
+    const booking = this.modalService.open(BookingComponent, this.ngbModalOptions);
+    booking.componentInstance.data = data;
   }
 
+  cancel(): void {
+    this.bookingService.CancelBooking(this.booking.ID, data => {
+      this.bookingService.GetUsersBookings();
+    });
+    console.log('Canceling booking');
+  }
+
+  details(): void{
+    const details = this.modalService.open(DetailsComponent, this.ngbModalOptions);
+    details.componentInstance.bookingData = this.booking;
+  }
+
+  change(ID: number): void {
+    this.router.navigate(['car', {id: ID}]);
+  }
 }

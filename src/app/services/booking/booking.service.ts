@@ -4,6 +4,8 @@ import {observable, Observable, of, Subject} from 'rxjs';
 import {TimeRange} from '../../car-page/TimeRange';
 import {Booking} from './Booking';
 import {Car} from '../car/Car';
+import {catchError} from 'rxjs/operators';
+import {UserService} from '../user/user.service';
 
 
 @Injectable()
@@ -11,8 +13,10 @@ export class BookingService {
   private url = 'http://' + window.location.hostname + ':8080/bookingService/';
 
   bookingAccepted: Subject<Booking> = new Subject<Booking>();
+  userBookings: Subject<Record<number, Partial<Booking>>> = new Subject<Record<number, Partial<Booking>>>();
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient, private  userService: UserService) {}
 
   CreateBooking(input: any): void {
 
@@ -36,7 +40,10 @@ export class BookingService {
     this.http.get<Booking>(this.url + 'create?start=' + start + '&end=' + end + '&carid=' + input.car.ID +
       '&extension=' + extended + '&accessories=' + Object.keys(selectedAccesories).map((k) => k).join(',')
       + '&days=' + input.daysSelected.value + '&late=' + lateReturn,
-      { withCredentials: true }).subscribe(data => {
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<Booking>();
+    })).subscribe(data => {
         this.bookingAccepted.next(data);
 
     });
@@ -44,10 +51,26 @@ export class BookingService {
 
   MakePayment(bookingID: number, callback?: (value: Booking) => void): void{
     this.http.get<Booking>(this.url + 'makePayment?bookingID=' + bookingID,
-      { withCredentials: true }).subscribe(callback);
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<Booking>();
+    })).subscribe(callback);
   }
 
-  GetUsersBookings(callback?: (value: Record<number, Partial<Booking>>) => void): void{
-    this.http.get<Record<number, Partial<Booking>>>(this.url + 'getUserBookings', { withCredentials: true }).subscribe(callback);
+  GetUsersBookings(): void{
+    this.http.get<Record<number, Partial<Booking>>>(this.url + 'getUserBookings', { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<Record<number, Partial<Booking>>>();
+    })).subscribe(data => {
+        this.userBookings.next(data);
+    });
+  }
+
+  CancelBooking(id: number, callback?: (value: any) => void): void{
+    this.http.get<any>(this.url + 'cancelBooking?bookingID=' + id,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<any>();
+    })).subscribe(callback);
   }
 }

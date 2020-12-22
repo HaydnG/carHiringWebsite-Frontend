@@ -58,6 +58,24 @@ import {Booking} from '../services/booking/Booking';
             <div class="row">
               <h5>Completed</h5>
             </div>
+            <div class="row" *ngFor="let booking of this.bookings[5]">
+              <app-booking-card
+                [booking]="booking"
+              ></app-booking-card>
+            </div>
+          </div>
+        </div>
+        <hr *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
+        <div class="row" *ngIf="this.bookings[10] !== undefined && this.bookings[10].length > 0">
+          <div class="col">
+            <div class="row">
+              <h5>Canceled</h5>
+            </div>
+            <div class="row" *ngFor="let booking of this.bookings[10]" [class.canceled]="this.bookings[10] !== undefined && this.bookings[10].length > 0">
+              <app-booking-card
+                [booking]="booking"
+              ></app-booking-card>
+            </div>
           </div>
         </div>
         <hr *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
@@ -74,6 +92,18 @@ import {Booking} from '../services/booking/Booking';
     </div>
     `,
   styles: [`
+    .canceled{
+      opacity: 30%;
+      pointer-events: none;
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none;
+      filter: blur(1px);
+    }
+
     hr{
       margin: 5px 0px 5px 0px;
     }
@@ -112,10 +142,12 @@ export class BookingPageComponent implements OnInit {
   bookings: Record<number, Partial<Booking>>;
 
   constructor(private bookingService: BookingService) {
-      this.bookingService.GetUsersBookings(data => {
+      this.bookingService.userBookings.subscribe(data => {
         this.bookings = data;
         console.log(data);
       });
+
+      this.bookingService.GetUsersBookings();
   }
 
   ngOnInit(): void {

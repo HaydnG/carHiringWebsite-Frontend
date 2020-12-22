@@ -30,6 +30,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {PaymentComponent} from './payment/payment.component';
 import {BookingPageComponent} from './booking-page/booking-page.component';
 import {BookingCardComponent} from './booking-card/booking-card.component';
+import {EditBookingComponent} from './edit-booking/edit-booking.component';
+import {DetailsComponent} from './booking-details/booking-details.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import {BookingCardComponent} from './booking-card/booking-card.component';
     CarPageComponent,
     PaymentComponent,
     BookingPageComponent,
-    BookingCardComponent
+    BookingCardComponent,
+    EditBookingComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,

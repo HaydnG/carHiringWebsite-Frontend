@@ -8,6 +8,7 @@ export class CurrencyService {
   private Currformatter = new Intl.NumberFormat('en-UK', {
     style: 'currency',
     currency: 'GBP',
+    minimumSignificantDigits: 2,
   });
 
   constructor(private http: HttpClient) {}

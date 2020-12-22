@@ -6,15 +6,15 @@ import {Booking} from '../services/booking/Booking';
 
 
 @Component({
-  selector: 'app-payment',
+  selector: 'app-booking-details',
   template: `
     <div class="modal-header" xmlns="http://www.w3.org/1999/html">
-      <button type="button" class="close" aria-label="Close" (click)="closePayment()">
+      <button type="button" class="close" aria-label="Close" (click)="closeDetails()">
         <span aria-hidden="true">&times;</span>
       </button>
       <div class="col">
         <div class="row" style="
-    text-align: center;"><h1 style="text-align: center;    margin: auto;">Payment</h1></div>
+    text-align: center;"><h1 style="text-align: center;    margin: auto;">Details</h1></div>
       </div>
       <HR>
     </div>
@@ -139,27 +139,6 @@ import {Booking} from '../services/booking/Booking';
             </div>
           </div>
         </div>
-
-        <div class="row form-group" style="    width: 80%;
-    margin: auto;">
-          <div class="col">
-            <input id="nothingOne" class="form-control" placeholder="Payment details (Fake for example)">
-          </div>
-
-        </div>
-        <div class="row form-group" style="    width: 80%;
-             margin: auto;">
-          <div class="col">
-            <input id="nothingTwo" class="form-control" placeholder="Payment details (Fake for example)">
-          </div>
-
-        </div>
-
-        <div class="form-group row" style="margin-top: 10px;">
-          <div class="col">
-            <button class="button btn btn-primary form-control" (click)="onSubmit()" >Make payment ({{this.currencyService.FormatValue(this.bookingData.totalCost)}})</button>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -238,7 +217,7 @@ import {Booking} from '../services/booking/Booking';
 
   `]
 })
-export class PaymentComponent implements OnInit {
+export class DetailsComponent implements OnInit {
 
 
   bookingData: Booking;
@@ -284,7 +263,7 @@ export class PaymentComponent implements OnInit {
     return length.toFixed(1);
   }
 
-  closePayment(): void{
+  closeDetails(): void{
     this.activeModal.dismiss();
   }
 

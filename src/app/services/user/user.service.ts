@@ -5,6 +5,7 @@ import {observable, Observable, of, Subject} from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import {catchError} from 'rxjs/operators';
 import {throwError} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class UserService {
@@ -12,15 +13,19 @@ export class UserService {
 
   userChange: Subject<User> = new Subject<User>();
 
+  a = `qwfdqewf`;
 
   repeat = false;
   loggedIn = false;
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cookieService: CookieService, private router: Router) {}
 
   Login(email: string, password: string): void {
-    this.http.get<User>(this.url + 'login?email=' + email + '&password=' + password).subscribe(data => {
+    this.http.get<User>(this.url + 'login?email=' + email + '&password=' + password).pipe(catchError(error => {
+      this.handleError(error);
+      return new Observable<User>();
+    })).subscribe(data => {
       this.userChange.next(data);
       this.repeat = data.Repeat;
       this.loggedIn = data.SessionToken.length > 10;
@@ -29,7 +34,10 @@ export class UserService {
   }
 
   Logout(sessionToken: string): void {
-    this.http.get<User>(this.url + 'logout', { withCredentials: true }).subscribe(data => {
+    this.http.get<User>(this.url + 'logout', { withCredentials: true }).pipe(catchError(error => {
+      this.handleError(error);
+      return new Observable<User>();
+    })).subscribe(data => {
       this.userChange.next(data);
       this.loggedIn = false;
       this.repeat = false;
@@ -40,7 +48,8 @@ export class UserService {
   Register(firstname: string, names: string, email: string, password: string, dobstring: string): void {
     this.http.get<User>(this.url + 'register?firstname=' + firstname + '&names=' + names + '&email=' +
       email + '&password=' + password + '&dob=' + dobstring).pipe(catchError(error => {
-        return of(null);
+      this.handleError(error);
+      return new Observable<User>();
     })).subscribe(data => {
       this.userChange.next(data);
       console.log(data);
@@ -52,14 +61,24 @@ export class UserService {
       return;
     }
 
-    this.http.get<User>(this.url + 'sessionCheck', { withCredentials: true }).pipe(catchError(this.errorHandler)).subscribe(data => {
+    this.http.get<User>(this.url + 'sessionCheck', { withCredentials: true }).pipe(catchError(error => {
+      this.handleError(error);
+      return new Observable<User>();
+    })).subscribe(data => {
       this.repeat = data.Repeat;
       this.loggedIn = data.SessionToken.length > 10;
       this.userChange.next(data);
     });
   }
 
-  errorHandler(error: HttpErrorResponse): Observable<User>  {
-    return throwError('invalid session');
+
+  handleError(error: HttpErrorResponse): void{
+    this.cookieService.delete('session-token');
+    this.loggedIn = false;
+    this.userChange.next(new User());
+    this.repeat = false;
+    this.router.navigate(['']);
+    console.log('Removing sessionToken');
   }
 }
+
