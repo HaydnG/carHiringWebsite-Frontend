@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from '../services/user/user.service';
 import {FormArray, FormBuilder} from '@angular/forms';
 import {NgbActiveModal, NgbCalendar, NgbDate, NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -206,7 +206,7 @@ import {Accessory} from '../services/car/Car';
     }
   `]
 })
-export class EditBookingComponent implements OnInit {
+export class EditBookingComponent implements OnInit, OnDestroy {
 
 
   booking: Booking;
@@ -227,6 +227,9 @@ export class EditBookingComponent implements OnInit {
   startFormatted;
   endFormatted;
 
+  bookingsSub;
+  accessorySub;
+
   constructor(private calendar: NgbCalendar, public userService: UserService, private activeModal: NgbActiveModal,
               public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal,
               private router: Router, private carService: CarService) {
@@ -240,16 +243,20 @@ export class EditBookingComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
-    this.carService.LoadAccessories(this.booking.start, this.booking.end);
-    this.carService.LoadBookings(this.booking.finish + (60 * 60 * 24), this.booking.finish + (60 * 60 * 24), this.booking.carData.ID);
+  ngOnDestroy(): void {
+    this.bookingsSub.unsubscribe();
+    this.accessorySub.unsubscribe();
+  }
 
-    this.carService.carBookingsChange.subscribe(data => {
+  ngOnInit(): void {
+
+
+    this.bookingsSub = this.carService.carBookingsChange.subscribe(data => {
       this.bookings = data;
 
     });
 
-    this.carService.accessoryListChange.subscribe(data => {
+    this.accessorySub = this.carService.accessoryListChange.subscribe(data => {
       for (const value in this.booking.accessories) {
         if (data.hasOwnProperty(this.booking.accessories[value].ID)){
             data[this.booking.accessories[value].ID].Checked = true;
@@ -259,6 +266,9 @@ export class EditBookingComponent implements OnInit {
       this.accessories = data;
 
     });
+
+    this.carService.LoadAccessories(this.booking.start, this.booking.end);
+    this.carService.LoadBookings(this.booking.finish + (60 * 60 * 24), this.booking.finish + (60 * 60 * 24), this.booking.carData.ID);
 
     this.extension = this.booking.extension;
     this.lateReturn = this.booking.lateReturn;

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module'; // CLI imports AppRoutingModule
+import {AppRoutingModule} from './app-routing.module'; // CLI imports AppRoutingModule
 import { LoginComponent } from './login/login.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
@@ -33,6 +33,9 @@ import {BookingCardComponent} from './booking-card/booking-card.component';
 import {EditBookingComponent} from './edit-booking/edit-booking.component';
 import {DetailsComponent} from './booking-details/booking-details.component';
 import {CancelBookingComponent} from './cancel-booking/cancel-booking.component';
+import {BookingHistoryComponent} from './booking-history/booking-history.component';
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -51,7 +54,8 @@ import {CancelBookingComponent} from './cancel-booking/cancel-booking.component'
     BookingCardComponent,
     EditBookingComponent,
     DetailsComponent,
-    CancelBookingComponent
+    CancelBookingComponent,
+    BookingHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -66,8 +70,13 @@ import {CancelBookingComponent} from './cancel-booking/cancel-booking.component'
     FormsModule,
     MatFormFieldModule,
     MatOptionModule,
+    MatTableModule,
+    MatSortModule
   ],
   providers: [UserService, CarService, MatDatepickerModule, ScreenService, CurrencyService, BookingService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+
+}

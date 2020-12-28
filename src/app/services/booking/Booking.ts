@@ -17,3 +17,18 @@ export class Booking {
   carData: Car;
   accessories: Accessory[];
 }
+
+export class Status {
+  ID: number;
+  BookingID: number;
+  Completed: number;
+  CompletedDate: Date;
+  Active: boolean;
+  AdminID: number;
+  Description: string;
+  ProcessID: number;
+  ProcessDescription: string;
+  AdminRequired: boolean;
+  Order: number;
+  BookingPage: boolean;
+}

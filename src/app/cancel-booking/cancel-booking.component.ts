@@ -24,14 +24,15 @@ import {EditBookingComponent} from '../edit-booking/edit-booking.component';
               </div>
               <div class="modal-body">
                 <div class="col">
+                  <div style="position: absolute;
+                      right: 5px;">BookingID: <span style="font-weight: bold">{{this.booking.ID}} </span>
+                  </div>
                   <div class="row" style="padding: 25px;font-weight: 600;font-size: 19px;">
                     Are you sure you want to cancel your booking?
                   </div>
                   <hr>
                   <div class="row" style="padding: 0px 25px 5px 25px;">
-                    <div style="position: absolute;
-                      right: 5px;">BookingID: <span style="font-weight: bold">{{this.booking.ID}} </span>
-                    </div>
+
                     <div class="col-6 col-auto">
                       <div class="row header">
                         Collection: <span class="day"> {{this.dayNames[this.endDate.getDay()]}}</span>

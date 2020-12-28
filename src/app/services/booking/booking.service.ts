@@ -2,7 +2,7 @@ import {Injectable, Directive} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {observable, Observable, of, Subject} from 'rxjs';
 import {TimeRange} from '../../car-page/TimeRange';
-import {Booking} from './Booking';
+import {Booking, Status} from './Booking';
 import {Accessory, Car} from '../car/Car';
 import {catchError} from 'rxjs/operators';
 import {UserService} from '../user/user.service';
@@ -59,8 +59,8 @@ export class BookingService {
 
   EditBooking(bookingID: number, remove: Accessory[], add: Accessory[], lateReturn: boolean, extension: boolean,
               callback?: (value: any) => void): void{
-    this.http.get<Booking>(this.url + 'editBooking?bookingID=' + bookingID + '&remove=' + Object.keys(remove).map((k) => k).join(',')
-      + '&add=' + Object.keys(add).map((k) => k).join(',') + '&lateReturn=' + lateReturn + '&extension=' + extension,
+    this.http.get<Booking>(this.url + 'editBooking?bookingID=' + bookingID + '&remove=' + Object.values(remove).map((k) => k.ID).join(',')
+      + '&add=' + Object.values(add).map((k) => k.ID).join(',') + '&lateReturn=' + lateReturn + '&extension=' + extension,
       { withCredentials: true }).pipe(catchError(error => {
       this.userService.handleError(error);
       return new Observable<Booking>();
@@ -68,6 +68,10 @@ export class BookingService {
   }
 
   GetUsersBookings(): void{
+    if (!this.userService.loggedIn){
+      return;
+    }
+
     this.http.get<Record<number, Partial<Booking>>>(this.url + 'getUserBookings', { withCredentials: true }).pipe(catchError(error => {
       this.userService.handleError(error);
       return new Observable<Record<number, Partial<Booking>>>();
@@ -78,6 +82,14 @@ export class BookingService {
 
   CancelBooking(id: number, callback?: (value: any) => void): void{
     this.http.get<any>(this.url + 'cancelBooking?bookingID=' + id,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<any>();
+    })).subscribe(callback);
+  }
+
+  GetHistory(id: number, callback?: (value: any) => void): void{
+    this.http.get<Status>(this.url + 'history?bookingID=' + id,
       { withCredentials: true }).pipe(catchError(error => {
       this.userService.handleError(error);
       return new Observable<any>();

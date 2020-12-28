@@ -67,12 +67,12 @@ import {Subscription} from 'rxjs';
           </div>
         </div>
         <hr *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
-        <div class="row" *ngIf="this.bookings[10] !== undefined && this.bookings[10].length > 0">
+        <div class="row" *ngIf="this.bookings[11] !== undefined && this.bookings[11].length > 0">
           <div class="col">
             <div class="row">
               <h5>Canceled</h5>
             </div>
-            <div class="row" *ngFor="let booking of this.bookings[10]" [class.canceled]="this.bookings[10] !== undefined && this.bookings[10].length > 0">
+            <div class="row" *ngFor="let booking of this.bookings[11]" [class.canceled]="this.bookings[11] !== undefined && this.bookings[11].length > 0">
               <app-booking-card
                 [booking]="booking"
               ></app-booking-card>
@@ -95,8 +95,8 @@ import {Subscription} from 'rxjs';
   styles: [`
     .canceled{
       opacity: 30%;
-      filter: blur(1px);
-      transition: 0.5s;
+      filter: blur(0.5px);
+      transition: 0.4s;
     }
     .canceled:hover{
       opacity: 80%;

@@ -116,23 +116,9 @@ export class NavbarComponent implements OnInit {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
-      if (value === null){
-        this.user = new User();
-      }else {
-        this.user = value;
-      }
-      this.session = this.user.SessionToken;
-      this.cookieService.set('session-token', this.session);
-      if (this.session === '0' || this.session === undefined){
-        this.cookieService.delete('session-token');
-        console.log('Removing sessionToken');
-      }
+      this.user = value === null ? new User() : value;
     });
 
-    this.session = this.cookieService.get('session-token');
-    if (this.session !== '' && this.session !== undefined){
-      this.userService.InitSession(this.session);
-    }
   }
 
   logout(): void{

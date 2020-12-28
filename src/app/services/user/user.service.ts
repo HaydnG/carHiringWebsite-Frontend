@@ -13,8 +13,6 @@ export class UserService {
 
   userChange: Subject<User> = new Subject<User>();
 
-  a = `qwfdqewf`;
-
   repeat = false;
   loggedIn = false;
 
@@ -71,13 +69,17 @@ export class UserService {
     });
   }
 
+  getAuthenticated(): Observable<any> {
+    return ;
+  }
+
 
   handleError(error: HttpErrorResponse): void{
+    this.router.navigate(['']);
     this.cookieService.delete('session-token');
     this.loggedIn = false;
     this.userChange.next(new User());
     this.repeat = false;
-    this.router.navigate(['']);
     console.log('Removing sessionToken');
   }
 }

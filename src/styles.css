@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -11,3 +12,35 @@ body {
   margin: 15px auto 32px !important;
 
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.modal-lg {
+  max-width: 80% !important;
+}
+
+.modal-lg {
+  max-width: 70% !important;
+}
+
+
+@media screen and (max-width: 1300px) {
+  .modal-lg {
+    max-width: 80% !important;
+  }
+}
+
+
+@media screen and (max-width: 1000px) {
+  .modal-lg {
+    max-width: 90% !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .modal-lg {
+    max-width: 100% !important;
+  }
+}
+

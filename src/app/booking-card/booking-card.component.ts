@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {Car} from '../services/car/Car';
 import {Router} from '@angular/router';
 import {Booking} from '../services/booking/Booking';
@@ -10,6 +10,7 @@ import {DetailsComponent} from '../booking-details/booking-details.component';
 import {BookingComponent} from '../booking/booking.component';
 import {EditBookingComponent} from '../edit-booking/edit-booking.component';
 import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component';
+import {BookingHistoryComponent} from '../booking-history/booking-history.component';
 
 @Component({
   selector: 'app-booking-card',
@@ -120,12 +121,12 @@ import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component
 
                 </div>
                 <div class=".col-auto col-6" style="padding: 0px; min-width: 330px !important;height: 41px;">
-                    <button [class.disabled]="this.booking.processID===10" [disabled]="this.booking.processID===10" style="width: 20%;    height: 100%"  (click)="this.cancel()" class="button btn btn-danger form-control" >Cancel</button>
-                  <button style="width: 20%; height: 100%"  class="button btn history form-control" >History</button>
-                    <button [class.disabled]="this.booking.processID===10"[disabled]="this.booking.processID===10" style="width: 25%;    height: 100%" class="button btn btn-success form-control" (click)="this.edit()" >EDIT</button>
+                    <button *ngIf="this.booking.processID !== 11" style="width: 20%;    height: 100%"  (click)="this.cancel()" class="button btn btn-danger form-control" >Cancel</button>
+                    <button [class.FiftyWidth]="this.booking.processID === 11" style="width: 20%; height: 100%" (click)="this.history()" class="button btn history form-control" >History</button>
+                    <button *ngIf="this.booking.processID !== 11" style="width: 25%;    height: 100%" class="button btn btn-success form-control" (click)="this.edit()" >EDIT</button>
                     <button style="width: 35%;    font-size: 104%;
     padding: 0px;    height: 100%" *ngIf="this.booking.processID === 1" class="button btn btn-primary form-control" (click)="this.onSubmit()" >Make payment ({{this.currencyService.FormatValue(this.booking.totalCost)}})</button>
-                    <button style="width: 35%;    height: 100%"  *ngIf="this.booking.processID > 1"class="button btn btn-info form-control" (click)="this.details()">Details</button>
+                    <button [class.FiftyWidth]="this.booking.processID === 11" style="width: 35%;    height: 100%"  *ngIf="this.booking.processID > 1"class="button btn btn-info form-control" (click)="this.details()">Details</button>
                 </div>
               </div>
 
@@ -136,6 +137,11 @@ import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component
       </div>
   `,
   styles: [`
+    .FiftyWidth{
+      width: 50% !important;
+      height: 100% !important;
+    }
+
     .disabled {
       color: #cbcbcb;
       opacity: 20%;
@@ -304,10 +310,7 @@ export class BookingCardComponent implements OnInit {
 
   constructor(private router: Router, public currencyService: CurrencyService, private modalService: NgbModal,
               private bookingService: BookingService) {
-    this.ngbModalOptions = {
-      backdrop: 'static',
-      keyboard: false
-    };
+
   }
 
   ngOnInit(): void {
@@ -330,6 +333,11 @@ export class BookingCardComponent implements OnInit {
       return;
     }
 
+    this.ngbModalOptions = {
+      backdrop: 'static',
+      keyboard: false
+    };
+
     const booking = this.modalService.open(EditBookingComponent, this.ngbModalOptions);
     booking.componentInstance.booking = this.booking;
   }
@@ -345,6 +353,17 @@ export class BookingCardComponent implements OnInit {
   details(): void{
     const details = this.modalService.open(DetailsComponent, this.ngbModalOptions);
     details.componentInstance.bookingData = this.booking;
+  }
+
+  history(): void{
+    const ngbModalOptions: NgbModalOptions = {
+      backdrop: 'static',
+      keyboard: false,
+      size: 'lg'
+    };
+
+    const history = this.modalService.open(BookingHistoryComponent, ngbModalOptions);
+    history.componentInstance.booking = this.booking;
   }
 
   change(ID: number): void {
