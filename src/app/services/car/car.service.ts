@@ -6,6 +6,7 @@ import {TimeRange} from '../../car-page/TimeRange';
 import {catchError} from 'rxjs/operators';
 import {User} from '../user/User';
 import {UserService} from '../user/user.service';
+import {Router} from '@angular/router';
 
 
 @Injectable()
@@ -20,7 +21,7 @@ export class CarService {
 
   currentCarChange: Subject<Car> = new Subject<Car>();
 
-  constructor(private http: HttpClient, private userService: UserService) {}
+  constructor(private http: HttpClient, private userService: UserService,  private router: Router) {}
 
   LoadCars(): void {
     this.http.get<Car[]>(this.url + 'getAll').pipe(catchError(error => {
@@ -39,7 +40,7 @@ export class CarService {
 
     }else{
       this.http.get<Car>(this.url + 'get?id=' + ID).pipe(catchError(error => {
-        this.userService.handleError(error);
+        this.router.navigate(['']);
         return new Observable<Car>();
       })).subscribe(data => {
         this.currentCarChange.next(data);

@@ -2,7 +2,7 @@ import {Injectable, Directive} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {observable, Observable, of, Subject} from 'rxjs';
 import {TimeRange} from '../../car-page/TimeRange';
-import {Booking, Status} from './Booking';
+import {Booking, Status, BookingStatus} from './Booking';
 import {Accessory, Car} from '../car/Car';
 import {catchError} from 'rxjs/operators';
 import {UserService} from '../user/user.service';
@@ -12,8 +12,29 @@ import {UserService} from '../user/user.service';
 export class BookingService {
   private url = 'http://' + window.location.hostname + ':8080/bookingService/';
 
+
   bookingAccepted: Subject<Booking> = new Subject<Booking>();
   userBookings: Subject<Record<number, Partial<Booking>>> = new Subject<Record<number, Partial<Booking>>>();
+
+
+  statuses = BookingStatus;
+
+  public statusNames = {
+    1 : 'Awaiting Payment',
+    2:  'Payment Accepted',
+    3:  'Awaiting Confirmation',
+    4:  'Confirmed',
+    5:  'Booking Edited',
+    6:  'Edit Awaiting payment',
+    7:  'Edit Payment Accepted',
+    8:  'Querying Refund',
+    9:  'Refund Rejected',
+    10:  'Refund Issued',
+    11:  'Canceled',
+    12:  'Collected',
+    13:  'Returned',
+    14:  'Completed',
+  };
 
 
   constructor(private http: HttpClient, private  userService: UserService) {}
@@ -96,3 +117,4 @@ export class BookingService {
     })).subscribe(callback);
   }
 }
+

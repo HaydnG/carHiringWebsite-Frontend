@@ -87,8 +87,8 @@ import {Accessory} from '../services/car/Car';
                   <div class="col">PerDay: <strong>{{this.currencyService.FormatValue(this.booking.carData.Cost)}}</strong></div>
                 </div>
                 <div class="row">
-                  <div class="col">Total Days: <strong>{{this.booking.bookingLength}}</strong></div>
-                  <div class="col">Total Cost: <strong>{{this.currencyService.FormatValue(this.booking.totalCost)}}</strong></div>
+                  <div class="col">Total Days: <strong>{{this.getAmountofdays()}}</strong></div>
+                  <div class="col">Total Cost: <strong>{{this.getTotalPrice()}}</strong></div>
                 </div>
 
                 <hr>
@@ -102,7 +102,7 @@ import {Accessory} from '../services/car/Car';
                 </div>
 
                 <ng-template #nextday>These options are only availble if the next day is not booked</ng-template>
-                <div class="row" placement="bottom"[disableTooltip]="!this.nextDayBooked()" [ngbTooltip]="nextday">
+                <div class="row" *ngIf="this.booking.processID < 4" placement="bottom"[disableTooltip]="!this.nextDayBooked()" [ngbTooltip]="nextday">
                   <div [disableTooltip]="this.nextDayBooked()" placement="bottom" class="col" style="    text-align: center;margin-top: 7px;" [ngbTooltip]="extensionTIPbooking">
                     <ng-template #extensionTIPbooking>Extend booking until 4PM (Costs an additional half a day)</ng-template>
                     <input [disabled]="this.lateReturn || this.nextDayBooked()" id="checkbox_extension_booking" type="checkbox" [(ngModel)]="this.extension">
@@ -151,6 +151,8 @@ import {Accessory} from '../services/car/Car';
           </div>
         </div>
     </div>
+
+
 
   `,
   styles: [`
@@ -208,6 +210,8 @@ import {Accessory} from '../services/car/Car';
 })
 export class EditBookingComponent implements OnInit, OnDestroy {
 
+  @Input()
+  adminView: boolean;
 
   booking: Booking;
   now;
@@ -230,6 +234,8 @@ export class EditBookingComponent implements OnInit, OnDestroy {
   bookingsSub;
   accessorySub;
 
+  reloadPage;
+
   constructor(private calendar: NgbCalendar, public userService: UserService, private activeModal: NgbActiveModal,
               public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal,
               private router: Router, private carService: CarService) {
@@ -241,6 +247,28 @@ export class EditBookingComponent implements OnInit, OnDestroy {
       keyboard: false
     };
 
+  }
+
+  getAmountofdays(): number {
+
+    const start = this.startDate.getTime();
+    const end = this.endDate.getTime();
+
+    let value = (( end - start ) / 1000 / 60 / 60 / 24) + 1;
+
+    if ((!this.extension && !this.lateReturn) || this.nextDayBooked()){
+      value = value - 0.5;
+    }
+
+    if (this.lateReturn && !this.nextDayBooked()){
+      value = value + 0.1;
+    }
+
+    return value;
+  }
+
+  getTotalPrice(): string {
+    return this.currencyService.FormatValue(this.getAmountofdays() * this.booking.carData.Cost);
   }
 
   ngOnDestroy(): void {
@@ -303,7 +331,11 @@ export class EditBookingComponent implements OnInit, OnDestroy {
     console.log(this.accessories);
 
     this.bookingService.EditBooking(this.booking.ID, remove, this.accessories, this.lateReturn, this.extension, data => {
-      this.bookingService.GetUsersBookings();
+      if (!this.adminView){
+        this.bookingService.GetUsersBookings();
+      }
+      this.reloadPage.emit(true);
+
       this.activeModal.dismiss();
     });
 

@@ -15,6 +15,7 @@ export class UserService {
 
   repeat = false;
   loggedIn = false;
+  isAdmin = false;
 
 
   constructor(private http: HttpClient, private cookieService: CookieService, private router: Router) {}
@@ -25,13 +26,19 @@ export class UserService {
       return new Observable<User>();
     })).subscribe(data => {
       this.userChange.next(data);
-      this.repeat = data.Repeat;
-      this.loggedIn = data.SessionToken.length > 10;
+
+      if (data.SessionToken !== undefined && data.SessionToken !== ''){
+        this.repeat = data.Repeat;
+        this.loggedIn = data.SessionToken.length > 10;
+        this.isAdmin = data.Admin;
+        this.cookieService.set('session-token', data.SessionToken, 1 , '/');
+      }
+
       console.log(data);
     });
   }
 
-  Logout(sessionToken: string): void {
+  Logout(): void {
     this.http.get<User>(this.url + 'logout', { withCredentials: true }).pipe(catchError(error => {
       this.handleError(error);
       return new Observable<User>();
@@ -39,6 +46,8 @@ export class UserService {
       this.userChange.next(data);
       this.loggedIn = false;
       this.repeat = false;
+      this.isAdmin = false;
+      this.cookieService.delete('session-token', '/');
       console.log(data);
     });
   }
@@ -65,6 +74,7 @@ export class UserService {
     })).subscribe(data => {
       this.repeat = data.Repeat;
       this.loggedIn = data.SessionToken.length > 10;
+      this.isAdmin = data.Admin;
       this.userChange.next(data);
     });
   }
@@ -75,12 +85,14 @@ export class UserService {
 
 
   handleError(error: HttpErrorResponse): void{
-    this.router.navigate(['']);
-    this.cookieService.delete('session-token');
-    this.loggedIn = false;
+    this.cookieService.delete('session-token', '/');
     this.userChange.next(new User());
+    this.loggedIn = false;
     this.repeat = false;
+    this.isAdmin = false;
+    this.router.navigate(['']);
     console.log('Removing sessionToken');
+
   }
 }
 

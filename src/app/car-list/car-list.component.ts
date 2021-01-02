@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CarService} from '../services/car/car.service';
+import {NavService} from '../services/nav/nav.service';
 
 @Component({
   selector: 'app-car-list',
@@ -24,7 +25,7 @@ import {CarService} from '../services/car/car.service';
 
     :host {
       overflow: hidden;
-    width: 100%;
+    width: 95%;
   }`]
 })
 export class CarListComponent implements OnInit {
@@ -33,7 +34,7 @@ export class CarListComponent implements OnInit {
 
   public carListSubscription;
 
-  constructor(private carService: CarService) {
+  constructor(private carService: CarService, private navService: NavService) {
     this.carListSubscription = this.carService.carListChange.subscribe((value) => {
       if (value === null){
       }else {
@@ -41,6 +42,7 @@ export class CarListComponent implements OnInit {
       }
     });
     this.carService.LoadCars();
+    this.navService.Reset();
   }
 
   ngOnInit(): void {

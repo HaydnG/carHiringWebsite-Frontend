@@ -13,9 +13,13 @@ export class Booking {
   extension: boolean;
   created: number;
   processID: number;
+  processName: string;
+  adminRequired: boolean;
   bookingLength: number;
   carData: Car;
   accessories: Accessory[];
+  awaitingExtraPayment: boolean;
+  isRefund: boolean;
 }
 
 export class Status {
@@ -31,4 +35,21 @@ export class Status {
   AdminRequired: boolean;
   Order: number;
   BookingPage: boolean;
+}
+
+export enum BookingStatus {
+  AwaitingPayment = 1,
+  PaymentAccepted,
+  AwaitingConfirmation,
+  BookingConfirmed,
+  BookingEdited,
+  EditAwaitingPayment,
+  EditPaymentAccepted,
+  QueryingRefund,
+  RefundRejected,
+  RefundIssued,
+  CanceledBooking,
+  CollectedBooking,
+  ReturnedBooking,
+  CompletedBooking,
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Accessory, Car} from '../services/car/Car';
 import {ActivatedRoute} from '@angular/router';
 import {CarService} from '../services/car/car.service';
@@ -25,20 +25,39 @@ import {debounceTime, map, startWith} from 'rxjs/operators';
 import {ScreenService} from '../services/screen/screen.service';
 import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
+import {NavService} from '../services/nav/nav.service';
 
 @Component({
   selector: 'app-car-page',
   template: `
-    <div class="container-fluid" style="    border-radius: 8px; background-color: #e0e0e0;color: rgb(64,64,64); padding: 2px 0px 0px 0px;"
+    <div (click)="this.navService.Back('/')" style="    z-index: 2;
+    top: 7px;
+    left: 2px;
+    padding-left: 7px;
+    background-color: #252a2b;
+    position: relative;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    text-shadow: 2px 5px 15px #000000;
+    width: 46px;
+    height: 26px;
+    border-radius: 8px;">&larr;</div>
+
+    <div class="container-fluid" style="        border-radius: 8px;
+    color: rgb(206 206 206);
+    padding: 2px 0px 0px 0px;
+    background-color: #252a2b;    margin-top: -20px;"
          *ngIf="car !== undefined">
       <div class="row" style="margin: 5px;">
 
-        <div class="col-lg-4 order-lg-1 order-1">
+        <div class="col-lg-4 order-lg-1 order-1" style="padding: 0px 6px 3px 3px;
+    max-width: 324px;">
           <img class="car-img" src="http://5.70.170.197:8080/cars/car1.jpg">
         </div>
         <div class="col-lg-6 order-lg-2 order-2" style="min-height: 238px;">
           <div class="row car-title">
-            {{this.car.CarType.Description}}
+            {{this.car.Description}}
           </div>
           <hr>
           <div class="row car-atts">
@@ -46,7 +65,7 @@ import {BookingService} from '../services/booking/booking.service';
             , {{this.car.Colour.Description}}
           </div>
           <div class="row car-description">
-            {{this.car.Description}}
+            {{this.car.CarType.Description}}
           </div>
           <div class="row car-stats">
             <div style="    text-align: center;">
@@ -66,8 +85,6 @@ import {BookingService} from '../services/booking/booking.service';
         </div>
 
       </div>
-      <hr style="    width: 100%;
-    left: -18px;">
       <div class="row" style="width: 100.3%;
     left: 14.4px;
     position: relative;">
@@ -77,18 +94,19 @@ import {BookingService} from '../services/booking/booking.service';
                       (onDatePicked)="updateCalenders($event)"
                       (onReset)="resetDates()">
         </app-calendar>
-        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="background-color: #cecece;
-    left: -2px;
-    height: 459px;
+        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="    background-color: #252a2b;
+    left: -4px;
+    height: 457px;
     top: -1px;
     border: 2px solid #191c1c !important;
     margin-bottom: -1px;">
           <div class="priceTitle">
             Pricing information
           </div>
-          <hr style="left: -16%;
+          <hr style="    left: -9%;
     top: -2px;
-    width: 118%;">
+    width: 101%;
+    border-color: #c3cece9c;">
           <div>
             <div style="    text-align: center;margin-top: 5px;">
               <div style="margin-left: 5px;font-weight: 400;
@@ -98,7 +116,9 @@ import {BookingService} from '../services/booking/booking.service';
               <ng-template #maxday>Max booking (2 weeks) Extensions increase days to show price increase</ng-template>
               <div style=" margin-left: 5px;display: inline;font-weight: 700;"> {{this.getAmountofdays()}} <span [ngbTooltip]="maxday"
                                                                                                                  placement="top"
-                                                                                                                 style="font-size: 11px;font-weight: 400; color: darkred">(Max 14)</span>
+                                                                                                                 style="font-size: 12px;
+    font-weight: 400;
+    color: #fd7b7b;">(Max 14)</span>
               </div>
             </div>
 
@@ -141,9 +161,10 @@ import {BookingService} from '../services/booking/booking.service';
 
           </div>
 
-          <hr style="left: -12%;
-        top: -1px;
-        width: 113%;">
+          <hr style="    left: -9%;
+    top: -1px;
+    width: 100.5%;
+    border-color: #c3cece9c;">
 
           <div class="accTitle">
             Accessories
@@ -170,13 +191,13 @@ import {BookingService} from '../services/booking/booking.service';
           <div class="row" style="width: 100%;
     position: relative;
     left: 15px;
-    padding: 11px;
+    padding: 12px 5px 0px 5px;
     background-color: #b7b7b7;">
 
-            <div class="form-group col">
+            <div class="form-group col" style="    margin-bottom: 0.8rem;">
               <div class="input-group">
                 <input class="form-control" placeholder="yyyy-mm-dd" autocomplete="off"
-                       name="start" formControlName="start" [markDisabled]="isBooked" (change)="updateCalDate(a._model)"
+                       name="start" formControlName="start" [markDisabled]="inThePast || isBooked" (change)="updateCalDate(a._model)"
                        (dateSelect)="updateCalDate($event)" (click)="a.toggle()" ngbDatepicker [dayTemplate]="customDay"
                        #a="ngbDatepicker">
                 <div class="input-group-append">
@@ -190,7 +211,7 @@ import {BookingService} from '../services/booking/booking.service';
                 </div>
               </div>
             </div>
-            <div class="form-group col">
+            <div class="form-group col" style="    margin-bottom: 0.8rem;">
               <div class="input-group">
                 <input class="form-control" placeholder="yyyy-mm-dd" autocomplete="off"
                        name="end" formControlName="end" [markDisabled]="isBooked" (change)="updateCalDate(a._model)"
@@ -226,12 +247,13 @@ import {BookingService} from '../services/booking/booking.service';
         [class.disableDay]="date.month !== currentMonth"
         [class.focused]="focused && date.month === currentMonth && !isBooked(date)"
         [class.bg-primary]="selected && date.month === currentMonth && !isBooked(date)" [class.hidden]="date.month !== currentMonth"
-        [class.text-muted]="disabled">
+        [class.text-muted]="disabled"
+        [class.inThePast]="inThePast(date)">
     {{ date.day }}
   </span>
     </ng-template>`,
   styles: [`
-    .priceTitle{
+    .priceTitle {
       text-align: center;
       font-size: 15px;
       font-weight: bold;
@@ -240,7 +262,8 @@ import {BookingService} from '../services/booking/booking.service';
       width: 137px;
     }
 
-    .accTitle{
+
+    .accTitle {
       text-align: center;
       font-size: 15px;
       font-weight: bold;
@@ -250,7 +273,7 @@ import {BookingService} from '../services/booking/booking.service';
       margin-top: 5px;
     }
 
-    .checklabel{
+    .checklabel {
       margin-left: 6px;
       -webkit-touch-callout: none; /* iOS Safari */
       -webkit-user-select: none; /* Safari */
@@ -260,10 +283,11 @@ import {BookingService} from '../services/booking/booking.service';
       user-select: none;
       font-size: 16px;
     }
-    .info{
-      padding: 0px 20px 0px 3px;
+
+    .info {
+      padding: 0px 6px 0px 6px;
       margin: 0px 0px 0px 0px;
-      box-shadow: inset 0px 0px 8px 0px #828282;
+      box-shadow: inset 0px 0px 8px 0px #00000073;
     }
 
     .custom-day {
@@ -304,6 +328,8 @@ import {BookingService} from '../services/booking/booking.service';
       height: 100%;
     }
 
+
+
     .booked {
       background-color: #ff3849;
       color: white !important;
@@ -315,6 +341,15 @@ import {BookingService} from '../services/booking/booking.service';
     .booked:hover {
       background-color: #9b222e;
       color: white !important;
+    }
+
+
+    .inThePast {
+      background-color: #e5e5e5;
+      color: #acacac !important;
+      height: 100%;
+      cursor: default;
+      pointer-events: none;
     }
 
     .disableDay {
@@ -338,6 +373,8 @@ import {BookingService} from '../services/booking/booking.service';
 
     .car-img {
       width: 100%;
+      max-width: 311px;
+      border-radius: 6px;
     }
 
     @media screen and (max-width: 1200px) {
@@ -426,7 +463,7 @@ import {BookingService} from '../services/booking/booking.service';
     }
   `]
 })
-export class CarPageComponent implements OnInit {
+export class CarPageComponent implements OnInit, OnDestroy {
 
   @Input()
   car: Car;
@@ -460,21 +497,32 @@ export class CarPageComponent implements OnInit {
 
   hoveredDate: NgbDate | null = null;
 
-
+  carSub;
+  bookingSub;
+  accesSub;
 
   constructor(private calendar: NgbCalendar, private route: ActivatedRoute, private carService: CarService,
               private formBuilder: FormBuilder, private modalService: NgbModal,  public formatter: NgbDateParserFormatter,
               private userService: UserService, public screenService: ScreenService,
-              public currencyService: CurrencyService) {
+              public currencyService: CurrencyService, public navService: NavService) {
 
 
-    this.carService.currentCarChange.subscribe((value) => {
+
+
+
+    this.carSub =  this.carService.currentCarChange.subscribe((value) => {
       if (value !== null){
         this.car = value;
       }
     });
 
-    this.carService.carBookingsChange.subscribe((value) => {
+    this.route.paramMap.subscribe(params => {
+      this.carID = +params.get('id');
+
+      this.carService.LoadCar(this.carID);
+    });
+
+    this.bookingSub = this.carService.carBookingsChange.subscribe((value) => {
       if (value !== null){
         this.bookings = value;
         if (!this.selectionInit){
@@ -484,7 +532,7 @@ export class CarPageComponent implements OnInit {
       }
     });
 
-    this.carService.accessoryListChange.subscribe((value) => {
+    this.accesSub = this.carService.accessoryListChange.subscribe((value) => {
       if (value !== null){
         if (this.accessories === null || this.accessories === undefined || Object.keys(this.accessories).length <= 0){
           this.accessories = value;
@@ -518,48 +566,24 @@ export class CarPageComponent implements OnInit {
     this.carService.LoadAccessories(this.start, this.end);
   }
 
+  ngOnDestroy(): void {
+    this.carSub.unsubscribe();
+    this.bookingSub.unsubscribe();
+    this.accesSub.unsubscribe();
+  }
+
   resetDates(): void{
 
     this.initDates();
   }
 
   initDates(): void{
+    this.start = undefined;
+    this.end = undefined;
     const now = new Date();
-    const start = new NgbDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    const end = new NgbDate(now.getFullYear(), now.getMonth() + 1, now.getDate() + 2);
-    const lastday = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-
-    while (this.isBooked(start)){
-      start.day = start.day + 1;
-      end.day = end.day + 1;
-      if (start.day >= lastday){
-        start.day = 0;
-        end.day = 0;
-        break;
-      }
-    }
-    if (this.isBooked(end)){
-      end.day = end.day - 1;
-      if (this.isBooked(end)){
-        end.day = end.day - 1;
-      }
-    }
-    if (start.day === 0 || end.day === 0){
-      return;
-    }
-    const startNum = new Date(start.year, start.month - 1, start.day).getTime() / 1000;
-    const endNum = new Date(end.year, end.month - 1, end.day).getTime() / 1000;
-
-    if (this.checkValidDates(startNum, endNum)){
-      return;
-    }
-
-
+    const start = new NgbDate(now.getFullYear(), now.getMonth() + 1, now.getDate() + 1);
     this.dateRangeForm.get('start').setValue(start);
-    this.dateRangeForm.get('end').setValue(end);
-
-    this.start = startNum;
-    this.end = endNum;
+    this.dateRangeForm.get('end').setValue(start);
   }
 
   isDisabled = (date: NgbDate, current: {month: number, year: number}) => date.month !== current.month;
@@ -578,7 +602,22 @@ export class CarPageComponent implements OnInit {
        }
     });
 
+
+
     return inRange;
+  }
+
+  inThePast = (date: NgbDate) => {
+    const unix = new Date(date.year, date.month - 1, date.day).getTime() / 1000;
+
+    const now = new Date().getTime() / 1000;
+
+    if (unix < now){
+      return true;
+    }
+
+
+    return false;
   }
 
   isNextDayBooked(): boolean {
@@ -626,6 +665,9 @@ export class CarPageComponent implements OnInit {
   }
 
 
+
+
+
   onSubmit(bookingData): void {
 
     const start = new Date(this.dateRangeForm.value.start.year, this.dateRangeForm.value.start.month - 1,
@@ -668,11 +710,6 @@ export class CarPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.now = new Date();
-    this.route.paramMap.subscribe(params => {
-      this.carID = +params.get('id');
-      this.carService.LoadCar(this.carID);
-    });
-
   }
 
   checkValidDates(start: number, end: number): boolean{
@@ -704,16 +741,28 @@ export class CarPageComponent implements OnInit {
       this.start = fallback;
       this.end = fallback;
     }else{
-      if (start > end){
-        this.start = start;
-        this.end = start;
-      }else if (end < start){
-        this.start = end;
-        this.end = end;
-      }else{
-        this.start = start;
-        this.end = end;
+      if ((end - start) > (60 * 60 * 24 * 13 )){
+
+        if (start === this.start){
+          this.start = end - (60 * 60 * 24 * 13 );
+          this.end = end;
+        }else if (end === this.end){
+          this.end = start + (60 * 60 * 24 * 13 );
+          this.start = start;
+        }
+      }else {
+        if (start > end){
+          this.start = start;
+          this.end = start;
+        }else if (end < start){
+          this.start = end;
+          this.end = end;
+        }else{
+          this.start = start;
+          this.end = end;
+        }
       }
+
     }
     const jvstart = new Date(this.start * 1000);
     const ngstart = new NgbDate(jvstart.getFullYear(), jvstart.getMonth() + 1, jvstart.getDate());
@@ -750,6 +799,8 @@ export class CarPageComponent implements OnInit {
 
     const ngstart = new NgbDate(start.getFullYear(), start.getMonth() + 1, start.getDate());
     const ngend = new NgbDate(end.getFullYear(), end.getMonth() + 1, end.getDate());
+
+
 
 
     this.dateRangeForm.get('start').setValue(ngstart);
@@ -795,6 +846,8 @@ export class CarPageComponent implements OnInit {
   lateReturnEvent(): void {
 
   }
+
+
 }
 
 

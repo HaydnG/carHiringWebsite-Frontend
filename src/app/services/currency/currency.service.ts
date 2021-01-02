@@ -9,6 +9,7 @@ export class CurrencyService {
     style: 'currency',
     currency: 'GBP',
     minimumSignificantDigits: 2,
+    maximumSignificantDigits: 4,
   });
 
   constructor(private http: HttpClient) {}

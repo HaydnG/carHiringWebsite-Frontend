@@ -57,6 +57,9 @@ import {BookingService} from '../services/booking/booking.service';
               [ngClass]="this.isBooked(date)? (date.month !== this.now.getMonth() ? 'secondaryBooked' : 'booked') :
               (date.month !== this.now.getMonth() ? (this.isSelected(date) ? 'secondarySelected' : (this.isSelectedEdge(date) ? 'secondarySelectedEdge' : 'secondary')) :
                (this.isSelected(date) ? 'selected' : (this.isSelectedEdge(date) ? 'selectedEdge' : 'primary')))"
+              [class.inThePast]="inThePast(date) && date.month === this.now.getMonth()"
+              [class.inThePastSecondary]="inThePast(date) && date.month !== this.now.getMonth()"
+
               *ngFor="let date of week" scope="row">
             {{date.day}}
           </th>
@@ -132,13 +135,13 @@ import {BookingService} from '../services/booking/booking.service';
     }
 
     .secondary {
-      background-color: rgb(239, 239, 239);
-      color: #d6d6d6;
+      background-color: #7e997580;
+      color: #7a9475;
       cursor: pointer;
     }
 
     .secondary:hover {
-      background-color: rgb(215, 215, 215);
+      background-color: rgba(106, 129, 99, 0.4);
     }
 
     .primary {
@@ -179,14 +182,14 @@ import {BookingService} from '../services/booking/booking.service';
 
 
     .booked {
-      background-color: #ff3849;
+      background-color: #ff384991;
       color: white !important;
       height: 100%;
       cursor: default;
     }
 
     .booked:hover {
-      background-color: #c82c3a;
+      background-color: rgba(186, 41, 53, 0.57);
     }
 
     .secondaryBooked {
@@ -199,6 +202,22 @@ import {BookingService} from '../services/booking/booking.service';
     .secondaryBooked:hover {
       background-color: #d7b9ba;
 
+    }
+
+    .inThePast {
+      background-color: #bfbfbf66;
+      color: #bfbfbf !important;
+      height: 100%;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .inThePastSecondary {
+      background-color: rgba(133, 133, 133, 0.4);
+      color: #a4a4a4 !important;
+      height: 100%;
+      cursor: default;
+      pointer-events: none;
     }
 
     .no-pad {
@@ -499,6 +518,19 @@ export class CalendarHComponent implements OnInit {
     if (unix === this.start || unix === this.end){
       return true;
     }
+
+    return false;
+  }
+
+  inThePast = (date: Cell) => {
+    const unix = new Date(date.year, date.month, date.day).getTime() / 1000;
+
+    const now = new Date().getTime() / 1000;
+
+    if (unix < now){
+      return true;
+    }
+
 
     return false;
   }

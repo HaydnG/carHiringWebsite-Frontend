@@ -8,6 +8,7 @@ import {BookingService} from '../services/booking/booking.service';
 import {PaymentComponent} from '../payment/payment.component';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {BookingStatus} from '../services/booking/Booking';
 
 @Component({
   selector: 'app-booking',
@@ -171,6 +172,7 @@ import {Subscription} from 'rxjs';
 })
 export class BookingComponent implements OnInit, OnDestroy {
 
+  awaitingPayment = BookingStatus.AwaitingPayment;
 
   data;
   now;
@@ -181,7 +183,7 @@ export class BookingComponent implements OnInit, OnDestroy {
               public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal,
               private router: Router) {
     this.acceptedSubscription = this.bookingService.bookingAccepted.subscribe((value) => {
-      if (value.ID !== 0 && value.processID === 1){
+      if (value.ID !== 0 && value.processID === this.awaitingPayment){
         console.log(value);
         this.activeModal.dismiss();
         const payment = this.modalService.open(PaymentComponent, this.ngbModalOptions);

@@ -11,7 +11,7 @@ import {ScreenService} from '../services/screen/screen.service';
 
     <div class="col sticky" >
       <div class="row">
-          <nav class="navbar navbar-expand-md navbar-light">
+          <nav class="navbar navbar-expand-md navbar-light" style="    min-height: 50px;">
             <a class="navbar-brand" (click)="home()"><span>Banger and Co</span></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -29,10 +29,15 @@ import {ScreenService} from '../services/screen/screen.service';
 
 
                 <ul class="navbar-nav ml-auto">
+                  <li class="nav-item" *ngIf="this.userService.loggedIn && this.userService.isAdmin">
+                    <a class="nav-link" [routerLink]="['admin']">Admin Panel</a>
+                  </li>
                   <li class="nav-item">
                     <a class="nav-link" [routerLink]="['booking']">My Bookings</a>
                   </li>
-
+                  <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['']">Home</a>
+                  </li>
                   <li class="nav-item dropdown" style="margin-right: 30px">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Welcome back {{this.user.FirstName}}
@@ -116,13 +121,18 @@ export class NavbarComponent implements OnInit {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
+
+      if (value.Message === 'incorrect password'){
+        console.log(value);
+      }
+
       this.user = value === null ? new User() : value;
     });
 
   }
 
   logout(): void{
-    this.userService.Logout(this.session);
+    this.userService.Logout();
     this.home();
   }
 

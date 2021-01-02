@@ -1,85 +1,42 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CarService} from '../services/car/car.service';
 import {BookingService} from '../services/booking/booking.service';
-import {Booking} from '../services/booking/Booking';
+import {Booking, BookingStatus} from '../services/booking/Booking';
 import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-booking-page',
   template: `
 
-    <div class="container-fluid" style="min-height: 500px;    border-radius: 8px; background-color: #e0e0e0;color: rgb(64,64,64); padding: 2px 0px 0px 0px;">
+    <div class="container-fluid" style="    min-height: 500px;
+    border-radius: 8px;
+    color: rgb(218 219 219);
+    padding: 2px 0px 0px 0px;
+    background-color: #252a2b;">
 
-      <div class="card-header">
+      <div style="    border-color: #6f6f6f;"  class="card-header">
         <h2>My Bookings page</h2>
       </div>
 
       <div class="card-body" style="    padding-top: 5px;" *ngIf="this.hasBookings(); else elseBlock">
-        <div class="row" *ngIf="this.bookings[1] !== undefined && this.bookings[1].length > 0">
-          <div class="col">
-            <div class="row">
-              <h5>Awaiting payment</h5>
-            </div>
-            <div class="row" *ngFor="let booking of this.bookings[1]">
-              <app-booking-card
-                [booking]="booking"
-              ></app-booking-card>
-            </div>
-          </div>
-        </div>
-        <hr *ngIf="this.bookings[1] !== undefined && this.bookings[1].length > 0">
-        <div class="row" *ngIf="this.bookings[3] !== undefined && this.bookings[3].length > 0">
-          <div class="col">
-            <div class="row">
-              <h5>Awaiting Confirmation</h5>
-            </div>
-            <div class="row" *ngFor="let booking of this.bookings[3]">
-              <app-booking-card
-                [booking]="booking"
-              ></app-booking-card>
+
+        <div class="accessory" *ngFor="let object of this.bookings | keyvalue">
+          <div class="row">
+            <div class="col">
+              <div class="row">
+                <h5>{{this.bookingService.statusNames[this.keys[object.key]]}}</h5>
+              </div>
+              <div class="row pagebook" *ngFor="let booking of object.value" [class.canceled]="this.keys[object.key] == this.bookingService.statuses.CanceledBooking">
+                <app-booking-card
+                  [booking]="booking" [currentPage]="this.currentPage" [currentPageID]="this.currentID"
+                ></app-booking-card>
+              </div>
             </div>
           </div>
+          <hr style="color: white !important;
+    border-color: #6f6f6f;
+    border-width: 2px;">
         </div>
-        <hr *ngIf="this.bookings[3] !== undefined && this.bookings[3].length > 0">
-        <div class="row" *ngIf="this.bookings[4] !== undefined && this.bookings[4].length > 0">
-          <div class="col">
-            <div class="row">
-              <h5>Confirmed</h5>
-            </div>
-            <div class="row" *ngFor="let booking of this.bookings[4]">
-              <app-booking-card
-                [booking]="booking"
-              ></app-booking-card>
-            </div>
-          </div>
-        </div>
-        <hr *ngIf="this.bookings[4] !== undefined && this.bookings[4].length > 0">
-        <div class="row" *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
-          <div class="col">
-            <div class="row">
-              <h5>Completed</h5>
-            </div>
-            <div class="row" *ngFor="let booking of this.bookings[5]">
-              <app-booking-card
-                [booking]="booking"
-              ></app-booking-card>
-            </div>
-          </div>
-        </div>
-        <hr *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
-        <div class="row" *ngIf="this.bookings[11] !== undefined && this.bookings[11].length > 0">
-          <div class="col">
-            <div class="row">
-              <h5>Canceled</h5>
-            </div>
-            <div class="row" *ngFor="let booking of this.bookings[11]" [class.canceled]="this.bookings[11] !== undefined && this.bookings[11].length > 0">
-              <app-booking-card
-                [booking]="booking"
-              ></app-booking-card>
-            </div>
-          </div>
-        </div>
-        <hr *ngIf="this.bookings[5] !== undefined && this.bookings[5].length > 0">
       </div>
       <ng-template #elseBlock>
         <div class="card-body" style="margin-top: 10%;text-align: center;
@@ -93,6 +50,10 @@ import {Subscription} from 'rxjs';
     </div>
     `,
   styles: [`
+    .pagebook{
+      margin: 5px 10px 5px 10px;
+    }
+
     .canceled{
       opacity: 30%;
       filter: blur(0.5px);
@@ -138,13 +99,19 @@ import {Subscription} from 'rxjs';
 export class BookingPageComponent implements OnInit, OnDestroy {
 
 
+  currentPage = 'booking';
+  currentID = 0;
+
+  keys;
   bookings: Record<number, Partial<Booking>>;
 
   userBookingSub: Subscription;
 
+
   constructor(private bookingService: BookingService) {
       this.userBookingSub = this.bookingService.userBookings.subscribe(data => {
-        this.bookings = data;
+        this.keys = Object.keys(data);
+        this.bookings = Object.values(data);
         console.log(data);
       });
 

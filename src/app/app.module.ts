@@ -26,7 +26,7 @@ import {BookingComponent} from './booking/booking.component';
 import {ScreenService} from './services/screen/screen.service';
 import {CurrencyService} from './services/currency/currency.service';
 import {BookingService} from './services/booking/booking.service';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatFormFieldControl, MatFormFieldModule} from '@angular/material/form-field';
 import {PaymentComponent} from './payment/payment.component';
 import {BookingPageComponent} from './booking-page/booking-page.component';
 import {BookingCardComponent} from './booking-card/booking-card.component';
@@ -36,6 +36,22 @@ import {CancelBookingComponent} from './cancel-booking/cancel-booking.component'
 import {BookingHistoryComponent} from './booking-history/booking-history.component';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
+import {AdminPageComponent} from './admin-page/admin-page.component';
+import {AdminService} from './services/admin/admin.service';
+import {AdminBookingComponent} from './admin-booking-page/admin-booking-page.component';
+import {AdminCarComponent} from './admin-car-page/admin-car-page.component';
+import {AdminUserComponent} from './admin-user-page/admin-user-page.component';
+import {AdminAccessoriesComponent} from './admin-accessories-page/admin-accessories-page.component';
+import {AdminBookingTableComponent} from './admin-booking-table/admin-booking-table.component';
+import {DecimalPipe} from '@angular/common';
+import {NgMultiSelectDropDownModule} from 'ng-multiselect-dropdown';
+import {MatSelectModule} from '@angular/material/select';
+import {MatInputModule} from '@angular/material/input';
+import {AdminBookingViewPageComponent} from './admin-booking-view-page/admin-booking-view-page.component';
+import {NavService} from './services/nav/nav.service';
+import {UserCardComponent} from './user-card/booking-card.component';
+import {ToolsService} from './services/tools/tools.service';
+import {AdminProgressBookingComponent} from './admin-progress-booking/admin-progress-booking.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +71,16 @@ import {MatSortModule} from '@angular/material/sort';
     EditBookingComponent,
     DetailsComponent,
     CancelBookingComponent,
-    BookingHistoryComponent
+    BookingHistoryComponent,
+    AdminPageComponent,
+    AdminBookingComponent,
+    AdminCarComponent,
+    AdminUserComponent,
+    AdminAccessoriesComponent,
+    AdminBookingTableComponent,
+    AdminBookingViewPageComponent,
+    UserCardComponent,
+    AdminProgressBookingComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,9 +96,23 @@ import {MatSortModule} from '@angular/material/sort';
     MatFormFieldModule,
     MatOptionModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
   ],
-  providers: [UserService, CarService, MatDatepickerModule, ScreenService, CurrencyService, BookingService],
+  providers: [
+    UserService,
+    CarService,
+    MatDatepickerModule,
+    ScreenService,
+    CurrencyService,
+    BookingService,
+    AdminService,
+    DecimalPipe,
+    NavService,
+    ToolsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

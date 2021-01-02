@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
-import {Booking, Status} from '../services/booking/Booking';
+import {Booking, BookingStatus, Status} from '../services/booking/Booking';
 import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
 import {MatTableDataSource} from '@angular/material/table';
@@ -32,6 +32,9 @@ import {MatSort} from '@angular/material/sort';
                   <div class="col-2 main key">
                     Milestone
                   </div>
+                  <div class="col-2 adminEdit key">
+                    Admin Action
+                  </div>
 
                   <div style="position: absolute;
                       right: 5px;">BookingID: <span style="font-weight: bold">{{this.booking.ID}} </span>
@@ -53,7 +56,7 @@ import {MatSort} from '@angular/material/sort';
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.cancelled]="row.ProcessID === 11" [class.active]="row.Active && row.ProcessID !== 11" [class.main]="row.BookingPage"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.cancelled]="row.ProcessID === this.bookingService.statuses.CanceledBooking" [class.active]="row.Active && row.ProcessID !== this.bookingService.statuses.CanceledBooking" [class.main]="row.BookingPage" [class.adminEdit]="row.AdminID !== 0"></tr>
                   </table>
 
 
@@ -84,6 +87,10 @@ import {MatSort} from '@angular/material/sort';
       background-color: #62b762;
     }
 
+    .adminEdit {
+      background-color: #d69956;
+    }
+
 
     .modal-content {
       display: contents !important;
@@ -107,8 +114,8 @@ import {MatSort} from '@angular/material/sort';
     }
 
     .process {
-      width: 130px;
-      max-width:750px;
+      width: 135px;
+      max-width: 750px;
     }
 
     .description {
@@ -152,6 +159,8 @@ export class BookingHistoryComponent implements OnInit {
 
   ngbModalOptions;
   created;
+
+  canceledBookingID = BookingStatus.CanceledBooking;
 
   @ViewChild(MatSort) sort: MatSort;
 
