@@ -21,13 +21,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .modal-lg {
-  max-width: 70% !important;
+  max-width: 75% !important;
 }
 
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1600px) {
   .modal-lg {
     max-width: 80% !important;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .modal-lg {
+    max-width: 85% !important;
   }
 }
 
@@ -55,7 +61,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-form-field-infix{
   background-color: #3f4547;
   border-top: .84375em solid #292d2f;
+}
+
+.modal-content{
+  color: rgb(218 219 219);
+  padding: 2px 0px 0px 0px;
+  background-color: #252a2b !important;
+}
+
+mat-label.ng-tns-c180-9.ng-star-inserted {
 
 
 }
+
+.mat-form-field-appearance-legacy .mat-form-field-label {
+  color: rgb(218 219 219) !important;
+}
+
 

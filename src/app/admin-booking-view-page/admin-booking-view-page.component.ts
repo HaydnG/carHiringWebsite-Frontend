@@ -9,6 +9,8 @@ import {BookingStatus} from '../services/booking/Booking';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component';
 import {AdminProgressBookingComponent} from '../admin-progress-booking/admin-progress-booking.component';
+import {CurrencyService} from '../services/currency/currency.service';
+import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refund-response.component';
 
 @Component({
   selector: 'app-admin-booking-page',
@@ -82,14 +84,16 @@ import {AdminProgressBookingComponent} from '../admin-progress-booking/admin-pro
               Active Refund Query
             </div>
           </div>
-          <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.canceledBookingStatus" class="row">
+          <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.canceledBookingStatus &&
+          this.adminBooking.booking.processID >= this.bookingConfirmed" class="row">
             <div *ngIf="this.adminBooking.booking.isRefund; else notRefund"  class="col" style="color: #0ba90b;font-size: 16px; font-weight: 400; text-align: center; margin: auto">
               Awaiting Refund on <span *ngIf="this.adminBooking.booking.processID <= this.bookingConfirmed">Collection</span>
               <span *ngIf="this.adminBooking.booking.processID >= this.collectedBookingStatus">Return</span> - (Can only be given in person)
             </div>
             <ng-template #notRefund>
               <div class="col" style="color: #0ba90b;font-size: 16px; font-weight: 400; text-align: center; margin: auto">
-                Payment Required on Collection
+                Payment Required on <span *ngIf="this.adminBooking.booking.processID <= this.bookingConfirmed">Collection</span>
+                <span *ngIf="this.adminBooking.booking.processID >= this.collectedBookingStatus">Return</span> - (Can only be given in person)
               </div>
             </ng-template>
 
@@ -109,20 +113,21 @@ import {AdminProgressBookingComponent} from '../admin-progress-booking/admin-pro
 
           <div class="row buttonrow" >
             <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID === this.canceledBookingStatus"  class="col" style="    padding: 0px;">
-              <button (click)="this.grantRefund()" class="button btn form-control confirm">
-                Grant Cancellation Refund
+              <button (click)="this.refundResponse()" class="button btn form-control confirm">
+                Issue Refund Response
               </button>
             </div>
-            <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.canceledBookingStatus"  class="col" style="    padding: 0px;">
+            <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.canceledBookingStatus &&
+          this.adminBooking.booking.processID >= this.bookingConfirmed"  class="col" style="    padding: 0px;">
               <div *ngIf="this.adminBooking.booking.isRefund; else isNotRefund">
                 <button (click)="this.processExtraPayment()" class="button btn form-control extraPayment">
-                  Refund Given on <span *ngIf="this.adminBooking.booking.processID <= this.bookingConfirmed">Collection</span>
+                  ({{this.currencyService.FormatValue(this.adminBooking.booking.amountPaid - this.adminBooking.booking.totalCost)}}) Refund Given on <span *ngIf="this.adminBooking.booking.processID <= this.bookingConfirmed">Collection</span>
                                     <span *ngIf="this.adminBooking.booking.processID >= this.collectedBookingStatus">Return</span>
                 </button>
               </div>
               <ng-template #isNotRefund>
-                <button (click)="this.grantRefund()" class="button btn form-control extraPayment">
-                  Payment Accepted on <span *ngIf="this.adminBooking.booking.processID <= this.bookingConfirmed">Collection</span>
+                <button (click)="this.processExtraPayment()" class="button btn form-control extraPayment">
+                  ({{this.currencyService.FormatValue(this.adminBooking.booking.totalCost - this.adminBooking.booking.amountPaid)}}) Payment Accepted on <span *ngIf="this.adminBooking.booking.processID <= this.bookingConfirmed">Collection</span>
                                         <span *ngIf="this.adminBooking.booking.processID >= this.collectedBookingStatus">Return</span>
                 </button>
               </ng-template>
@@ -236,7 +241,8 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
   tick = 1000;
   ngbModalOptions;
 
-  constructor(private modalService: NgbModal, private adminService: AdminService, private route: ActivatedRoute, public navService: NavService, public toolsServies: ToolsService) {
+  constructor(private modalService: NgbModal, public currencyService: CurrencyService,
+              private adminService: AdminService, private route: ActivatedRoute, public navService: NavService, public toolsServies: ToolsService) {
     this.route.paramMap.subscribe(params => {
       this.bookingID = +params.get('id');
       this.getBookings();
@@ -306,7 +312,17 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
 
   }
 
-  acceptRefund(): void {
+  refundResponse(): void {
+    const details = this.modalService.open(AdminRefundResponseComponent, this.ngbModalOptions);
+    details.componentInstance.adminBooking = this.adminBooking;
+    details.componentInstance.reloadPage.subscribe(data => {
+      this.getBookings();
+    });
+  }
 
+  processExtraPayment(): void {
+    this.adminService.ProcessExtraPayment(this.bookingID, data => {
+      this.getBookings();
+    });
   }
 }

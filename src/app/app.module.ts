@@ -52,6 +52,7 @@ import {NavService} from './services/nav/nav.service';
 import {UserCardComponent} from './user-card/booking-card.component';
 import {ToolsService} from './services/tools/tools.service';
 import {AdminProgressBookingComponent} from './admin-progress-booking/admin-progress-booking.component';
+import {AdminRefundResponseComponent} from './admin-refund-response/admin-refund-response.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import {AdminProgressBookingComponent} from './admin-progress-booking/admin-prog
     AdminBookingViewPageComponent,
     UserCardComponent,
     AdminProgressBookingComponent,
+    AdminRefundResponseComponent,
   ],
   imports: [
     BrowserModule,

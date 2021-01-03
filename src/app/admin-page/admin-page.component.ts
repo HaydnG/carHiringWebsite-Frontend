@@ -24,12 +24,13 @@ import {BookingStatus} from '../services/booking/Booking';
           <div class="card-title">Bookings</div>
 
           <div class="col stats">
-            <div class="row thead" style="    margin: 0px -10px 28px -10px;">
+            <div class="row thead" style="    margin: 0px -10px 24px -10px;">
               <div class="col-9">Process</div>
               <div class="col" style="text-align: center; padding: 0px 4px 0px 0px">Count</div>
             </div>
-            <div [class.Waiting]="stat.AdminRequired" [class.Disabled]="stat.ProcessID === this.canceledBookingStatus" class="trow row"
-                 *ngFor="let stat of this.bookingStats">
+            <div style="        height: 24.5px;
+    line-height: 16px;" [class.Waiting]="stat.AdminRequired" [class.Disabled]="stat.ProcessID === this.canceledBookingStatus" class="trow row"
+                 *ngFor="let stat of this.bookingStats; let i = index">
               <div class="col-9 desc" style="padding: 0px 0px 0px 12px">{{stat.Description}}</div>
               <div class="col data" style="padding: 0px">{{stat.Count}}</div>
             </div>
@@ -137,7 +138,7 @@ import {BookingStatus} from '../services/booking/Booking';
       height: 20PX;
       margin: -21px -10px 20px -10px;
       border: 1px solid black;
-      height: 31px;
+      height: 28px;
       padding-top: 4px;
     }
 

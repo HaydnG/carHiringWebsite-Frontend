@@ -22,7 +22,7 @@ import {MatSort} from '@angular/material/sort';
                 </button>
               </div>
               <div class="modal-body">
-                <div class="row">
+                <div class="row" style="    margin-left: 0px;">
                   <div class="col-2 active key">
                     Active Status
                   </div>
@@ -41,22 +41,22 @@ import {MatSort} from '@angular/material/sort';
                   </div>
                 </div>
 
-                  <table style="    width: 100%;" mat-table [dataSource]="this.dataSource" matSort>
+                  <table style="    width: 100%;    background-color: #252a2b;" mat-table [dataSource]="this.dataSource" matSort>
                     <ng-container matColumnDef="CompletedDate">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
-                      <td class="time" mat-cell *matCellDef="let element"> {{element.CompletedDate | date:'M/d/yy H:mm:ss'}} </td>
+                      <th class="text" mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+                      <td class=" time" mat-cell *matCellDef="let element"> {{element.CompletedDate | date:'M/d/yy H:mm:ss'}} </td>
                     </ng-container>
                     <ng-container matColumnDef="ProcessDescription">
-                      <th mat-header-cell *matHeaderCellDef> Process </th>
-                      <td class="process" mat-cell *matCellDef="let element"> {{element.ProcessDescription}} </td>
+                      <th class="text" mat-header-cell *matHeaderCellDef> Process </th>
+                      <td class=" process" mat-cell *matCellDef="let element"> {{element.ProcessDescription}} </td>
                     </ng-container>
                     <ng-container matColumnDef="Description">
-                      <th mat-header-cell *matHeaderCellDef> Description </th>
-                      <td class="description" mat-cell *matCellDef="let element"> {{element.Description}} </td>
+                      <th class="text" mat-header-cell *matHeaderCellDef> Description </th>
+                      <td [class.] class=" description" mat-cell *matCellDef="let element"> {{element.Description}} </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.cancelled]="row.ProcessID === this.bookingService.statuses.CanceledBooking" [class.active]="row.Active && row.ProcessID !== this.bookingService.statuses.CanceledBooking" [class.main]="row.BookingPage" [class.adminEdit]="row.AdminID !== 0"></tr>
+                    <tr class="background" mat-row *matRowDef="let row; columns: displayedColumns;" [class.cancelled]="row.ProcessID === this.bookingService.statuses.CanceledBooking" [class.active]="row.Active && row.ProcessID !== this.bookingService.statuses.CanceledBooking" [class.main]="row.BookingPage" [class.adminEdit]="row.AdminID !== 0 && !row.Active && !row.BookingPage"></tr>
                   </table>
 
 
@@ -68,8 +68,20 @@ import {MatSort} from '@angular/material/sort';
         </div>
   `,
   styles: [`
+    .background {
+      background-color: #dadada;
+    }
+
+    .baseText {
+      col
+    }
+
+    .text {
+      color: #c3c3c3;
+    }
+
     .main {
-      background-color: #b0b0b0;
+      background-color: #7194d4;
     }
 
     .key {
@@ -88,7 +100,11 @@ import {MatSort} from '@angular/material/sort';
     }
 
     .adminEdit {
-      background-color: #d69956;
+      background-color: #ae92ee;
+    }
+
+    .adminEditActive {
+      background-color: #7693db;
     }
 
 

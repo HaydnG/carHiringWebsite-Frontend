@@ -104,7 +104,7 @@ import {EditBookingComponent} from '../edit-booking/edit-booking.component';
     }
 
     .endtext {
-      color: black;
+      color: #4dbdff;
     }
 
     .time {

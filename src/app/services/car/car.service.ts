@@ -23,8 +23,9 @@ export class CarService {
 
   constructor(private http: HttpClient, private userService: UserService,  private router: Router) {}
 
-  LoadCars(): void {
-    this.http.get<Car[]>(this.url + 'getAll').pipe(catchError(error => {
+  LoadCars(fuelTypes: string, gearTypes: string, carTypes: string, carSizes: string, colours: string, search: string): void {
+    this.http.get<Car[]>(this.url + 'getAll?fuelTypes=' + fuelTypes + '&gearTypes=' + gearTypes + '&carTypes=' + carTypes +
+      '&carSizes=' + carSizes + '&colours=' + colours + '&search=' + search).pipe(catchError(error => {
       this.userService.handleError(error);
       return new Observable<Car[]>();
     })).subscribe(data => {
@@ -47,6 +48,14 @@ export class CarService {
         console.log(data);
       });
     }
+  }
+
+
+  GetCarAttributes(callback?: (value: any) => void): void{
+    this.http.get<any>(this.url + 'getCarAttributes').pipe(catchError(error => {
+      this.router.navigate(['']);
+      return new Observable<any>();
+    })).subscribe(callback);
   }
 
   LoadAccessories(start: number, end: number): void{

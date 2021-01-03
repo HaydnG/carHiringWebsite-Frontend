@@ -181,7 +181,7 @@ import {BookingStatus} from '../services/booking/Booking';
 
     .inputBut {
       background-color: #3f4447;
-      height: 28.5px;
+      height: 28.1px;
       text-align: center;
       padding: 0px;
       margin-top: 11px;

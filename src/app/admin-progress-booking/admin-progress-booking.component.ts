@@ -31,7 +31,8 @@ import {AdminBooking} from '../services/admin/admin';
                       right: 5px;">BookingID: <span style="font-weight: bold">{{this.adminBooking.booking.ID}} </span>
                   </div>
                   <div class="row" style="padding: 40px 30px 10px 30px;font-weight: 600;font-size: 17px;">
-                    <div *ngIf="this.adminBooking.booking.awaitingExtraPayment;else progress"  >
+                    <div *ngIf="this.adminBooking.booking.awaitingExtraPayment  &&
+          this.adminBooking.booking.processID >= this.bookingService.statuses.BookingConfirmed;else progress"  >
                       <div *ngIf="this.adminBooking.booking.isRefund; else isNotRefund">
                         {{this.adminBooking.user.FirstName}} {{this.adminBooking.user.Names}} is Due a Refund of
                         ({{this.currencyService.FormatValue(this.adminBooking.booking.amountPaid - this.adminBooking.booking.totalCost)}})
@@ -41,7 +42,7 @@ import {AdminBooking} from '../services/admin/admin';
                       </div>
                       <ng-template #isNotRefund>
                         {{this.adminBooking.user.FirstName}} {{this.adminBooking.user.Names}} is Required to Pay
-                        ({{this.currencyService.FormatValue(this.adminBooking.booking.totalCost - this.adminBooking.booking.amountPaid)}})
+                        ({{this.currencyService.FormatValue(this.adminBooking.booking.totalCost - this.adminBooking.booking.amountPaid)}}) Extra
                         on <span *ngIf="this.adminBooking.booking.processID <= this.bookingService.statuses.BookingConfirmed">Collection</span>
                           <span *ngIf="this.adminBooking.booking.processID >= this.bookingService.statuses.CollectedBooking">Return</span>
                       </ng-template>
@@ -57,28 +58,31 @@ import {AdminBooking} from '../services/admin/admin';
     padding: 20px;">
 
                 <div class="row" >
-                  <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.bookingService.statuses.CanceledBooking"  class="col" style="    padding: 0px;">
+                  <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.bookingService.statuses.CanceledBooking &&
+          this.adminBooking.booking.processID >= this.bookingService.statuses.BookingConfirmed;"  class="col" style="    padding: 0px;">
                     <div *ngIf="this.adminBooking.booking.isRefund; else isNotRefund">
                       <button (click)="this.processExtraPayment()" class="button btn form-control extraPayment">
-                        Refund Given on <span *ngIf="this.adminBooking.booking.processID <= this.bookingService.statuses.BookingConfirmed">Collection</span>
+                        ({{this.currencyService.FormatValue(this.adminBooking.booking.amountPaid - this.adminBooking.booking.totalCost)}}) Refund Given on <span *ngIf="this.adminBooking.booking.processID <= this.bookingService.statuses.BookingConfirmed">Collection</span>
                         <span *ngIf="this.adminBooking.booking.processID >= this.bookingService.statuses.CollectedBooking">Return</span>
                       </button>
                     </div>
                     <ng-template #isNotRefund>
-                      <button (click)="this.grantRefund()" class="button btn form-control extraPayment">
-                        Payment Accepted on <span *ngIf="this.adminBooking.booking.processID <= this.bookingService.statuses.BookingConfirmed">Collection</span>
+                      <button (click)="this.processExtraPayment()" class="button btn form-control extraPayment">
+                        ({{this.currencyService.FormatValue(this.adminBooking.booking.totalCost - this.adminBooking.booking.amountPaid)}}) Payment Accepted on <span *ngIf="this.adminBooking.booking.processID <= this.bookingService.statuses.BookingConfirmed">Collection</span>
                         <span *ngIf="this.adminBooking.booking.processID >= this.bookingService.statuses.CollectedBooking">Return</span>
                       </button>
                     </ng-template>
                   </div>
-                  <div class="col" *ngIf="!this.adminBooking.booking.awaitingExtraPayment">
-                    <button (click)="this.progressBooking()" class="button btn form-control confirm">
-                      <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.AwaitingConfirmation">Confirm Booking</span>
-                      <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.BookingConfirmed">Confirm Customer Collection</span>
-                      <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.CollectedBooking">Confirm Customer Return</span>
-                      <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.ReturnedBooking">Complete Booking</span>
-                    </button>
-                  </div>
+                </div>
+                  <div class="row" >
+                    <div class="col" style="padding: 5px 0px 0px 0px;">
+                      <button (click)="this.progressBooking()" class="button btn form-control confirm">
+                        <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.AwaitingConfirmation">Confirm Booking</span>
+                        <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.BookingConfirmed">Confirm Customer Collection</span>
+                        <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.CollectedBooking">Confirm Customer Return</span>
+                        <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.ReturnedBooking">Complete Booking</span>
+                      </button>
+                    </div>
                 </div>
 
             </div>

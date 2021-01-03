@@ -96,4 +96,20 @@ export class AdminService {
       return new Observable<any>();
     })).subscribe(callback);
   }
+
+  ProcessExtraPayment(bookingID: any, callback?: (value: any) => void): void{
+    this.http.get<any>(this.url + 'processExtraPayment?' + 'bookingID=' + bookingID,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<any>();
+    })).subscribe(callback);
+  }
+
+  ProcessRefund(accept: boolean, bookingID: any, reason: string, callback?: (value: any) => void): void{
+    this.http.get<any>(this.url + 'processRefund?' + 'bookingID=' + bookingID + '&accept=' + accept + '&reason=' + reason,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<any>();
+    })).subscribe(callback);
+  }
 }

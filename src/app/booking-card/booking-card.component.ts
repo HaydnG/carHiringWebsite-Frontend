@@ -126,7 +126,8 @@ import {NavService} from '../services/nav/nav.service';
                 <div class=".col-auto col-6" style="padding: 0px; min-width: 330px !important;height: 41px;">
                     <div class="row" style="padding: 2px 16px 0px 17px;
     height: 41px !important;">
-                      <div class="col noPad" *ngIf="this.booking.processID !== this.bookingService.statuses.CanceledBooking && this.booking.processID !== this.bookingService.statuses.CompletedBooking">
+                      <div class="col noPad" *ngIf="this.booking.processID !== this.bookingService.statuses.CanceledBooking && this.booking.processID !== this.bookingService.statuses.CompletedBooking &&
+                                (this.booking.processID <= this.bookingService.statuses.BookingConfirmed || (this.adminView))">
                         <button (click)="this.cancel()" class="button btn btn-danger form-control bookButton" >Cancel</button>
                       </div>
                       <div class="col noPad">
