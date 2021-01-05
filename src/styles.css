@@ -73,9 +73,48 @@ mat-label.ng-tns-c180-9.ng-star-inserted {
 
 
 }
+:root{
+  --cropper-outline-color: 'rgba(37,42,43,1)';
+  --cropper-overlay-color: 'rgba(37,42,43,1)';
+}
+
+
+
+
 
 .mat-form-field-appearance-legacy .mat-form-field-label {
   color: rgb(218 219 219) !important;
 }
 
+.cdk-global-overlay-wrapper {
+  z-index: 1100 !important;
+}
 
+ngb-modal-backdrop{
+  z-index: 1000 !important;
+}
+.cdk-overlay-container {
+  z-index: 1051 !important;
+}
+
+.modal{
+  z-index: 1050 !important;
+}
+
+.mat-checkbox-frame{
+  border-color: #ffffffaa !important;
+}
+
+.ng-invalid:not(form) {
+  border: none !important;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040 !important;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}

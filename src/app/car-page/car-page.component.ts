@@ -26,6 +26,7 @@ import {ScreenService} from '../services/screen/screen.service';
 import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
 import {NavService} from '../services/nav/nav.service';
+import {ToolsService} from '../services/tools/tools.service';
 
 @Component({
   selector: 'app-car-page',
@@ -53,11 +54,21 @@ import {NavService} from '../services/nav/nav.service';
 
         <div class="col-lg-4 order-lg-1 order-1" style="padding: 0px 6px 3px 3px;
     max-width: 324px;">
-          <img class="car-img" src="http://5.70.170.197:8080/cars/car1.jpg">
+          <img class="car-img" src="http://5.70.170.197:8080/cars/{{this.car.Image}}.jpg">
         </div>
-        <div class="col-lg-6 order-lg-2 order-2" style="min-height: 238px;">
+        <div class="col-lg-8 order-lg-2 order-2" style="min-height: 238px;">
           <div class="row car-title">
-            {{this.car.Description}}
+            <div class="col-7">
+              {{this.car.Description}}
+            </div>
+            <div class="col">
+              <div *ngIf="this.car.Over25" style="font-size: 17px;
+    color: #ca4545;
+    line-height: 14px;
+    margin-bottom: 4px;
+    margin-top: 8px;
+    min-width: 180px;"> You must be over 25 to rent this car.</div>
+            </div>
           </div>
           <hr>
           <div class="row car-atts">
@@ -228,8 +239,11 @@ import {NavService} from '../services/nav/nav.service';
                 </div>
               </div>
             </div>
-            <div class="col-3">
-              <button class="button btn btn-primary form-control" type="submit" style="padding: 0px 0px 0px 0px;
+            <div class="col-3" [disableTooltip]="(!(this.car.Over25 && (!this.userService.over25 && this.userService.loggedIn))) && !this.userService.blackListed" [ngbTooltip]="over25" placement="top">
+              <ng-template #over25> <span *ngIf="!this.userService.blackListed">You must be over 25 to rent out this car, due to insurance.</span>
+                <span *ngIf="this.userService.blackListed">You have been blackListed from making bookings. Please contact support.</span>
+              </ng-template>
+              <button [disabled]="this.car.Over25 && (!this.userService.over25 && this.userService.loggedIn) || this.userService.blackListed" class="button btn btn-primary form-control" type="submit" style="padding: 0px 0px 0px 0px;
     font-size: 15px;
     height: 38px;
     min-width: 59px;">Book car
@@ -504,10 +518,8 @@ export class CarPageComponent implements OnInit, OnDestroy {
   constructor(private calendar: NgbCalendar, private route: ActivatedRoute, private carService: CarService,
               private formBuilder: FormBuilder, private modalService: NgbModal,  public formatter: NgbDateParserFormatter,
               private userService: UserService, public screenService: ScreenService,
-              public currencyService: CurrencyService, public navService: NavService) {
-
-
-
+              public currencyService: CurrencyService, public navService: NavService,
+              public toolService: ToolsService) {
 
 
     this.carSub =  this.carService.currentCarChange.subscribe((value) => {
@@ -565,6 +577,8 @@ export class CarPageComponent implements OnInit, OnDestroy {
 
     this.carService.LoadAccessories(this.start, this.end);
   }
+
+
 
   ngOnDestroy(): void {
     this.carSub.unsubscribe();

@@ -8,7 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { NavbarComponent } from './navbar/navbar.component';
 
 
-import { UserService } from './services/user/user.service';
+import {BlackListedComponent, UserService} from './services/user/user.service';
 import { CarService } from './services/car/car.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
@@ -49,10 +49,19 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
 import {AdminBookingViewPageComponent} from './admin-booking-view-page/admin-booking-view-page.component';
 import {NavService} from './services/nav/nav.service';
-import {UserCardComponent} from './user-card/booking-card.component';
+import {UserCardComponent} from './user-card/user-card.component';
 import {ToolsService} from './services/tools/tools.service';
 import {AdminProgressBookingComponent} from './admin-progress-booking/admin-progress-booking.component';
 import {AdminRefundResponseComponent} from './admin-refund-response/admin-refund-response.component';
+import {AdminCarTableComponent} from './admin-car-table/admin-car-table.component';
+import {CarListSearchComponent} from './car-list-search/car-list-search.component';
+import { AdminCreateCarComponent } from './admin-create-car/admin-create-car.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {ImageCropperModule} from 'ngx-image-cropper';
+import {AdminEditCarComponent} from './admin-edit-car/admin-edit-car.component';
+import {AdminUserTableComponent} from './admin-user-table/admin-user-table.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {AdminUserViewPageComponent} from './admin-user-view-page/admin-user-view-page.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +92,13 @@ import {AdminRefundResponseComponent} from './admin-refund-response/admin-refund
     UserCardComponent,
     AdminProgressBookingComponent,
     AdminRefundResponseComponent,
+    AdminCarTableComponent,
+    CarListSearchComponent,
+    AdminCreateCarComponent,
+    AdminEditCarComponent,
+    AdminUserTableComponent,
+    BlackListedComponent,
+    AdminUserViewPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,6 +118,10 @@ import {AdminRefundResponseComponent} from './admin-refund-response/admin-refund
     MatSelectModule,
     MatInputModule,
     MatFormFieldModule,
+    MatCheckboxModule,
+    ImageCropperModule,
+    MatSnackBarModule,
+
   ],
   providers: [
     UserService,

@@ -10,4 +10,5 @@ export class User {
   Verified: boolean;
   Admin: boolean;
   Message: string;
+  BookingCount: number;
 }

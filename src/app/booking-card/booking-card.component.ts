@@ -18,7 +18,7 @@ import {NavService} from '../services/nav/nav.service';
   template: `
       <div class="row">
         <div class="col-12 booking">
-            <div class="background"></div>
+            <div [style.background-image]="'linear-gradient(to bottom, #24292acc, #24292a), url(http://5.70.170.197:8080/cars/' + this.booking.carData.Image + '.jpg)'"  class="background"></div>
             <div style="position: relative;top: -120px;">
               <div class="row carClick" style="    padding: 0px 20px 1px 10px;
     top: -2px;
@@ -319,11 +319,10 @@ import {NavService} from '../services/nav/nav.service';
 
 
     .background {
-      background-image: url(http://5.70.170.197:8080/cars/car1.jpg), linear-gradient(to bottom, #000000a6, #000000);
-      background-blend-mode: soft-light;
+      background-blend-mode: multiply;
       background-size: 100%;
-      background-position-y: 500px;
-      opacity: 0.15;
+      background-position-y: 648px;
+      opacity: 00.08;
       height: 125px;
       position: relative;
       min-width: 600px;

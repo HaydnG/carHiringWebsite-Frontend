@@ -1,10 +1,11 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import {UserService} from '../services/user/user.service';
+import {BlackListedComponent, UserService} from '../services/user/user.service';
 import {User} from '../services/user/User';
 import {HttpClient} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {Router} from '@angular/router';
 import {ScreenService} from '../services/screen/screen.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 @Component({
   selector: 'app-navbar',
   template: `
@@ -116,16 +117,23 @@ export class NavbarComponent implements OnInit {
   isScreenSmall;
 
   private itemList: any;
-  constructor(public userService: UserService, private cookieService: CookieService, private router: Router,
+  constructor(private snackBar: MatSnackBar, public userService: UserService, private cookieService: CookieService, private router: Router,
               public screenService: ScreenService) {
     this.user = new User();
 
     this.userSubscription = this.userService.userChange.subscribe((value) => {
-
-      if (value.Message === 'incorrect password'){
-        console.log(value);
+      console.log(value);
+      if (value === null || value === undefined){
+        this.user = value;
+        return;
       }
 
+      if (value.Message !== undefined && value.Message === 'incorrect'){
+        this.snackBar.openFromComponent(BadLoginComponent, {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+      }
       this.user = value === null ? new User() : value;
     });
 
@@ -145,3 +153,16 @@ export class NavbarComponent implements OnInit {
   }
 
 }
+@Component({
+  selector: 'app-bad-login',
+  template: `<div class="snack">Incorrect Username/Password</div>`,
+  styles: [`
+    .snack {
+      color: #f84646;
+      font-size: 20px;
+      text-align: center;
+    }
+  `],
+})
+export class BadLoginComponent {}
+

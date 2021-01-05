@@ -10,6 +10,8 @@ export class Car {
   Description: string;
   Image: string;
   Seats: number;
+  BookingCount: number;
+  Over25: boolean;
 }
 
 class Attribute {

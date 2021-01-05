@@ -3,6 +3,9 @@ import {UserService} from '../services/user/user.service';
 import {FormBuilder} from '@angular/forms';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {User} from '../services/user/User';
+import {NgbDateStructAdapter} from '@ng-bootstrap/ng-bootstrap/datepicker/adapters/ngb-date-adapter';
+import {NgbDateStruct} from '@ng-bootstrap/ng-bootstrap/datepicker/ngb-date-struct';
+import {ToolsService} from '../services/tools/tools.service';
 
 @Component({
   selector: 'app-registration',
@@ -11,7 +14,11 @@ import {User} from '../services/user/User';
         <button type="button" class="close" aria-label="Close" (click)="closeRegister()">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h1 style="text-align: center;">Registration</h1>
+        <div class="row">
+            <h1 class="col-4" style="text-align: center;min-width: 140PX">Registration</h1><div class="col" style="    min-width: 160px;
+    margin: 6px 5px 12px 1px;
+    color: #ff9b9b;"> - You must be over 18 to use this service</div>
+        </div>
         <HR>
       </div>
 
@@ -38,7 +45,9 @@ import {User} from '../services/user/User';
 
             <div class="form-group row">
               <div class="col">
-                <input class="form-control" placeholder="D.O.B" type="date" value="" id="dob" formControlName="dob">
+                <input class="form-control" [minDate]="{year: 1940, month:1, day: 1}" [maxDate]="{day: this.now.getDate(), month: this.now.getMonth() + 1, year: this.now.getFullYear() - 18}" ngbDatepicker (click)="b.toggle()" ngbDatepicker
+                       #b="ngbDatepicker" placeholder="D.O.B" value="" id="dob" autocomplete="off" formControlName="dob">
+                <div *ngIf="this.errors['birthday']" class="errorMessage"> You must be over 18+ </div>
               </div>
             </div>
 
@@ -65,6 +74,7 @@ import {User} from '../services/user/User';
 
         </form>
       </div>
+      <div *ngIf="this.responseShow" class="failMessage"> {{this.responseMessage}}</div>
       <div *ngIf="this.failMessage" class="failMessage"> Registration failed, please try again or contact support</div>
       <div *ngIf="this.successMessage" class="successMessage"> Successfully created a new user with the email: {{this.user.Email}} You can now sign in</div>
 `,
@@ -160,14 +170,20 @@ export class RegistrationComponent implements OnInit {
     password: false,
     required: false,
     match: false,
+    birthday: false,
   };
   errorsActive: { [id: string]: boolean; } = {
     email: false,
     password: false,
     required: false,
     match: false,
+    birthday: false,
   };
 
+  responseMessage;
+  responseShow = false;
+
+  maxDate: NgbDateStruct;
   user: User;
   failMessage;
   successMessage;
@@ -176,9 +192,11 @@ export class RegistrationComponent implements OnInit {
   registrationForm;
   userSubscription;
 
-  constructor(private userService: UserService, private formBuilder: FormBuilder, private activeModal: NgbActiveModal) {
+  constructor(private userService: UserService, private formBuilder: FormBuilder, private activeModal: NgbActiveModal, private toolService: ToolsService) {
+
 
     this.now = new Date();
+
 
     this.registrationForm = this.formBuilder.group({
       firstname: '',
@@ -203,6 +221,21 @@ export class RegistrationComponent implements OnInit {
 
         return;
       }
+      if (value.Message !== undefined && value.Message !== ''){
+        this.responseMessage = value.Message;
+        (async () => {
+          // Do something before delay
+
+          this.responseShow = true;
+
+          await this.delay(3000);
+
+          this.responseShow = false;
+        })();
+
+        return;
+      }
+
       this.user = value;
 
       if (this.user.SessionToken !== '0' && this.user.SessionToken !== undefined){
@@ -230,6 +263,13 @@ export class RegistrationComponent implements OnInit {
     const errors: Array<string> = [];
     let required = false;
 
+    console.log(userData.dob);
+    const dobDate = new Date(userData.dob.year, userData.dob.month - 1, userData.dob.day);
+    console.log(this.toolService.calculateAge(dobDate));
+
+    if (this.toolService.calculateAge(dobDate) < 18){
+      errors.push('birthday');
+    }
 
     Object.keys(this.registrationForm.controls).forEach(key => {
 
@@ -251,6 +291,9 @@ export class RegistrationComponent implements OnInit {
       errors.push('email');
     }
 
+
+
+
     if (this.invalidPassword(userData.password)){
       errors.push('password');
     }
@@ -263,7 +306,8 @@ export class RegistrationComponent implements OnInit {
       this.blinkError(errors);
     }else {
       this.userService.Register(userData.firstname, userData.names, userData.email, userData.password,
-        (new Date(userData.dob).getTime() / 1000) + '');
+        (new Date(userData.dob.year, userData.dob.month - 1,
+          userData.dob.day).getTime() / 1000) + '');
     }
   }
 

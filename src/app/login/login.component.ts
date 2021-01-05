@@ -144,14 +144,18 @@ export class LoginComponent implements OnInit {
     }
 
     console.warn('sending login', userData);
-    this.userService.Login(userData.username, userData.password);
-    if (this.modalService.hasOpenModals()){
-      this.modalService.dismissAll();
-      const temp = this.modalService.open(this.nextModal, this.ngbModalOptions);
-      temp.componentInstance.data = this.modalData;
+    this.userService.Login(userData.username, userData.password, data =>{
 
+      if (this.modalService.hasOpenModals()){
+        this.modalService.dismissAll();
 
-    }
+        if ((!(this.modalData.car.Over25 && !this.userService.over25)) && !this.userService.blackListed){
+          const temp = this.modalService.open(this.nextModal, this.ngbModalOptions);
+          temp.componentInstance.data = this.modalData;
+        }
+      }
+    });
+
   }
 
   register(): void{

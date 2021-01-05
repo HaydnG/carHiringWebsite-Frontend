@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
     <div class="card" >
       <div class="row no-gutters">
         <div class="col-auto shadow">
-          <img class="card-img-top" src="http://5.70.170.197:8080/cars/car1.jpg" alt="img-fluid">
+          <img class="card-img-top" src="http://5.70.170.197:8080/cars/{{this.car.Image}}.jpg" alt="img-fluid">
         </div>
         <div class="col">
           <div class="card-block px-2">

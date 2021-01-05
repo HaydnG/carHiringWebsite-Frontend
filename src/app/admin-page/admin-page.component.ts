@@ -29,7 +29,7 @@ import {BookingStatus} from '../services/booking/Booking';
               <div class="col" style="text-align: center; padding: 0px 4px 0px 0px">Count</div>
             </div>
             <div style="        height: 24.5px;
-    line-height: 16px;" [class.Waiting]="stat.AdminRequired" [class.Disabled]="stat.ProcessID === this.canceledBookingStatus" class="trow row"
+    line-height: 16px;" [class.Waiting]="stat.AdminRequired" [class.Online]="stat.ProcessID === this.completedBookingStatus" [class.Disabled]="stat.ProcessID === this.canceledBookingStatus" class="trow row"
                  *ngFor="let stat of this.bookingStats; let i = index">
               <div class="col-9 desc" style="padding: 0px 0px 0px 12px">{{stat.Description}}</div>
               <div class="col data" style="padding: 0px">{{stat.Count}}</div>
@@ -137,7 +137,7 @@ import {BookingStatus} from '../services/booking/Booking';
     .trow {
       height: 20PX;
       margin: -21px -10px 20px -10px;
-      border: 1px solid black;
+      border: 1px solid #00000057;
       height: 28px;
       padding-top: 4px;
     }

@@ -30,9 +30,9 @@ import {AdminBooking} from '../services/admin/admin';
                   <div style="position: absolute;
                       right: 5px;">BookingID: <span style="font-weight: bold">{{this.adminBooking.booking.ID}} </span>
                   </div>
-                  <div class="row" style="padding: 40px 30px 10px 30px;font-weight: 600;font-size: 17px;">
+                  <div class="row" style="padding: 40px 30px 10px 30px;font-weight: 500;font-size: 17px;">
                     <div *ngIf="this.adminBooking.booking.awaitingExtraPayment  &&
-          this.adminBooking.booking.processID >= this.bookingService.statuses.BookingConfirmed;else progress"  >
+          this.adminBooking.booking.processID >= this.bookingService.statuses.BookingConfirmed && !this.failed;else progress"  >
                       <div *ngIf="this.adminBooking.booking.isRefund; else isNotRefund">
                         {{this.adminBooking.user.FirstName}} {{this.adminBooking.user.Names}} is Due a Refund of
                         ({{this.currencyService.FormatValue(this.adminBooking.booking.amountPaid - this.adminBooking.booking.totalCost)}})
@@ -48,7 +48,16 @@ import {AdminBooking} from '../services/admin/admin';
                       </ng-template>
                     </div>
                     <ng-template #progress>
-                      Are you sure you want to progress this booking?
+                      <div *ngIf="!this.failed">
+                        Are you sure you want to progress this booking?
+                      </div>
+                      <div *ngIf="this.failed">
+                        Are you sure you want to mark this booking as failed <span *ngIf="this.adminBooking.booking.processID <= this.bookingService.statuses.BookingConfirmed">Collection</span>
+                        <span *ngIf="this.adminBooking.booking.processID >= this.bookingService.statuses.CollectedBooking">Return</span>? <br>
+                        This action will blackList the user.
+                      </div>
+
+
                     </ng-template>
                   </div>
                 </div>
@@ -57,7 +66,7 @@ import {AdminBooking} from '../services/admin/admin';
               <div style="    border-top: 1px solid #dee2e6;
     padding: 20px;">
 
-                <div class="row" >
+                <div class="row" *ngIf="!this.failed">
                   <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID !== this.bookingService.statuses.CanceledBooking &&
           this.adminBooking.booking.processID >= this.bookingService.statuses.BookingConfirmed;"  class="col" style="    padding: 0px;">
                     <div *ngIf="this.adminBooking.booking.isRefund; else isNotRefund">
@@ -75,8 +84,14 @@ import {AdminBooking} from '../services/admin/admin';
                   </div>
                 </div>
                   <div class="row" >
-                    <div class="col" style="padding: 5px 0px 0px 0px;">
-                      <button (click)="this.progressBooking()" class="button btn form-control confirm">
+                    <div  *ngIf="this.failed"  class="col" style="padding: 0px;">
+                      <button  (click)="this.progressBooking(true)" class="button btn form-control deny">
+                        Failed <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.CollectedBooking">Return</span>
+                        <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.BookingConfirmed">Collection</span>
+                      </button>
+                    </div>
+                    <div *ngIf="!this.failed"  class="col" style="padding: 5px 0px 0px 0px;">
+                      <button (click)="this.progressBooking(false)" class="button btn form-control confirm">
                         <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.AwaitingConfirmation">Confirm Booking</span>
                         <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.BookingConfirmed">Confirm Customer Collection</span>
                         <span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.CollectedBooking">Confirm Customer Return</span>
@@ -153,6 +168,12 @@ import {AdminBooking} from '../services/admin/admin';
       line-height: 21px;
     }
 
+    .deny {
+      background-color: #693030;
+      color: #dbdbdb;
+      border-color: #5a2222;
+    }
+
     img {
       width: 100%;
     }
@@ -171,6 +192,8 @@ export class AdminProgressBookingComponent implements OnInit {
 
   ngbModalOptions;
 
+  @Input()
+  failed;
 
   @Output()
   reloadPage: EventEmitter<any> = new EventEmitter<any>();
@@ -184,8 +207,8 @@ export class AdminProgressBookingComponent implements OnInit {
 
   }
 
-  progressBooking(): void {
-    this.adminService.ProgressBooking(this.adminBooking.booking.ID, data => {
+  progressBooking(failed: boolean): void {
+    this.adminService.ProgressBooking( failed, this.adminBooking.booking.ID, data => {
       this.reloadPage.next(true);
       this.activeModal.dismiss();
     });

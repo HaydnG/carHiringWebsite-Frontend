@@ -114,6 +114,11 @@ export class AdminBookingTableComponent implements OnInit, OnChanges, OnDestroy 
   countDown: Subscription;
   dataSource;
 
+  @Input()
+  currentPage;
+  @Input()
+  pageID = 0;
+
   init = false;
   tick = 1000;
 
@@ -172,7 +177,7 @@ export class AdminBookingTableComponent implements OnInit, OnChanges, OnDestroy 
 
 
   viewBooking(id: number): void{
-    this.navService.Navigate('admin/booking', 0, ['admin/booking/view', {id}]);
+    this.navService.Navigate(this.currentPage, this.pageID, ['admin/booking/view', {id}]);
     console.log(id);
   }
 

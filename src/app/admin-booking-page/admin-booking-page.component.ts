@@ -34,7 +34,8 @@ import {BookingStatus} from '../services/booking/Booking';
           <div class="card-title" style="color: #5cc65c;padding: 5px">Upcoming Confirmed Bookings (next 5)</div>
           <app-admin-booking-table [bookings]="upcomingBookings"
                                    [DoCountdown]="true"
-                                   [ShowStatus]="false"></app-admin-booking-table>
+                                   [ShowStatus]="false"
+                                   [currentPage]="currentPage"></app-admin-booking-table>
 
         </div>
       </div>
@@ -43,7 +44,8 @@ import {BookingStatus} from '../services/booking/Booking';
           <div class="card-title Waiting" style="padding: 5px">Returned (Awaiting Completion Mark)</div>
           <app-admin-booking-table [bookings]="returned"
                                    [DoCountdown]="false"
-                                   [ShowStatus]="false"></app-admin-booking-table>
+                                   [ShowStatus]="false"
+                                   [currentPage]="currentPage"></app-admin-booking-table>
 
         </div>
       </div>
@@ -54,7 +56,8 @@ import {BookingStatus} from '../services/booking/Booking';
           <app-admin-booking-table [bookings]="inProgress"
                                    [DoCountdown]="true"
                                    [ShowStatus]="false"
-                                   [timerText]="'Return due in'"></app-admin-booking-table>
+                                   [timerText]="'Return due in'"
+                                   [currentPage]="currentPage"></app-admin-booking-table>
 
         </div>
       </div>
@@ -67,7 +70,8 @@ import {BookingStatus} from '../services/booking/Booking';
             </span></div>
           <app-admin-booking-table [bookings]="awaitingConfirmationBookings"
                                    [DoCountdown]="true"
-                                   [ShowStatus]="false"></app-admin-booking-table>
+                                   [ShowStatus]="false"
+                                   [currentPage]="currentPage"></app-admin-booking-table>
         </div>
       </div>
 
@@ -76,7 +80,8 @@ import {BookingStatus} from '../services/booking/Booking';
           <div class="card-title" style="color: #cd7979;padding: 5px">Awaiting Payment</div>
           <app-admin-booking-table [bookings]="awaitingPayment"
                                    [DoCountdown]="true"
-                                   [ShowStatus]="false"></app-admin-booking-table>
+                                   [ShowStatus]="false"
+                                   [currentPage]="currentPage"></app-admin-booking-table>
         </div>
       </div>
 
@@ -85,7 +90,8 @@ import {BookingStatus} from '../services/booking/Booking';
           <div class="card-title" style="color: #cd7979;padding: 5px">Canceled Booking Refund Queries</div>
           <app-admin-booking-table [bookings]="queryingRefund"
                                    [DoCountdown]="false"
-                                   [ShowStatus]="false"></app-admin-booking-table>
+                                   [ShowStatus]="false"
+                                   [currentPage]="currentPage"></app-admin-booking-table>
         </div>
       </div>
 
@@ -161,7 +167,8 @@ import {BookingStatus} from '../services/booking/Booking';
 
           <app-admin-booking-table [bookings]="bookingsSearch"
                                    [DoCountdown]="false"
-                                   [ShowStatus]="true"></app-admin-booking-table>
+                                   [ShowStatus]="true"
+          [currentPage]="currentPage"></app-admin-booking-table>
         </div>
       </div>
     </div>
@@ -263,6 +270,8 @@ import {BookingStatus} from '../services/booking/Booking';
   `]
 })
 export class AdminBookingComponent implements OnInit {
+
+  currentPage = '/admin/booking';
 
   userSearchInput = '';
   bookingSearchInput = '';

@@ -7,71 +7,14 @@ import {FormControl} from '@angular/forms';
   selector: 'app-car-list',
   template: `
 
-    <div class="row" style="margin-left: -5px;
-    margin-right: -5px;">
-      <div class="col small-pad" style="margin: auto;">
-            <mat-form-field appearance="legacy" style="width: 100%; color: white; height: 35px;text-align: center;">
-              <mat-select (selectionChange)="this.onSearch()" [(value)]="this.selectedFuelTypes"
-                          [formControl]="fuelType" multiple>
-
-                <mat-option *ngFor="let fuelType of this.fuelTypes" sele [value]="fuelType.ID">{{fuelType.Description}}</mat-option>
-              </mat-select>
-              <mat-placeholder class="placeholder">Fuel Type</mat-placeholder>
-            </mat-form-field>
-      </div>
-      <div class="col small-pad" style="margin: auto;">
-        <mat-form-field appearance="legacy" style="width: 100%; color: white; height: 35px;text-align: center;">
-          <mat-select (selectionChange)="this.onSearch()" [(value)]="this.selectedGearTypes"
-                      [formControl]="gearType" multiple>
-
-
-            <mat-option *ngFor="let gearType of this.gearTypes" sele [value]="gearType.ID">{{gearType.Description}}</mat-option>
-          </mat-select>
-          <mat-placeholder class="placeholder">Gear Type</mat-placeholder>
-        </mat-form-field>
-      </div>
-      <div class="col small-pad" style="margin: auto;">
-        <mat-form-field appearance="legacy" style="width: 100%; color: white; height: 35px;text-align: center;">
-          <mat-select (selectionChange)="this.onSearch()" [(value)]="this.selectedCarTypes"
-                      [formControl]="carType" multiple>
-
-            <mat-option *ngFor="let carType of this.carTypes" sele [value]="carType.ID">{{carType.Description}}</mat-option>
-          </mat-select>
-          <mat-placeholder class="placeholder">Car Type</mat-placeholder>
-        </mat-form-field>
-      </div>
-      <div class="col small-pad" style="margin: auto;">
-        <mat-form-field appearance="legacy" style="width: 100%; color: white; height: 35px;text-align: center;">
-          <mat-select (selectionChange)="this.onSearch()" [(value)]="this.selectedCarSizes"
-                      [formControl]="size" multiple>
-
-
-            <mat-option *ngFor="let size of this.sizes" sele [value]="size.ID">{{size.Description}}</mat-option>
-          </mat-select>
-          <mat-placeholder class="placeholder">Size</mat-placeholder>
-        </mat-form-field>
-      </div>
-      <div class="col small-pad" style="margin: auto;">
-        <mat-form-field appearance="legacy" style="width: 100%; color: white; height: 35px;text-align: center;">
-          <mat-select (selectionChange)="this.onSearch()" [(value)]="this.selectedColours"
-                      [formControl]="colour" multiple>
-
-
-            <mat-option *ngFor="let colour of this.colours" sele [value]="colour.ID">{{colour.Description}}</mat-option>
-          </mat-select>
-          <mat-placeholder class="placeholder">Colour</mat-placeholder>
-        </mat-form-field>
-      </div>
-    </div>
-    <div class="row" style="margin-left: -5px;margin-bottom: 5px">
-      <div class="col small-pad" style="    display: flex;">
-        <mat-form-field appearance="legacy" style="margin: auto; width: 100%;     height: 35px;    text-align: center;">
-          <input style="color: white;" matInput [(ngModel)]="this.userSearchInput" (keyup)="onSearch()">
-          <mat-placeholder class="placeholder">Car Search</mat-placeholder>
-        </mat-form-field>
-      </div>
-
-    </div>
+    <app-car-list-search style="background-color: #32383a73;
+    width: 100%;
+    height: 100%;
+    display: block;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 8px 0px #00000026;
+    margin-bottom: 5px;" (doSearch)="this.onSearch($event)" ></app-car-list-search>
 
     <div class="card-deck" >
       <div *ngFor="let car of cars">
@@ -125,7 +68,7 @@ export class CarListComponent implements OnInit {
   selectedColours  = [];
   colours;
 
-  userSearchInput  = [];
+  userSearchInput = '';
 
 
   constructor(private carService: CarService, private navService: NavService) {
@@ -150,14 +93,14 @@ export class CarListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSearch(): void{
+  onSearch(data: any): void{
 
-    this.carService.LoadCars(this.selectedFuelTypes.join(','),
-      this.selectedGearTypes.join(','),
-      this.selectedCarTypes.join(','),
-      this.selectedCarSizes.join(','),
-      this.selectedColours.join(','),
-      this.userSearchInput);
+    this.carService.LoadCars(data[0],
+      data[1],
+      data[2],
+      data[3],
+      data[4],
+      data[5]);
 
     console.log( this.selectedFuelTypes);
 

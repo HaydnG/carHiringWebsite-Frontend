@@ -13,6 +13,7 @@ import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component
 import {BookingHistoryComponent} from '../booking-history/booking-history.component';
 import {NavService} from '../services/nav/nav.service';
 import {User} from '../services/user/User';
+import {ToolsService} from '../services/tools/tools.service';
 
 @Component({
   selector: 'app-user-card',
@@ -68,7 +69,7 @@ import {User} from '../services/user/User';
                 Age:
               </div>
               <div class="col-8 data">
-                {{this.calculateAge(this.dob)}} Years
+                {{this.toolService.calculateAge(this.dob)}} Years
               </div>
             </div>
           </div>
@@ -91,6 +92,26 @@ import {User} from '../services/user/User';
               </div>
               <div class="col-8 data" >
                 {{this.created | date:'medium'}}
+              </div>
+            </div>
+          </div>
+          <div class="col-4 book-auto">
+            <div class="row">
+              <div class="col-4" style="padding-right: 2px">
+                Bookings:
+              </div>
+              <div class="col-8 data" >
+                {{this.user.BookingCount}}
+              </div>
+            </div>
+          </div>
+          <div class="col-4 book-auto">
+            <div class="row">
+              <div class="col-4" style="padding-right: 2px">
+                BlackListed:
+              </div>
+              <div class="col-8 data" [ngClass]="this.user.Blacklisted ? 'true' : 'false'">
+                {{this.user.Blacklisted}}
               </div>
             </div>
           </div>
@@ -143,7 +164,7 @@ export class UserCardComponent implements OnInit {
   created;
 
   constructor(private router: Router, public currencyService: CurrencyService, private modalService: NgbModal,
-              private bookingService: BookingService, public navService: NavService) {
+              private bookingService: BookingService, public navService: NavService, public toolService: ToolsService) {
 
   }
 
@@ -152,11 +173,7 @@ export class UserCardComponent implements OnInit {
     this.created = new Date(this.user.CreatedAt * 1000);
   }
 
-  calculateAge(birthday): number {
-    const ageDifMs = Date.now() - birthday.getTime();
-    const ageDate = new Date(ageDifMs); // miliseconds from epoch
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-  }
+
 
 
 }

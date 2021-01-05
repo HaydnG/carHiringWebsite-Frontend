@@ -60,7 +60,7 @@ import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refun
     font-size: 15px;
     font-weight: 500;">Booking Length: {{this.adminBooking.booking.bookingLength}} days
             </div>
-            <div style="position: absolute;
+            <div *ngIf="this.adminBooking.booking.countdownDate >= 0" style="position: absolute;
     right: 0px;
     top: -15px;
     font-size: 15px;
@@ -107,11 +107,17 @@ import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refun
           </div>
 
           <div class="row">
-            <app-user-card [user]="this.adminBooking.user"></app-user-card>
+            <app-user-card (click)="this.viewUser(this.adminBooking.booking.userID)"     style="cursor: pointer" [user]="this.adminBooking.user"></app-user-card>
           </div>
 
 
           <div class="row buttonrow" >
+            <div  *ngIf="this.adminBooking.booking.processID === this.bookingConfirmed || this.adminBooking.booking.processID === this.collectedBookingStatus"  class="col" style="padding: 0px;">
+              <button  (click)="this.progressBooking(true)" class="button btn form-control deny">
+                Failed <span *ngIf="this.adminBooking.booking.processID === this.collectedBookingStatus">Return</span>
+                <span *ngIf="this.adminBooking.booking.processID === this.bookingConfirmed">Collection</span>
+              </button>
+            </div>
             <div *ngIf="this.adminBooking.booking.awaitingExtraPayment && this.adminBooking.booking.processID === this.canceledBookingStatus"  class="col" style="    padding: 0px;">
               <button (click)="this.refundResponse()" class="button btn form-control confirm">
                 Issue Refund Response
@@ -134,8 +140,9 @@ import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refun
             </div>
             <div *ngIf="this.adminBooking.booking.processID >= this.awaitingConfirmationStatus && this.adminBooking.booking.processID !== this.canceledBookingStatus &&
                                                 this.adminBooking.booking.processID !== this.completedBookingStatus" class="col" style="    padding: 0px;">
-              <button (click)="this.progressBooking()" class="button btn form-control confirm">
+              <button (click)="this.progressBooking(false)" class="button btn form-control confirm">
                 <span *ngIf="this.adminBooking.booking.processID === this.awaitingConfirmationStatus">Confirm Booking</span>
+
                 <span *ngIf="this.adminBooking.booking.processID === this.bookingConfirmed">Confirm Customer Collection</span>
                 <span *ngIf="this.adminBooking.booking.processID === this.collectedBookingStatus">Confirm Customer Return</span>
                 <span *ngIf="this.adminBooking.booking.processID === this.returnedBookingStatus">Complete Booking</span>
@@ -165,6 +172,12 @@ import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refun
       background-color: #416930;
       color: #dbdbdb;
       border-color: #325a22;
+    }
+
+    .deny {
+      background-color: #693030;
+      color: #dbdbdb;
+      border-color: #5a2222;
     }
 
     .pickup {
@@ -259,6 +272,11 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
 
   }
 
+  viewUser(id: any): void{
+    this.navService.Navigate(this.currentPage, this.bookingID, ['admin/user/view', {id}]);
+  }
+
+
   getBookings(): void{
     this.bookingSub =  this.adminService.GetBooking(this.bookingID, data => {
       this.adminBooking = data;
@@ -301,10 +319,11 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
 
   }
 
-  progressBooking(): void {
+  progressBooking(failed: boolean): void {
 
     const details = this.modalService.open(AdminProgressBookingComponent, this.ngbModalOptions);
     details.componentInstance.adminBooking = this.adminBooking;
+    details.componentInstance.failed = failed;
     details.componentInstance.reloadPage.subscribe(data => {
       this.getBookings();
     });
@@ -324,5 +343,9 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
     this.adminService.ProcessExtraPayment(this.bookingID, data => {
       this.getBookings();
     });
+  }
+
+  failedBooking(): void {
+
   }
 }

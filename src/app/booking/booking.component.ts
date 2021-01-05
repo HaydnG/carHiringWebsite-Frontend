@@ -182,6 +182,7 @@ export class BookingComponent implements OnInit, OnDestroy {
   constructor(private calendar: NgbCalendar, public userService: UserService, private activeModal: NgbActiveModal,
               public currencyService: CurrencyService, private bookingService: BookingService,  private modalService: NgbModal,
               private router: Router) {
+
     this.acceptedSubscription = this.bookingService.bookingAccepted.subscribe((value) => {
       if (value.ID !== 0 && value.processID === this.awaitingPayment){
         console.log(value);
@@ -201,6 +202,12 @@ export class BookingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if ((this.data.car.Over25 && !this.userService.over25)){
+      this.activeModal.dismiss();
+    }
+    if (this.userService.blackListed){
+      this.activeModal.dismiss();
+    }
   }
 
   ngOnDestroy(): void {

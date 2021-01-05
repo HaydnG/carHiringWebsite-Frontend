@@ -27,4 +27,10 @@ export class ToolsService {
       this.decimalPipe.transform(seconds, '2.');
   }
 
+  calculateAge(birthday): number {
+    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
+
 }

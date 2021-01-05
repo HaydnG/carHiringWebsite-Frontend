@@ -67,6 +67,11 @@ export class AdminBooking{
   user: User;
 }
 
+export class UserBundle{
+  user: User;
+  bookings: BookingColumn[];
+}
+
 
 
 

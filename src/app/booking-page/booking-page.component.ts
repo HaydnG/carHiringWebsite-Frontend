@@ -14,8 +14,20 @@ import {Subscription} from 'rxjs';
     padding: 2px 0px 0px 0px;
     background-color: #252a2b;">
 
-      <div style="    border-color: #6f6f6f;"  class="card-header">
-        <h2>My Bookings page</h2>
+      <div style="    border-color: #6f6f6f;" class="card-header">
+        <div class="col">
+          <div class="row"><h1>My Bookings page</h1></div>
+          <div class="row" *ngIf="this.hasBookings();">
+            <div style="text-align: center; margin: auto; font-size: 18px; font-weight: 500;color: #7bab7b">
+              *On the day of collection, please bring a <strong style="color: #bc4e4e">PhotoCard Driving License</strong> and 1 other form
+              of identity.
+              <br>(Either a <strong style="color: #bc4e4e">Recent Utility Bill</strong> within 3 months, or a <strong
+              style="color: #bc4e4e">Council Tax Statement</strong>)
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
       <div class="card-body" style="    padding-top: 5px;" *ngIf="this.hasBookings(); else elseBlock">
@@ -26,7 +38,8 @@ import {Subscription} from 'rxjs';
               <div class="row">
                 <h5>{{this.bookingService.statusNames[this.keys[object.key]]}}</h5>
               </div>
-              <div class="row pagebook" *ngFor="let booking of object.value" [class.canceled]="this.keys[object.key] == this.bookingService.statuses.CanceledBooking">
+              <div class="row pagebook" *ngFor="let booking of object.value"
+                   [class.canceled]="this.keys[object.key] == this.bookingService.statuses.CanceledBooking">
                 <app-booking-card
                   [booking]="booking" [currentPage]="this.currentPage" [currentPageID]="this.currentID"
                 ></app-booking-card>
@@ -48,7 +61,7 @@ import {Subscription} from 'rxjs';
       </ng-template>
 
     </div>
-    `,
+  `,
   styles: [`
     .pagebook{
       margin: 5px 10px 5px 10px;
