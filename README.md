@@ -3,7 +3,23 @@
 ## Website Images
 
 ### Car Search
-![car search](./readme%20src/CarSearch.gif)
+
+<div>
+  <img src="./readme%20src/CarSearch.gif" width="95%">
+</div>
+
+### Car Page
+<div>
+  <img src="./readme%20src/car%20page.png" width="48.77%">
+  <img src="./readme%20src/car%20page%202.png" width="49%">
+</div>
+
+### Place Booking
+<div>
+  <img src="./readme%20src/create%20booking.png" width="45%">
+  <img src="./readme%20src/make%20booking%20payment.png" width="53%">
+</div>
+
 
 
 ## Running and building project
