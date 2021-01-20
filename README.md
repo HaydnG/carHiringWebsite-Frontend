@@ -1,5 +1,27 @@
 # Car Hiring website frontend
 
+This project consists of a fully functioning car Rental website.
+
+Frontend developed in angular typescript.
+
+Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
+
+## Features
+
+* Login, Registration
+* Car search, via name and features
+* Car selection, date range selection, accesory selection
+* View Bookings screen
+* Fully functioning advanced booking status system
+* Edit Booking options
+* Advance view booking history function
+* Bespoke session managment system
+* Booking Cancelation, Collection, Return
+* Booking extension System
+* Advanced Admin features - Car, users, bookings, accesories
+* Car creation with advance image selection features
+
+
 ## Website Images
 
 ### Car Search
