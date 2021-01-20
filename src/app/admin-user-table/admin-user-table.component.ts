@@ -56,6 +56,10 @@ import {User} from '../services/user/User';
         <th class="header" mat-header-cell *matHeaderCellDef> Admin </th>
         <td [ngClass]="user.Admin ? 'true' : 'false'" class="data" mat-cell *matCellDef="let user"> {{user.Admin}}</td>
       </ng-container>
+      <ng-container matColumnDef="Disabled">
+        <th class="header" mat-header-cell *matHeaderCellDef> Disabled </th>
+        <td [ngClass]="user.Disabled ? 'true' : 'false'" class="data" mat-cell *matCellDef="let user"> {{user.Disabled}}</td>
+      </ng-container>
       <ng-container matColumnDef="Booking Count">
         <th class="header" mat-header-cell *matHeaderCellDef> Booking Count </th>
         <td class="data" mat-cell *matCellDef="let user"> {{user.BookingCount}}</td>
@@ -135,7 +139,7 @@ import {User} from '../services/user/User';
 })
 export class AdminUserTableComponent implements OnInit, OnChanges, OnDestroy {
 
-  displayedColumns: string[] = ['ID', 'FirstName', 'Names', 'Email', 'Created', 'DOB', 'Black Listed', 'Repeat', 'Admin', 'Booking Count'];
+  displayedColumns: string[] = ['ID', 'FirstName', 'Names', 'Email', 'Created', 'DOB', 'Black Listed', 'Repeat', 'Admin', 'Disabled', 'Booking Count'];
 
   @Input()
   users: User[];

@@ -2,7 +2,7 @@ import {Injectable, Directive} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {observable, Observable, of, Subject} from 'rxjs';
 import {TimeRange} from '../../car-page/TimeRange';
-import {Booking, Status, BookingStatus} from './Booking';
+import {Booking, Status, BookingStatus, ExtensionResponse} from './Booking';
 import {Accessory, Car} from '../car/Car';
 import {catchError} from 'rxjs/operators';
 import {UserService} from '../user/user.service';
@@ -34,6 +34,9 @@ export class BookingService {
     12:  'Collected',
     13:  'Returned',
     14:  'Completed',
+    15: 'Extension Requested',
+    16:	'Extension Granted',
+    17:	'Extension Refused',
   };
 
 
@@ -51,7 +54,7 @@ export class BookingService {
     const end = new Date(input.end.year, input.end.month - 1, input.end.day).getTime() / 1000;
 
     const lateReturn = input.nextDayBooked.value ? false : input.lateReturn.value;
-    const extended = input.nextDayBooked.value ? false : input.extension.value;
+    const fullDay = input.nextDayBooked.value ? false : input.fullDay.value;
 
 
     if (isNaN(start) || isNaN(end) || start > end){
@@ -59,7 +62,7 @@ export class BookingService {
     }
 
     this.http.get<Booking>(this.url + 'create?start=' + start + '&end=' + end + '&carid=' + input.car.ID +
-      '&extension=' + extended + '&accessories=' + Object.keys(selectedAccesories).map((k) => k).join(',')
+      '&fullday=' + fullDay + '&accessories=' + Object.keys(selectedAccesories).map((k) => k).join(',')
       + '&days=' + input.daysSelected.value + '&late=' + lateReturn,
       { withCredentials: true }).pipe(catchError(error => {
       this.userService.handleError(error);
@@ -70,6 +73,14 @@ export class BookingService {
     });
   }
 
+  PayExtension(bookingID: number, callback?: (value: Booking) => void): void{
+    this.http.get<Booking>(this.url + 'payExtension?bookingID=' + bookingID,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<Booking>();
+    })).subscribe(callback);
+  }
+
   MakePayment(bookingID: number, callback?: (value: Booking) => void): void{
     this.http.get<Booking>(this.url + 'makePayment?bookingID=' + bookingID,
       { withCredentials: true }).pipe(catchError(error => {
@@ -78,15 +89,24 @@ export class BookingService {
     })).subscribe(callback);
   }
 
-  EditBooking(bookingID: number, remove: Accessory[], add: Accessory[], lateReturn: boolean, extension: boolean,
+  EditBooking(bookingID: number, remove: Accessory[], add: Accessory[], lateReturn: boolean, fullDay: boolean,
               callback?: (value: any) => void): void{
     this.http.get<Booking>(this.url + 'editBooking?bookingID=' + bookingID + '&remove=' + Object.values(remove).map((k) => k.ID).join(',')
-      + '&add=' + Object.values(add).map((k) => k.ID).join(',') + '&lateReturn=' + lateReturn + '&extension=' + extension,
+      + '&add=' + Object.values(add).map((k) => k.ID).join(',') + '&lateReturn=' + lateReturn + '&fullday=' + fullDay,
       { withCredentials: true }).pipe(catchError(error => {
       this.userService.handleError(error);
       return new Observable<Booking>();
     })).subscribe(callback);
   }
+  ExtendBooking(bookingID: number, days: number, fullDay: boolean, lateReturn: boolean,
+                   callback?: (value: any) => void): void{
+    this.http.get<Booking>(this.url + 'extendBooking?bookingID=' + bookingID + '&days=' + days + '&fullDay=' + fullDay + '&lateReturn=' + lateReturn,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<Booking>();
+    })).subscribe(callback);
+  }
+
 
   GetUsersBookings(): void{
     if (!this.userService.loggedIn){
@@ -101,6 +121,14 @@ export class BookingService {
     });
   }
 
+  CountExtensionDays(id: number, callback?: (value: any) => void): void{
+    this.http.get<ExtensionResponse>(this.url + 'getExtensionDays?bookingID=' + id,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<ExtensionResponse>();
+    })).subscribe(callback);
+  }
+
   CancelBooking(id: number, callback?: (value: any) => void): void{
     this.http.get<any>(this.url + 'cancelBooking?bookingID=' + id,
       { withCredentials: true }).pipe(catchError(error => {
@@ -108,6 +136,7 @@ export class BookingService {
       return new Observable<any>();
     })).subscribe(callback);
   }
+
 
   GetHistory(id: number, callback?: (value: any) => void): void{
     this.http.get<Status>(this.url + 'history?bookingID=' + id,

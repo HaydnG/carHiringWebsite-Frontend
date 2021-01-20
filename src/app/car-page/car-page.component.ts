@@ -43,7 +43,8 @@ import {ToolsService} from '../services/tools/tools.service';
     text-shadow: 2px 5px 15px #000000;
     width: 46px;
     height: 26px;
-    border-radius: 8px;">&larr;</div>
+    border-radius: 8px;">&larr;
+    </div>
 
     <div class="container-fluid" style="        border-radius: 8px;
     color: rgb(206 206 206);
@@ -54,7 +55,7 @@ import {ToolsService} from '../services/tools/tools.service';
 
         <div class="col-lg-4 order-lg-1 order-1" style="padding: 0px 6px 3px 3px;
     max-width: 324px;">
-          <img class="car-img" src="http://5.70.170.197:8080/cars/{{this.car.Image}}.jpg">
+          <img class="car-img" src="http://localhost:8080/cars/{{this.car.Image}}.jpg">
         </div>
         <div class="col-lg-8 order-lg-2 order-2" style="min-height: 238px;">
           <div class="row car-title">
@@ -67,7 +68,8 @@ import {ToolsService} from '../services/tools/tools.service';
     line-height: 14px;
     margin-bottom: 4px;
     margin-top: 8px;
-    min-width: 180px;"> You must be over 25 to rent this car.</div>
+    min-width: 180px;"> You must be over 25 to rent this vehicle.
+              </div>
             </div>
           </div>
           <hr>
@@ -105,7 +107,7 @@ import {ToolsService} from '../services/tools/tools.service';
                       (onDatePicked)="updateCalenders($event)"
                       (onReset)="resetDates()">
         </app-calendar>
-        <div class="col-2 info" *ngIf="!this.screenService.isScreenSmall" style="    background-color: #252a2b;
+        <div class="col-2 info" [class.hidden]="this.screenService.isScreenSmall" style="    background-color: #252a2b;
     left: -4px;
     height: 457px;
     top: -1px;
@@ -124,7 +126,7 @@ import {ToolsService} from '../services/tools/tools.service';
           font-size: 15px;    display: inline;">
                 Day(s):
               </div>
-              <ng-template #maxday>Max booking (2 weeks) Extensions increase days to show price increase</ng-template>
+              <ng-template #maxday>Max booking (2 weeks) fullDays increase days to show price increase</ng-template>
               <div style=" margin-left: 5px;display: inline;font-weight: 700;"> {{this.getAmountofdays()}} <span [ngbTooltip]="maxday"
                                                                                                                  placement="top"
                                                                                                                  style="font-size: 12px;
@@ -144,27 +146,29 @@ import {ToolsService} from '../services/tools/tools.service';
               <div style=" margin-left: 5px;display: inline;font-weight: 700;">Pickup: 8:00am</div>
             </div>
             <div style="    text-align: center;margin-top: 5px;">
-              <div style=" margin-left: 5px;display: inline;font-weight: 700;">Return: <span
-                *ngIf="!this.extension.value && !this.lateReturn.value || this.isNextDayBooked()">1:00pm</span>
-                <span *ngIf="this.extension.value && !this.lateReturn.value && !this.isNextDayBooked()">4:00pm</span>
-                <span *ngIf="this.lateReturn.value && !this.isNextDayBooked()">>6:00pm</span></div>
+              <div style=" margin-left: 5px;display: inline;font-weight: 700;">
+                Return: {{this.toolService.getTimeString(this.fullDay.value, this.lateReturn.value, this.isNextDayBooked())}}
+              </div>
             </div>
             <ng-template #nextday>These options are only availble if the next day is not booked</ng-template>
 
             <div class="row" [disableTooltip]="!this.isNextDayBooked()" [ngbTooltip]="nextday">
-              <ng-template #extensionTIP>Extend booking until 4PM (Costs an additional half a day)</ng-template>
-              <div [disableTooltip]="this.isNextDayBooked()" [ngbTooltip]="extensionTIP" placement="bottom" [class.col-7]="this.userService.repeat"
+              <ng-template #fullDayTIP>Increase last day to the full duration</ng-template>
+              <div [disableTooltip]="this.isNextDayBooked()" [ngbTooltip]="fullDayTIP" placement="bottom"
+                   [class.col-7]="this.userService.repeat"
                    [class.col]="!this.userService.repeat" style="  padding: 0px 0px 0px 10px;  text-align: center;margin-top: 2px;">
-                <input [disabled]="this.lateReturn.value || this.isNextDayBooked()" id="checkbox_extension" type="checkbox"
-                       [(ngModel)]="this.extension.value">
-                <label class="checklabel" for="checkbox_extension" style="font-size: 14px; margin-left: 4px;   margin-bottom: 0px;">Extension</label>
+                <input [disabled]="this.lateReturn.value || this.isNextDayBooked()" id="checkbox_fullDay" type="checkbox"
+                       [(ngModel)]="this.fullDay.value">
+                <label class="checklabel" for="checkbox_fullDay" style="font-size: 14px; margin-left: 4px;   margin-bottom: 0px;">Full
+                  Day</label>
               </div>
               <ng-template #lateReturnTIP>This option is only for repeat customers.
                 Option to drop keys through letterbox after 6:00PM.
               </ng-template>
-              <div [disableTooltip]="this.isNextDayBooked()"  [ngbTooltip]="lateReturnTIP" placement="bottom" class="col-5"
+              <div [disableTooltip]="this.isNextDayBooked()" [ngbTooltip]="lateReturnTIP" placement="bottom" class="col-5"
                    style="  padding: 0px 10px 0px 0px;  text-align: center;margin-top: 2px;" *ngIf="this.userService.repeat">
-                <input [disabled]="this.isNextDayBooked()" id="checkbox_late" type="checkbox" [(ngModel)]="this.lateReturn.value" (change)="this.lateReturnEvent()">
+                <input [disabled]="this.isNextDayBooked()" id="checkbox_late" type="checkbox" [(ngModel)]="this.lateReturn.value"
+                       (change)="this.lateReturnEvent()">
 
                 <label class="checklabel" for="checkbox_late" style="font-size: 14px;margin-left: 4px;    margin-bottom: 0px;">Late</label>
               </div>
@@ -239,11 +243,16 @@ import {ToolsService} from '../services/tools/tools.service';
                 </div>
               </div>
             </div>
-            <div class="col-3" [disableTooltip]="(!(this.car.Over25 && (!this.userService.over25 && this.userService.loggedIn))) && !this.userService.blackListed" [ngbTooltip]="over25" placement="top">
-              <ng-template #over25> <span *ngIf="!this.userService.blackListed">You must be over 25 to rent out this car, due to insurance.</span>
+            <div class="col-3"
+                 [disableTooltip]="(!(this.car.Over25 && (!this.userService.over25 && this.userService.loggedIn))) && !this.userService.blackListed"
+                 [ngbTooltip]="over25" placement="top">
+              <ng-template #over25><span
+                *ngIf="!this.userService.blackListed">You must be over 25 to rent out this car, due to insurance.</span>
                 <span *ngIf="this.userService.blackListed">You have been blackListed from making bookings. Please contact support.</span>
               </ng-template>
-              <button [disabled]="this.car.Over25 && (!this.userService.over25 && this.userService.loggedIn) || this.userService.blackListed" class="button btn btn-primary form-control" type="submit" style="padding: 0px 0px 0px 0px;
+              <button
+                [disabled]="this.car.Over25 && (!this.userService.over25 && this.userService.loggedIn) || this.userService.blackListed"
+                class="button btn btn-primary form-control" type="submit" style="padding: 0px 0px 0px 0px;
     font-size: 15px;
     height: 38px;
     min-width: 59px;">Book car
@@ -267,6 +276,10 @@ import {ToolsService} from '../services/tools/tools.service';
   </span>
     </ng-template>`,
   styles: [`
+    .hidden{
+      display: none !important;
+    }
+
     .priceTitle {
       text-align: center;
       font-size: 15px;
@@ -482,7 +495,7 @@ export class CarPageComponent implements OnInit, OnDestroy {
   @Input()
   car: Car;
 
-  extension = {value: false } ;
+  fullDay = {value: false } ;
   lateReturn = {value: false } ;
   nextDayBooked = {value: false } ;
   totalCost = {value: '' } ;
@@ -704,7 +717,7 @@ export class CarPageComponent implements OnInit, OnDestroy {
       daysSelected: this.daysSelected,
       totalCost: this.totalCost,
       car: this.car,
-      extension: this.extension,
+      fullDay: this.fullDay,
       lateReturn: this.lateReturn,
       nextDayBooked: this.nextDayBooked};
 
@@ -832,16 +845,9 @@ export class CarPageComponent implements OnInit, OnDestroy {
     const start = new Date(this.dateRangeForm.value.start.year, this.dateRangeForm.value.start.month - 1, this.dateRangeForm.value.start.day).getTime();
     const end = new Date(this.dateRangeForm.value.end.year, this.dateRangeForm.value.end.month - 1, this.dateRangeForm.value.end.day + 1).getTime();
 
-    let value = (( end - start ) / 1000 / 60 / 60 / 24);
+    let value = (( end - start ) / 1000 / 60 / 60 / 24) - 0.5;
 
-    if ((!this.extension.value && !this.lateReturn.value) || this.isNextDayBooked()){
-      value = value - 0.5;
-    }
-
-    if (this.lateReturn.value && !this.isNextDayBooked()){
-      value = value + 0.1;
-    }
-
+    value += this.toolService.getExtensionDays(this.fullDay.value, this.lateReturn.value, this.isNextDayBooked());
 
     if (value < 0 || isNaN(value) || value === undefined){
       this.daysSelected.value = 0;

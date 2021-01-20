@@ -12,11 +12,13 @@ import {AdminUserComponent} from './admin-user-page/admin-user-page.component';
 import {AdminAccessoriesComponent} from './admin-accessories-page/admin-accessories-page.component';
 import {AdminBookingViewPageComponent} from './admin-booking-view-page/admin-booking-view-page.component';
 import {AdminUserViewPageComponent} from './admin-user-view-page/admin-user-view-page.component';
+import {UserViewPageComponent} from './user-view-page/user-view-page.component';
 
 
 const routes: Routes = [
   { path: '', component: CarListComponent, canActivate: [LoggedInGuard], data: {loggedInRequired: false, adminRequired: false}},
   { path: 'car', component: CarPageComponent, canActivate: [LoggedInGuard], data: {loggedInRequired: false, adminRequired: false} },
+  { path: 'user', component: UserViewPageComponent, canActivate: [LoggedInGuard], data: {loggedInRequired: true, adminRequired: false} },
   { path: 'booking', component: BookingPageComponent, canActivate: [LoggedInGuard], data: {loggedInRequired: true, adminRequired: false}},
   { path: 'admin', component: AdminPageComponent, canActivate: [LoggedInGuard], data: {loggedInRequired: true, adminRequired: true}},
   { path: 'admin/booking', component: AdminBookingComponent, canActivate: [LoggedInGuard], data: {loggedInRequired: true, adminRequired: true}},

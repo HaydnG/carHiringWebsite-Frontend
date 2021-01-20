@@ -15,6 +15,7 @@ export class UserStat {
   RepeatUsersCount: number;
   UserCount: number;
   ActiveUsers: number;
+  DisabledCount: number;
 }
 
 export class CarStat {
@@ -39,7 +40,7 @@ export class BookingColumn {
   totalCost: number;
   amountPaid: number;
   lateReturn: boolean;
-  extension: boolean;
+  fullDay: boolean;
   created: number;
   bookingLength: number;
   CarDescription: string;

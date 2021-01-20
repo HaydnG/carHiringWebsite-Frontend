@@ -7,15 +7,16 @@ import {ToolsService} from '../services/tools/tools.service';
 
 
 @Component({
-  selector: 'app-booking-details',
+  selector: 'app-extension-payment',
   template: `
     <div class="modal-header" xmlns="http://www.w3.org/1999/html">
-      <h5 class="modal-title" id="exampleModalLabel" style="text-align: center;
-    width: 93%;
-    font-size: 30px;">Details</h5>
-      <button type="button" class="close" (click)="this.closeDetails()" data-dismiss="modal" aria-label="Close">
+      <button type="button" class="close" aria-label="Close" (click)="closePayment()">
         <span aria-hidden="true">&times;</span>
       </button>
+      <div class="col">
+        <div class="row" style="
+    text-align: center;"><h1 style="text-align: center;    margin: auto;">Extension Payment</h1></div>
+      </div>
       <HR>
     </div>
 
@@ -25,6 +26,9 @@ import {ToolsService} from '../services/tools/tools.service';
     padding: 10px 20px  10px  20px">
       <div class="col">
         <div class="row" style="padding: 5px 25px 5px 25px;">
+          <div style="position: absolute; font-size: 14px;
+                    right: 5px;">BookingID: <span style="font-weight: bold">{{this.bookingData.ID}} </span>
+          </div>
           <div class="col">
             <div class="row header">
               Collection:
@@ -123,13 +127,14 @@ import {ToolsService} from '../services/tools/tools.service';
             <div class="col-6 paymentrow">
               <div class="row payment">
                 <span
-                  class="money"> {{this.toolService.round(this.bookingData.bookingLength - this.toolService.getExtensionDays(this.bookingData.fullDay, this.bookingData.lateReturn, false))}}
+                  class="money">  {{this.toolService.round(this.bookingData.bookingLength - this.toolService.getExtensionDays(this.bookingData.fullDay, this.bookingData.lateReturn, false))}}
                   day(s)</span>
               </div>
               <div class="row payment calc">
                 <span *ngIf="this.bookingData.fullDay" class=""> Full Day</span>
                 <span *ngIf="this.bookingData.lateReturn"
-                      class=""> Late Return</span>(+{{this.toolService.getExtensionDays(this.bookingData.fullDay, this.bookingData.lateReturn, false)}})
+                      class=""> Late Return</span>(+{{this.toolService.getExtensionDays(this.bookingData.fullDay, this.bookingData.lateReturn, false)}}
+                )
               </div>
               <div class="row payment">
                 <span class="money"> {{this.bookingData.bookingLength}} day(s)</span>
@@ -141,6 +146,29 @@ import {ToolsService} from '../services/tools/tools.service';
             </div>
           </div>
         </div>
+
+        <div class="row form-group" style="    width: 80%;
+    margin: auto;">
+          <div class="col">
+            <input id="nothingOne" class="form-control" placeholder="Payment details (Fake for example)">
+          </div>
+
+        </div>
+        <div class="row form-group" style="    width: 80%;
+             margin: auto;">
+          <div class="col">
+            <input id="nothingTwo" class="form-control" placeholder="Payment details (Fake for example)">
+          </div>
+
+        </div>
+
+        <div class="form-group row" style="margin-top: 10px;">
+          <div class="col">
+            <button class="button btn btn-primary form-control" (click)="onSubmit()">Make payment
+              ({{this.currencyService.FormatValue(this.bookingData.totalCost - this.bookingData.amountPaid)}})
+            </button>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -148,7 +176,7 @@ import {ToolsService} from '../services/tools/tools.service';
   `,
   styles: [`
     .calc{
-      font-weight: 500;
+      font-weight: bold;
       font-size: 13px;
       line-height: 24px;
     }
@@ -163,7 +191,7 @@ import {ToolsService} from '../services/tools/tools.service';
     }
 
     .money{
-      font-weight: 500;
+      font-weight: bold;
       font-size: 16px;
     }
 
@@ -173,11 +201,11 @@ import {ToolsService} from '../services/tools/tools.service';
       margin: auto;
     }
         .header{
-          font-weight: 500;
+          font-weight: bold;
         }
 
         .time{
-          font-weight: 500;
+          font-weight: bold;
           font-size: 14px;
           position: relative;
           left: 3px;
@@ -194,9 +222,18 @@ import {ToolsService} from '../services/tools/tools.service';
         .end{
           color: darkred;
         }
+        .close {
+          padding: 2px;
+          position: absolute;
+          right: 5%;
+          top: 4%;
+          font-size: 28px;
+          z-index: 100;
+        }
+
         .dataTag{
           font-size: 14px;
-          font-weight: 500;
+          font-weight: bold;
         }
         .titleTag{
           font-size: 15px;
@@ -211,7 +248,7 @@ import {ToolsService} from '../services/tools/tools.service';
 
   `]
 })
-export class DetailsComponent implements OnInit {
+export class ExtensionPaymentComponent implements OnInit {
 
 
   bookingData: Booking;
@@ -236,8 +273,6 @@ export class DetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.bookingData);
-
     this.startDate = new Date(this.bookingData.start * 1000);
     this.endDate = new Date(this.bookingData.end * 1000);
 
@@ -247,12 +282,12 @@ export class DetailsComponent implements OnInit {
   }
 
 
-  closeDetails(): void{
+  closePayment(): void{
     this.activeModal.dismiss();
   }
 
   onSubmit(): void {
-    this.bookingService.MakePayment(this.bookingData.ID, data => {
+    this.bookingService.PayExtension(this.bookingData.ID, data => {
       this.activeModal.dismiss();
       this.bookingService.GetUsersBookings();
 

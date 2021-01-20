@@ -3,6 +3,7 @@ import {NgbActiveModal, NgbCalendar, NgbDate, NgbModal} from '@ng-bootstrap/ng-b
 import {CurrencyService} from '../services/currency/currency.service';
 import {BookingService} from '../services/booking/booking.service';
 import {Booking} from '../services/booking/Booking';
+import {ToolsService} from '../services/tools/tools.service';
 
 
 @Component({
@@ -18,7 +19,6 @@ import {Booking} from '../services/booking/Booking';
       </div>
       <HR>
     </div>
-
 
 
     <div class="modal-body" style="position: relative;
@@ -42,14 +42,12 @@ import {Booking} from '../services/booking/Booking';
               Return:
             </div>
             <div class="row">
-              {{this.endFormatted}} - <span class="time end" *ngIf="!this.bookingData.extension && !this.bookingData.lateReturn"> At 1:00pm</span>
-                                      <span class="time end"*ngIf="this.bookingData.extension && !this.bookingData.lateReturn"> At 4:00pm</span>
-                                      <span class="time end"*ngIf="!this.bookingData.extension && this.bookingData.lateReturn"> After 6:00pm</span>
+              {{this.endFormatted}} - <span class="time end">{{this.toolService.getTimeString(this.bookingData.fullDay, this.bookingData.lateReturn, false)}}</span>
             </div>
           </div>
         </div>
         <HR>
-        <div class="row" style="text-align: center;" >
+        <div class="row" style="text-align: center;">
           <div class="col titleTag">Model: <span class="dataTag"> {{this.bookingData.carData.CarType.Description}}</span></div>
           <div class="col-3 titleTag">Seats: <span class="dataTag">{{this.bookingData.carData.Seats}}</span></div>
           <div class="col titleTag">Colour: <span class="dataTag">{{this.bookingData.carData.Colour.Description}}</span></div>
@@ -65,7 +63,9 @@ import {Booking} from '../services/booking/Booking';
             <div class="row">
               <h4 style="    text-align: center;
     margin: auto;
-    margin-bottom: 9px;">Accessories<HR></h4>
+    margin-bottom: 9px;">Accessories
+                <HR>
+              </h4>
             </div>
             <div class="row" style="    margin-bottom: 5px;">
               <div class="col" style="display: contents;">
@@ -87,8 +87,8 @@ import {Booking} from '../services/booking/Booking';
               <div class="row payment" style="font-size: 14px;">
                 Cost * Days:
               </div>
-              <div class="row payment"> </div>
-              <div class="row payment"> </div>
+              <div class="row payment"></div>
+              <div class="row payment"></div>
               <div class="row payment">
                 Total Cost:
               </div>
@@ -98,7 +98,8 @@ import {Booking} from '../services/booking/Booking';
                 <span class="money"> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}}</span>
               </div>
               <div class="row payment calc">
-                <span class=""> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}} x {{this.bookingData.bookingLength}}</span>
+                <span class=""> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}}
+                  x {{this.bookingData.bookingLength}}</span>
               </div>
               <div class="row payment"></div>
               <div class="row payment"></div>
@@ -107,7 +108,7 @@ import {Booking} from '../services/booking/Booking';
               </div>
             </div>
           </div>
-          <div class="col" style="    display: flex;">
+          <div class="col-7" style="    display: flex;">
             <div class="col-6 paymentrow">
               <div class="row payment">
                 Days booked:
@@ -125,12 +126,15 @@ import {Booking} from '../services/booking/Booking';
             </div>
             <div class="col-6 paymentrow">
               <div class="row payment">
-                <span class="money"> {{this.getBookingLength()}} day(s)</span>
+                <span
+                  class="money">  {{this.toolService.round(this.bookingData.bookingLength - this.toolService.getExtensionDays(this.bookingData.fullDay, this.bookingData.lateReturn, false))}}
+                  day(s)</span>
               </div>
-              <div class="row payment calc" >
-                <span *ngIf="this.bookingData.extension" class=""> Extension(+0.5)</span>
-                <span *ngIf="this.bookingData.lateReturn"class=""> LateReturn(+0.6)</span>
-                <span *ngIf="!this.bookingData.lateReturn && !this.bookingData.extension"class=""> 0</span>
+              <div class="row payment calc">
+                <span *ngIf="this.bookingData.fullDay" class=""> Full Day</span>
+                <span *ngIf="this.bookingData.lateReturn"
+                      class=""> Late Return</span>(+{{this.toolService.getExtensionDays(this.bookingData.fullDay, this.bookingData.lateReturn, false)}}
+                )
               </div>
               <div class="row payment">
                 <span class="money"> {{this.bookingData.bookingLength}} day(s)</span>
@@ -160,7 +164,9 @@ import {Booking} from '../services/booking/Booking';
 
         <div class="form-group row" style="margin-top: 10px;">
           <div class="col">
-            <button class="button btn btn-primary form-control" (click)="onSubmit()" >Make payment ({{this.currencyService.FormatValue(this.bookingData.totalCost)}})</button>
+            <button class="button btn btn-primary form-control" (click)="onSubmit()">Make payment
+              ({{this.currencyService.FormatValue(this.bookingData.totalCost)}})
+            </button>
           </div>
         </div>
       </div>
@@ -207,6 +213,7 @@ import {Booking} from '../services/booking/Booking';
         }
 
         hr{
+          border-color: #5a5a5a;
           margin: 2px 0px 2px 0px;
         }
         .start{
@@ -255,7 +262,7 @@ export class PaymentComponent implements OnInit {
   endFormatted: string;
 
   constructor(private activeModal: NgbActiveModal, public currencyService: CurrencyService,
-              private modalService: NgbModal, private bookingService: BookingService) {
+              private modalService: NgbModal, private bookingService: BookingService, public toolService: ToolsService) {
 
 
     this.ngbModalOptions = {
@@ -274,16 +281,6 @@ export class PaymentComponent implements OnInit {
 
   }
 
-  getBookingLength(): string{
-    let length = this.bookingData.bookingLength;
-
-    if (this.bookingData.extension){
-      length = length - 0.5;
-    }else if (this.bookingData.lateReturn){
-      length = length - 0.6;
-    }
-    return length.toFixed(1);
-  }
 
   closePayment(): void{
     this.activeModal.dismiss();

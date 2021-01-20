@@ -471,12 +471,13 @@ export class CalendarHComponent implements OnInit {
   setStartAndEnd(start: number, end: number, fallback: number): void{
     let invalid = false;
 
-    this.bookings.forEach(( range ) => {
+    this.bookings.some(( range ) => {
       if (start < range.Start && end > range.End){
         invalid = true;
         console.log('Invalid range');
-        return;
+        return true;
       }
+      return false;
     });
 
     if (invalid){

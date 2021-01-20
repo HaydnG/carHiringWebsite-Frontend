@@ -44,7 +44,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
                       Welcome back {{this.user.FirstName}}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" [routerLink]="['']">Account details</a>
+                      <a class="dropdown-item" [routerLink]="['user']">Account details</a>
                       <a class="dropdown-item" [routerLink]="['']">Ask for help</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" (click)="logout()"> Logout</a>

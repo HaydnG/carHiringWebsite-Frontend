@@ -20,6 +20,7 @@ export class UserService {
   isAdmin = false;
   over25 = false;
   blackListed = false;
+  userID = 0;
 
 
   constructor(private snackBar: MatSnackBar, private http: HttpClient, private cookieService: CookieService, private router: Router, private toolService: ToolsService) {}
@@ -29,12 +30,13 @@ export class UserService {
       this.handleError(error);
       return new Observable<User>();
     })).subscribe(data => {
-      this.userChange.next(data);
+
 
       if (data.SessionToken !== undefined && data.SessionToken !== ''){
         const dob = new Date(data.DOB * 1000);
         this.over25 = this.toolService.calculateAge(dob) >= 25;
         this.blackListed =  data.Blacklisted;
+        this.userID = data.ID;
         if (data.Blacklisted){
           this.snackBar.openFromComponent(BlackListedComponent, {
             duration: 3000,
@@ -51,6 +53,7 @@ export class UserService {
           callback();
         }
       }
+      this.userChange.next(data);
 
       console.log(data);
     });
@@ -61,12 +64,14 @@ export class UserService {
       this.handleError(error);
       return new Observable<User>();
     })).subscribe(data => {
-      this.userChange.next(data);
+
       this.loggedIn = false;
       this.repeat = false;
       this.isAdmin = false;
       this.over25 = false;
       this.blackListed = false;
+      this.userID = 0;
+      this.userChange.next(data);
       this.cookieService.delete('session-token', '/');
       console.log(data);
     });
@@ -96,6 +101,7 @@ export class UserService {
       this.loggedIn = data.SessionToken.length > 10;
       this.isAdmin = data.Admin;
       this.blackListed =  data.Blacklisted;
+      this.userID = data.ID;
       this.userChange.next(data);
       const dob = new Date(data.DOB * 1000);
       this.over25 = this.toolService.calculateAge(dob) >= 25;
@@ -106,6 +112,29 @@ export class UserService {
           verticalPosition: 'top'
         });
       }
+    });
+  }
+
+  Get(callback: any): void {
+    this.http.get<User>(this.url + 'get', { withCredentials: true }).pipe(catchError(error => {
+      this.handleError(error);
+      return new Observable<User>();
+    })).subscribe(data => {
+      this.repeat = data.Repeat;
+      this.loggedIn = data.SessionToken.length > 10;
+      this.isAdmin = data.Admin;
+      this.blackListed =  data.Blacklisted;
+      this.userID = data.ID;
+      const dob = new Date(data.DOB * 1000);
+      this.over25 = this.toolService.calculateAge(dob) >= 25;
+      if (data.Blacklisted){
+
+        this.snackBar.openFromComponent(BlackListedComponent, {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+      }
+      callback(data);
     });
   }
 

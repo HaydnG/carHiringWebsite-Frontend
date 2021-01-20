@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CarService} from '../services/car/car.service';
 import {AdminService} from '../services/admin/admin.service';
 import {IDropdownSettings} from 'ng-multiselect-dropdown/multiselect.model';
 import {FormControl} from '@angular/forms';
 import {NavService} from '../services/nav/nav.service';
 import {BookingStatus} from '../services/booking/Booking';
+import {ToolsService} from '../services/tools/tools.service';
+import {Subscription, timer} from 'rxjs';
 
 @Component({
   selector: 'app-admin-booking-page',
@@ -26,6 +28,20 @@ import {BookingStatus} from '../services/booking/Booking';
     text-underline-offset: 1px;
     text-shadow: 2px 5px 15px #000000;
 }">Booking Management</h1>
+    <button type="button" class="btn btn-default btn-sm" (click)="this.loadbookings();" style="    position: absolute;
+    right: 35px;
+    color: white;
+    width: 100px;
+    top: 75px;
+    padding-right: 60px;
+    padding-top: 2px;
+    height: 30px;">
+      <span class="material-icons" style="    position: absolute;
+    left: 1px;
+    top: 2px;">refresh</span><span style="top: 3px;
+    left: 30px;
+    position: absolute;">Refresh ({{this.seconds}})</span>
+    </button>
     <div class="card-deck" style="    justify-content: center;">
 
 
@@ -269,7 +285,7 @@ import {BookingStatus} from '../services/booking/Booking';
     }
   `]
 })
-export class AdminBookingComponent implements OnInit {
+export class AdminBookingComponent implements OnInit, OnDestroy {
 
   currentPage = '/admin/booking';
 
@@ -288,8 +304,33 @@ export class AdminBookingComponent implements OnInit {
   statuses;
   statusesControl = new FormControl();
   selectedStatuses;
+  countDown: Subscription;
+  seconds = 5;
 
-  constructor(private adminService: AdminService, public navService: NavService) {
+  constructor(private adminService: AdminService, public navService: NavService, public toolService: ToolsService) {
+    this.countDown = timer(0, 1000)
+      .subscribe(() => {
+
+        if (this.seconds === 0){
+          this.loadbookings();
+          this.seconds = 10;
+        }
+        this.seconds --;
+
+
+      });
+
+    this.loadbookings();
+  }
+
+  ngOnDestroy(): void {
+        if (this.countDown){
+          this.countDown.unsubscribe();
+        }
+    }
+
+  loadbookings(): void{
+    this.seconds = 9;
     this.adminService.GetQueryingRefundBookings(data => {
       this.queryingRefund = data;
     });
@@ -301,10 +342,10 @@ export class AdminBookingComponent implements OnInit {
     this.adminService.GetAwaitingBookings(BookingStatus.CollectedBooking, 10, data => {
       this.inProgress = data;
       this.inProgress.forEach(booking => {
-        const start = this.convertDate(booking.end);
-        start.setHours(12 + this.getTime(booking.extension, booking.lateReturn));
+        const end = this.convertDate(booking.end);
+        end.setHours(12 + this.toolService.getTime(booking.fullDay, booking.lateReturn));
 
-        booking.countdownDate = start.valueOf() - new Date().valueOf();
+        booking.countdownDate = end.valueOf() - new Date().valueOf();
       });
 
     });
@@ -313,7 +354,7 @@ export class AdminBookingComponent implements OnInit {
       this.upcomingBookings = data;
       this.upcomingBookings.forEach(booking => {
         const start = this.convertDate(booking.start);
-        start.setHours(12 + this.getTime(booking.extension, booking.lateReturn));
+        start.setHours(8);
 
         booking.countdownDate = start.valueOf() - new Date().valueOf();
       });
@@ -324,7 +365,7 @@ export class AdminBookingComponent implements OnInit {
       this.awaitingConfirmationBookings = data;
       this.awaitingConfirmationBookings.forEach(booking => {
         const start = this.convertDate(booking.start);
-        start.setHours(12 + this.getTime(booking.extension, booking.lateReturn));
+        start.setHours(8);
 
         booking.countdownDate = start.valueOf() - new Date().valueOf();
       });
@@ -333,7 +374,7 @@ export class AdminBookingComponent implements OnInit {
       this.awaitingPayment = data;
       this.awaitingPayment.forEach(booking => {
         const start = this.convertDate(booking.start);
-        start.setHours(12 + this.getTime(booking.extension, booking.lateReturn));
+        start.setHours(8);
 
         booking.countdownDate = start.valueOf() - new Date().valueOf();
       });
@@ -365,17 +406,7 @@ export class AdminBookingComponent implements OnInit {
     });
   }
 
-  getTime(extension: boolean, lateReturn: boolean): number {
-    if (!extension && !lateReturn){
-      return 1;
-    }
-    if (extension && !lateReturn){
-      return 4;
-    }
-    if (!extension && lateReturn){
-      return 6;
-    }
-  }
+
 
   clear(): void {
     this.statusesControl.patchValue([]);

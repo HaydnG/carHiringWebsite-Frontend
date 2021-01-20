@@ -16,27 +16,28 @@ import {ToolsService} from '../services/tools/tools.service';
 
     <table class="columns" style="    width: 100%;" mat-table [dataSource]="this.dataSource">
       <ng-container matColumnDef="ID">
-        <th class="header" mat-header-cell *matHeaderCellDef> ID </th>
+        <th class="header" mat-header-cell *matHeaderCellDef> ID</th>
         <td class="data" mat-cell *matCellDef="let booking"> {{booking.ID}} </td>
       </ng-container>
       <ng-container matColumnDef="User">
-        <th class="header" mat-header-cell *matHeaderCellDef> User </th>
-        <td class="data" mat-cell *matCellDef="let booking"> {{booking.UserFirstName + ' ' +booking.UserOtherName}} </td>
+        <th class="header" mat-header-cell *matHeaderCellDef> User</th>
+        <td class="data" mat-cell *matCellDef="let booking"> {{booking.UserFirstName + ' ' + booking.UserOtherName}} </td>
       </ng-container>
       <ng-container matColumnDef="Car">
-        <th class="header" mat-header-cell *matHeaderCellDef> Car </th>
+        <th class="header" mat-header-cell *matHeaderCellDef> Car</th>
         <td class="data" mat-cell *matCellDef="let booking"> {{booking.CarDescription}} </td>
       </ng-container>
       <ng-container matColumnDef="Collection">
-        <th class="header" mat-header-cell *matHeaderCellDef > Collection </th>
-        <td class="data" mat-cell *matCellDef="let booking"> {{this.convertDate(booking.start) | date:'shortDate'}}</td>
+        <th class="header" mat-header-cell *matHeaderCellDef> Collection</th>
+        <td class="data" mat-cell *matCellDef="let booking"> {{this.toolsService.convertDate(booking.start) | date:'shortDate'}}</td>
       </ng-container>
       <ng-container matColumnDef="Return">
-        <th class="header" mat-header-cell *matHeaderCellDef > Return </th>
-        <td class="data" mat-cell *matCellDef="let booking"> {{this.convertDate(booking.end) | date:'shortDate'}} {{'0' + this.getTime(booking.extension, booking.lateReturn) + ':00pm'}}</td>
+        <th class="header" mat-header-cell *matHeaderCellDef> Return</th>
+        <td class="data" mat-cell
+            *matCellDef="let booking"> {{this.toolsService.convertDate(booking.end) | date:'shortDate'}} {{this.toolsService.getTimeString(booking.fullDay, booking.lateReturn, false)}}</td>
       </ng-container>
       <ng-container matColumnDef="Duration">
-        <th class="header" mat-header-cell *matHeaderCellDef > Duration </th>
+        <th class="header" mat-header-cell *matHeaderCellDef> Duration</th>
         <td class="data" mat-cell *matCellDef="let booking"> {{booking.bookingLength}}</td>
       </ng-container>
       <ng-container matColumnDef="{{this.timerText}}" *ngIf="this.DoCountdown">
@@ -44,11 +45,12 @@ import {ToolsService} from '../services/tools/tools.service';
         <td class="data" mat-cell *matCellDef="let booking"> {{this.toolsService.formatCountdown(booking.countdownDate)}}</td>
       </ng-container>
       <ng-container matColumnDef="Status" *ngIf="this.ShowStatus">
-        <th class="header" mat-header-cell *matHeaderCellDef> Status </th>
+        <th class="header" mat-header-cell *matHeaderCellDef> Status</th>
         <td class="data" mat-cell *matCellDef="let booking"> {{booking.process}}</td>
       </ng-container>
       <tr style="    height: 27px;" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr (click)="this.viewBooking(row.ID)" class="Brows" style="    height: 26px;" mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+      <tr (click)="this.viewBooking(row.ID)" class="Brows" style="    height: 26px;" mat-row
+          *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
   `,
@@ -83,7 +85,7 @@ import {ToolsService} from '../services/tools/tools.service';
 
     :host {
       margin-top: 10px;
-      overflow: hidden;
+      overflow: auto;
       width: 100%;
     }
 
@@ -156,25 +158,6 @@ export class AdminBookingTableComponent implements OnInit, OnChanges, OnDestroy 
 
     this.dataSource = new MatTableDataSource<BookingColumn>(this.bookings);
   }
-
-  convertDate(value: number): Date {
-    return new Date(value * 1000);
-  }
-
-
-  getTime(extension: boolean, lateReturn: boolean): number {
-    if (!extension && !lateReturn){
-      return 1;
-    }
-    if (extension && !lateReturn){
-      return 4;
-    }
-    if (!extension && lateReturn){
-      return 6;
-    }
-  }
-
-
 
   viewBooking(id: number): void{
     this.navService.Navigate(this.currentPage, this.pageID, ['admin/booking/view', {id}]);

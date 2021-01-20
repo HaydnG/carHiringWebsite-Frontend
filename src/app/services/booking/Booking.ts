@@ -1,4 +1,5 @@
 import {Accessory, Car} from '../car/Car';
+import {BookingStatusType} from '../admin/admin';
 
 export class Booking {
   ID: number;
@@ -10,7 +11,7 @@ export class Booking {
   totalCost: number;
   amountPaid: number;
   lateReturn: boolean;
-  extension: boolean;
+  fullDay: boolean;
   created: number;
   processID: number;
   processName: string;
@@ -20,7 +21,13 @@ export class Booking {
   accessories: Accessory[];
   awaitingExtraPayment: boolean;
   isRefund: boolean;
+  activeStatuses: BookingStatusType[];
 }
+
+export class ExtensionResponse {
+  days: number;
+}
+
 
 export class Status {
   ID: number;
@@ -35,6 +42,7 @@ export class Status {
   AdminRequired: boolean;
   Order: number;
   BookingPage: boolean;
+  Extra: number;
 }
 
 export enum BookingStatus {
@@ -52,4 +60,7 @@ export enum BookingStatus {
   CollectedBooking,
   ReturnedBooking,
   CompletedBooking,
+  ExtendedBooking,
+  ExtensionAwaitingPayment,
+  ExtensionPaymentAccepted,
 }

@@ -28,10 +28,11 @@ import {BookingStatus} from '../services/booking/Booking';
               <div class="col-9">Process</div>
               <div class="col" style="text-align: center; padding: 0px 4px 0px 0px">Count</div>
             </div>
-            <div style="        height: 24.5px;
+            <div style="        height: 24px;
     line-height: 16px;" [class.Waiting]="stat.AdminRequired" [class.Online]="stat.ProcessID === this.completedBookingStatus" [class.Disabled]="stat.ProcessID === this.canceledBookingStatus" class="trow row"
                  *ngFor="let stat of this.bookingStats; let i = index">
-              <div class="col-9 desc" style="padding: 0px 0px 0px 12px">{{stat.Description}}</div>
+              <div class="col-9 desc" style="padding: 0px 0px 0px 8px; height: 18px !important;
+    overflow: hidden;">{{stat.Description}}</div>
               <div class="col data" style="padding: 0px">{{stat.Count}}</div>
             </div>
           </div>
@@ -58,14 +59,20 @@ import {BookingStatus} from '../services/booking/Booking';
               <div class="col desc">Online Users</div>
               <div class="col data">{{this.userStats.ActiveUsers}}</div>
             </div>
-            <div class="trow row Disabled">
-              <div class="col desc">Black Listed</div>
-              <div class="col data">{{this.userStats.BlackListedCount}}</div>
-            </div>
             <div class="trow row">
               <div class="col desc">Repeat Users</div>
               <div class="col data">{{this.userStats.RepeatUsersCount}}</div>
             </div>
+            <div class="trow row Disabled">
+              <div class="col desc">Black Listed</div>
+              <div class="col data">{{this.userStats.BlackListedCount}}</div>
+            </div>
+            <div class="trow row Disabled">
+              <div class="col desc">Disabled</div>
+              <div class="col data">{{this.userStats.DisabledCount}}</div>
+            </div>
+
+
           </div>
         </div>
       </div>
@@ -161,7 +168,7 @@ import {BookingStatus} from '../services/booking/Booking';
       padding: 5px;
       box-shadow: inset 0px 1px 3px 0px #05060655;
       border-radius: 3px;
-      height: 219px;
+      height: 237px;
       overflow: hidden;
       background-color: #ffffff03;
     }
@@ -171,7 +178,7 @@ import {BookingStatus} from '../services/booking/Booking';
     }
 
     .data {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       text-align: center;
     }
@@ -186,7 +193,7 @@ import {BookingStatus} from '../services/booking/Booking';
       margin-bottom: 25px;
       min-width: 280px;
       max-width: 280px;
-      height: 291px;
+
       cursor: pointer;
       background-color: #252a2b;
       color: #ffffffbf !important;
@@ -199,7 +206,7 @@ import {BookingStatus} from '../services/booking/Booking';
     }
 
     .card-title {
-      margin: 10px 0px 20px 0px;
+      margin: 4px 0px 12px 0px;
       font-weight: 600;
       font-size: 27px;
       text-align: center;
@@ -207,7 +214,6 @@ import {BookingStatus} from '../services/booking/Booking';
 
     :host {
       margin-top: 10px;
-      overflow: hidden;
       width: 70%;
     }
 

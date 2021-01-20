@@ -27,8 +27,8 @@ import {NavService} from '../services/nav/nav.service';
         <div class="card-body ">
           <div class="row" style="margin-left: -5px;
     margin-right: -5px;">
-            <div class="col-4">
-
+            <div class="col-4" style="font-size: 15px">
+                Click a user to view
             </div>
             <div class="col">
               <mat-form-field appearance="legacy" style="margin: auto; width: 100%;     height: 35px;    text-align: center;">

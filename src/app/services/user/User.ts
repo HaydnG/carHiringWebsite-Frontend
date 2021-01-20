@@ -1,4 +1,5 @@
 export class User {
+  ID: number;
   Blacklisted: boolean;
   CreatedAt: number;
   DOB: number;
@@ -11,4 +12,5 @@ export class User {
   Admin: boolean;
   Message: string;
   BookingCount: number;
+  Disabled: boolean;
 }

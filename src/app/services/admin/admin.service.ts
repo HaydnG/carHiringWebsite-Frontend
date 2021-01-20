@@ -107,6 +107,14 @@ export class AdminService {
     })).subscribe(callback);
   }
 
+  SetUser(mode: string, value: boolean, userID: string, callback?: (value: any) => void): void{
+    this.http.get<any>(this.url + 'setUser?' + 'userID=' + userID + '&mode=' + mode + '&value=' + value,
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<any>();
+    })).subscribe(callback);
+  }
+
   GetUser(userID: string, callback?: (value: any) => void): void{
     this.http.get<UserBundle>(this.url + 'getUser?' + 'userID=' + userID,
       { withCredentials: true }).pipe(catchError(error => {

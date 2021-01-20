@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CarService} from '../services/car/car.service';
 import {BookingService} from '../services/booking/booking.service';
 import {Booking, BookingStatus} from '../services/booking/Booking';
-import {Subscription} from 'rxjs';
+import {Subscription, timer} from 'rxjs';
 
 @Component({
   selector: 'app-booking-page',
@@ -119,7 +119,7 @@ export class BookingPageComponent implements OnInit, OnDestroy {
   bookings: Record<number, Partial<Booking>>;
 
   userBookingSub: Subscription;
-
+  countDown;
 
   constructor(private bookingService: BookingService) {
       this.userBookingSub = this.bookingService.userBookings.subscribe(data => {
@@ -132,11 +132,18 @@ export class BookingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.countDown = timer(0, 5000)
+      .subscribe(() => {
+        this.bookingService.GetUsersBookings();
+      });
   }
 
   ngOnDestroy(): void{
     if (this.userBookingSub !== undefined){
       this.userBookingSub.unsubscribe();
+    }
+    if (this.countDown !== undefined){
+      this.countDown.unsubscribe();
     }
   }
 

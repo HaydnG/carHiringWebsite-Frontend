@@ -128,7 +128,7 @@ import {CropperPosition, ImageCroppedEvent} from 'ngx-image-cropper';
 
                 </div>
                 <div class="row">
-                  <img style="    width: 60%;
+                  <img style="    width: 40%; min-width: 200px;
       margin: auto;" [src]="croppedImage"/>
                 </div>
               </div>
@@ -146,14 +146,14 @@ import {CropperPosition, ImageCroppedEvent} from 'ngx-image-cropper';
     text-align: center;
     min-height: 600px;
     background-color: #00000038;
-    min-width: 500px;
+    min-width: 300px;
     margin-left: 5px;
     box-shadow: inset 0px 0px 8px 0px #000000;"
                                  [imageChangedEvent]="imageChangedEvent"
                                  [maintainAspectRatio]="true"
                                  [aspectRatio]="1/1"
                                  format="jpeg"
-                                 [imageURL]="'http://5.70.170.197:8080/cars/' + this.car.Image + '.jpg'"
+                                 [imageURL]="'http://localhost:8080/cars/' + this.car.Image + '.jpg'"
                                  (imageCropped)="imageCropped($event)"
                                  (imageLoaded)="imageLoaded($event)"
                                  (cropperReady)="cropperReady()"

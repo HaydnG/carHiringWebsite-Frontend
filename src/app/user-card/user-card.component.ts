@@ -41,7 +41,7 @@ import {ToolsService} from '../services/tools/tools.service';
               </div>
             </div>
           </div>
-          <div class="col-4 book-auto">
+          <div class="col-4 book-auto" *ngIf="this.showAdmin">
             <div class="row">
               <div class="col-4">
                 Admin:
@@ -116,6 +116,20 @@ import {ToolsService} from '../services/tools/tools.service';
             </div>
           </div>
         </div>
+        <div class="row" style="    margin-top: 5px;">
+          <div class="col-4 book-auto"></div>
+          <div class="col-4 book-auto"></div>
+          <div class="col-4 book-auto">
+            <div class="row" *ngIf="this.showAdmin">
+              <div class="col-4" style="padding-right: 2px">
+                Disabled:
+              </div>
+              <div class="col-8 data" [ngClass]="this.user.Disabled ? 'true' : 'false'">
+                {{this.user.Disabled}}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -147,6 +161,12 @@ import {ToolsService} from '../services/tools/tools.service';
       box-shadow: inset 0px 1px 3px 0px #05060661;
       padding: 5px;
     }
+
+    .bookingPanel:hover {
+      opacity: 90%;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
     :host {
       width: 100%;
       margin: 10px auto;
@@ -156,6 +176,8 @@ import {ToolsService} from '../services/tools/tools.service';
 })
 export class UserCardComponent implements OnInit {
 
+  @Input()
+  showAdmin = true;
 
   @Input()
   user: User;

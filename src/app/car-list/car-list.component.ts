@@ -14,7 +14,12 @@ import {FormControl} from '@angular/forms';
     padding: 15px;
     border-radius: 10px;
     box-shadow: inset 0px 0px 8px 0px #00000026;
-    margin-bottom: 5px;" (doSearch)="this.onSearch($event)" ></app-car-list-search>
+    margin-bottom: 5px;" (doSearch)="this.onSearch($event)"
+                         [carTypes]="this.carTypes"
+                         [fuelTypes]="this.fuelTypes"
+                         [gearTypes]="this.gearTypes"
+                         [sizes]="this.sizes"
+                         [colours]="this.colours"></app-car-list-search>
 
     <div class="card-deck" >
       <div *ngFor="let car of cars">

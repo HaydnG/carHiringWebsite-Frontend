@@ -9,6 +9,7 @@ import {BookingService} from '../services/booking/booking.service';
 import {DetailsComponent} from '../booking-details/booking-details.component';
 import {BookingComponent} from '../booking/booking.component';
 import {EditBookingComponent} from '../edit-booking/edit-booking.component';
+import {ToolsService} from '../services/tools/tools.service';
 
 @Component({
   selector: 'app-cancel-booking-card',
@@ -27,7 +28,7 @@ import {EditBookingComponent} from '../edit-booking/edit-booking.component';
                   <div style="position: absolute;
                       right: 5px;">BookingID: <span style="font-weight: bold">{{this.booking.ID}} </span>
                   </div>
-                  <div class="row" style="padding: 25px;font-weight: 600;font-size: 19px;">
+                  <div class="row" style="padding: 25px;font-weight: 500;font-size: 19px;">
                     Are you sure you want to cancel your booking?
                   </div>
                   <hr>
@@ -46,9 +47,7 @@ import {EditBookingComponent} from '../edit-booking/edit-booking.component';
                         Return: <span class="day"> {{this.dayNames[this.startDate.getDay()]}}</span>
                       </div>
                       <div class="row dates">
-                        {{this.endFormatted}} - <span class="time end" *ngIf="!this.booking.extension && !this.booking.lateReturn"> At 1:00pm</span>
-                        <span class="time end"*ngIf="this.booking.extension && !this.booking.lateReturn"> At 4:00pm <span class="endtext">- Extended booking</span></span>
-                        <span class="time end"*ngIf="!this.booking.extension && this.booking.lateReturn"> After 6:00pm <span class="endtext">- Late Return</span></span>
+                        {{this.endFormatted}} - <span class="time end">{{this.toolService.getTimeString(this.booking.fullDay, this.booking.lateReturn, false)}}</span>
                       </div>
                     </div>
                   </div>
@@ -142,7 +141,7 @@ export class CancelBookingComponent implements OnInit {
   created;
 
   constructor(private router: Router, public currencyService: CurrencyService, private modalService: NgbModal,
-              private bookingService: BookingService, private activeModal: NgbActiveModal) {
+              private bookingService: BookingService, private activeModal: NgbActiveModal, public toolService: ToolsService) {
     this.ngbModalOptions = {
       backdrop: 'static',
       keyboard: false

@@ -31,8 +31,8 @@ import {AdminCreateCarComponent} from '../admin-create-car/admin-create-car.comp
         <div class="card-body ">
           <div class="row" style="margin-left: -5px;
     margin-right: -5px;">
-            <div class="col-8">
-
+            <div class="col-8" style="    font-size: 15px;">
+                Click a car to edit
             </div>
             <div class="col" style="    min-width: 200px;">
               <button class="button btn form-control confirm" (click)="this.createCar()" style="    background-color: #305252;

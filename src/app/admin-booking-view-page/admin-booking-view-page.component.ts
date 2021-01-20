@@ -11,6 +11,7 @@ import {CancelBookingComponent} from '../cancel-booking/cancel-booking.component
 import {AdminProgressBookingComponent} from '../admin-progress-booking/admin-progress-booking.component';
 import {CurrencyService} from '../services/currency/currency.service';
 import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refund-response.component';
+import {BookingService} from '../services/booking/booking.service';
 
 @Component({
   selector: 'app-admin-booking-page',
@@ -64,7 +65,9 @@ import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refun
     right: 0px;
     top: -15px;
     font-size: 15px;
-    font-weight: 500;">Collection In: {{this.toolsServies.formatCountdown(this.adminBooking.booking.countdownDate)}}</div>
+    font-weight: 500;"><span *ngIf="this.adminBooking.booking.processID === this.bookingService.statuses.CollectedBooking; else returnBlock">Return In:</span>
+                        <ng-template #returnBlock >Collection In:</ng-template>
+              {{this.toolsServies.formatCountdown(this.adminBooking.booking.countdownDate)}}</div>
 
           </div>
 
@@ -102,7 +105,7 @@ import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refun
             <app-booking-card [currentPage]="this.currentPage" [currentPageID]="this.bookingID"
                               [booking]="this.adminBooking.booking"
                               [adminView]="true"
-                              (reloadPage)="this.getBookings()"
+                              (reloadPage)="this.getBookings(undefined)"
             ></app-booking-card>
           </div>
 
@@ -236,6 +239,7 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
 
   currentPage = '/admin/booking/view';
 
+  awaitingPayment = BookingStatus.AwaitingPayment;
   awaitingConfirmationStatus = BookingStatus.AwaitingConfirmation;
   bookingConfirmed = BookingStatus.BookingConfirmed;
   collectedBookingStatus = BookingStatus.CollectedBooking;
@@ -253,12 +257,14 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
   init = false;
   tick = 1000;
   ngbModalOptions;
+  refreshTimer = 2;
 
   constructor(private modalService: NgbModal, public currencyService: CurrencyService,
-              private adminService: AdminService, private route: ActivatedRoute, public navService: NavService, public toolsServies: ToolsService) {
+              private adminService: AdminService, private route: ActivatedRoute, public navService: NavService, public toolsServies: ToolsService,
+              public bookingService: BookingService) {
     this.route.paramMap.subscribe(params => {
       this.bookingID = +params.get('id');
-      this.getBookings();
+      this.getBookings(undefined);
     });
 
     this.ngbModalOptions = {
@@ -277,56 +283,78 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
   }
 
 
-  getBookings(): void{
+  getBookings(callback: any): void{
     this.bookingSub =  this.adminService.GetBooking(this.bookingID, data => {
       this.adminBooking = data;
-      const start = new Date(this.adminBooking.booking.start * 1000);
-      start.setHours(12 + this.getTime(this.adminBooking.booking.extension, this.adminBooking.booking.lateReturn));
 
-      this.adminBooking.booking.countdownDate = start.valueOf() - new Date().valueOf();
+      this.initCountdown();
 
-      this.countDown = timer(0, this.tick)
-        .subscribe(() => {
-          this.adminBooking.booking.countdownDate = this.adminBooking.booking.countdownDate - 1000;
-        });
+      if (callback !== undefined){
+        callback();
+      }
+
+      if (this.countDown === undefined){
+        this.countDown = timer(0, this.tick)
+          .subscribe(() => {
+            this.adminBooking.booking.countdownDate = this.adminBooking.booking.countdownDate - 1000;
+
+            this.refreshTimer--;
+
+            if (this.refreshTimer === 0){
+              this.getBookings(undefined);
+              this.refreshTimer = 1;
+            }
+          });
+      }
+
+
     });
   }
 
-  getTime(extension: boolean, lateReturn: boolean): number {
-    if (!extension && !lateReturn){
-      return 1;
-    }
-    if (extension && !lateReturn){
-      return 4;
-    }
-    if (!extension && lateReturn){
-      return 6;
-    }
-  }
+  initCountdown(): void{
+    let start;
 
+    if (this.adminBooking.booking.processID === this.bookingService.statuses.CollectedBooking){
+      start = new Date(this.adminBooking.booking.end * 1000);
+      start.setHours(12 + this.toolsServies.getTime(this.adminBooking.booking.fullDay, this.adminBooking.booking.lateReturn));
+    }else{
+      start = new Date(this.adminBooking.booking.start * 1000);
+      start.setHours(8);
+    }
+
+    this.adminBooking.booking.countdownDate = start.valueOf() - new Date().valueOf();
+  }
 
   ngOnDestroy(): void {
     if (this.bookingSub !== undefined){
       this.bookingSub.unsubscribe();
     }
 
+    if (this.countDown !== undefined){
+      this.countDown.unsubscribe();
+    }
+
+
+
 
   }
 
   ngOnChanges(): void {
-
-
-
+    this.initCountdown();
   }
 
   progressBooking(failed: boolean): void {
 
-    const details = this.modalService.open(AdminProgressBookingComponent, this.ngbModalOptions);
-    details.componentInstance.adminBooking = this.adminBooking;
-    details.componentInstance.failed = failed;
-    details.componentInstance.reloadPage.subscribe(data => {
-      this.getBookings();
+    this.getBookings(() => {
+      const details = this.modalService.open(AdminProgressBookingComponent, this.ngbModalOptions);
+      details.componentInstance.adminBooking = this.adminBooking;
+      details.componentInstance.failed = failed;
+      details.componentInstance.reloadPage.subscribe(data => {
+        this.getBookings(undefined);
+      });
     });
+
+
 
 
   }
@@ -335,13 +363,13 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
     const details = this.modalService.open(AdminRefundResponseComponent, this.ngbModalOptions);
     details.componentInstance.adminBooking = this.adminBooking;
     details.componentInstance.reloadPage.subscribe(data => {
-      this.getBookings();
+      this.getBookings(undefined);
     });
   }
 
   processExtraPayment(): void {
     this.adminService.ProcessExtraPayment(this.bookingID, data => {
-      this.getBookings();
+      this.getBookings(undefined);
     });
   }
 

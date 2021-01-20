@@ -62,6 +62,11 @@ import {AdminEditCarComponent} from './admin-edit-car/admin-edit-car.component';
 import {AdminUserTableComponent} from './admin-user-table/admin-user-table.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {AdminUserViewPageComponent} from './admin-user-view-page/admin-user-view-page.component';
+import {ConfirmationComponent} from './confirmation/confirmation.component';
+import {UserViewPageComponent} from './user-view-page/user-view-page.component';
+import {ExtendBookingComponent} from './extend-booking/extend-booking.component';
+import {MatSliderModule} from '@angular/material/slider';
+import {ExtensionPaymentComponent} from './extension-payment/extension-payment.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +104,10 @@ import {AdminUserViewPageComponent} from './admin-user-view-page/admin-user-view
     AdminUserTableComponent,
     BlackListedComponent,
     AdminUserViewPageComponent,
+    ConfirmationComponent,
+    UserViewPageComponent,
+    ExtendBookingComponent,
+    ExtensionPaymentComponent,
   ],
   imports: [
     BrowserModule,
@@ -121,7 +130,7 @@ import {AdminUserViewPageComponent} from './admin-user-view-page/admin-user-view
     MatCheckboxModule,
     ImageCropperModule,
     MatSnackBarModule,
-
+    MatSliderModule,
   ],
   providers: [
     UserService,
