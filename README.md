@@ -24,6 +24,10 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
 
 ## Website Images
 
+### Login / Registration
+
+<img src="./readme%20src/registration.png" width="40%"> <img src="./readme%20src/login%202.png" width="49%"><img src="./readme%20src/login.png" width="49%">
+ <img src="./readme%20src/User%20details.png" width="95%">
 ### Car Search
 
 <div>
@@ -41,6 +45,9 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
   <img src="./readme%20src/create%20booking.png" width="45%">
   <img src="./readme%20src/make%20booking%20payment.png" width="53%">
 </div>
+
+### Booking Details
+<img src="./readme%20src/booking%20details.png" width="45%">
 
 ### View My Bookings
 <div>
@@ -60,6 +67,14 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
 <img src="./readme%20src/booking%20history.png" width="95%">
 <img src="./readme%20src/booking%20history%202.png" width="95%">
 <img src="./readme%20src/booking%20history%203.png" width="95%">
+
+### Edit/ Cancel Booking
+<div>
+  <img src="./readme%20src/edit%20booking.png" width="49%">
+  <img src="./readme%20src/cancel%20booking.png" width="49%"> 
+</div>
+
+
 
 
 
