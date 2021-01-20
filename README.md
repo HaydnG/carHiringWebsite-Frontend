@@ -46,6 +46,13 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
   <img src="./readme%20src/make%20booking%20payment.png" width="53%">
 </div>
 
+### Extend Booking
+<div>
+  <img src="./readme%20src/extend%20booking.gif" width="33%">
+  <img src="./readme%20src/extend%20booking%202.png" width="32%"> 
+  <img src="./readme%20src/extend%20booking%203.png" width="32%"> 
+</div>
+
 ### Booking Details
 <img src="./readme%20src/booking%20details.png" width="45%">
 
@@ -73,6 +80,7 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
   <img src="./readme%20src/edit%20booking.png" width="49%">
   <img src="./readme%20src/cancel%20booking.png" width="49%"> 
 </div>
+
 
 
 
