@@ -20,6 +20,25 @@
   <img src="./readme%20src/make%20booking%20payment.png" width="53%">
 </div>
 
+### View My Bookings
+<div>
+  <img src="./readme%20src/View%20my%20bookings.png" width="51%">
+  <img src="./readme%20src/View%20my%20bookings%202.png" width="47%"> 
+</div>
+<img src="./readme%20src/View%20my%20bookings%203.png" width="95%">
+
+### View My Bookings
+<div>
+  <img src="./readme%20src/View%20my%20bookings.png" width="51%">
+  <img src="./readme%20src/View%20my%20bookings%202.png" width="47%"> 
+</div>
+<img src="./readme%20src/View%20my%20bookings%203.png" width="95%">
+
+### Booking History
+<img src="./readme%20src/booking%20history.png" width="95%">
+<img src="./readme%20src/booking%20history%202.png" width="95%">
+<img src="./readme%20src/booking%20history%203.png" width="95%">
+
 
 
 ## Running and building project
