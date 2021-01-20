@@ -1,6 +1,9 @@
 # Car Hiring website frontend
 
-![](/readme src/CarSearch.gif)
+## Website Images
+
+### Car Search
+![car search](./readme%20src/CarSearch.gif)
 
 
 ## Running and building project
