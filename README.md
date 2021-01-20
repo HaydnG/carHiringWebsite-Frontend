@@ -22,7 +22,7 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
 * Car creation with advance image selection features
 
 
-## Website Images
+## Standard user featurs
 
 ### Login / Registration
 
@@ -81,6 +81,27 @@ Backend developed with golang over at https://github.com/HaydnG/carHiringWebsite
   <img src="./readme%20src/cancel%20booking.png" width="49%"> 
 </div>
 
+## Admin User Features
+<img src="./readme%20src/admin%20panel.png" width="95%">
+
+### Admin Bookings Page
+<img src="./readme%20src/admin%20bookings%20page.gif" width="95%">
+
+### Admin View Single Booking
+<img src="./readme%20src/admin%20view%20booking.png" width="95%">
+<div>
+  <img src="./readme%20src/admin%20view%20booking%202.png" width="49%"> 
+  <img src="./readme%20src/admin%20view%20booking%203.png" width="49%"> 
+</div>
+
+### Admin View Cars
+<img src="./readme%20src/admin%20view%20cars.png" width="95%">
+
+### Admin Create/Edit Car
+<div>
+  <img src="./readme%20src/admin%20create%20car.gif" width="49%">
+  <img src="./readme%20src/admin%20edit%20car.gif" width="49%">
+</div>
 
 
 
