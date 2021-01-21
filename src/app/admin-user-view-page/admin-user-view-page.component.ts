@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnChanges, OnDestroy, OnInit, Output} from '@angular/core';
 import {CarService} from '../services/car/car.service';
 import {AdminService} from '../services/admin/admin.service';
 import {NavService} from '../services/nav/nav.service';
@@ -15,6 +15,7 @@ import {UserBundle} from '../services/admin/admin';
 import {AdminCreateCarComponent} from '../admin-create-car/admin-create-car.component';
 import {ConfirmationComponent} from '../confirmation/confirmation.component';
 import {UserService} from '../services/user/user.service';
+import {AdminEditUserComponent} from '../admin-edit-user/admin-edit-user.component';
 
 @Component({
   selector: 'app-admin-user-page',
@@ -83,7 +84,7 @@ import {UserService} from '../services/user/user.service';
               <button *ngIf="this.userBundle.user.Admin" class="button btn form-control demote" (click)="this.promote(false)" style="height: 42px;">Demote User</button>
             </div>
             <div class="col" style="    min-width: 200px;    padding: 1px 1px 1px 1px;">
-              <button class="button btn form-control edit" (click)="this.createUser()" style="height: 42px;">Edit User</button>
+              <button class="button btn form-control edit" (click)="this.editUser()" style="height: 42px;">Edit User</button>
             </div>
           </div>
         </div>
@@ -207,11 +208,16 @@ export class AdminUserViewPageComponent implements OnInit, OnDestroy, OnChanges 
   tick = 1000;
   ngbModalOptions;
 
+
+
   constructor(private modalService: NgbModal, public currencyService: CurrencyService, public userService: UserService,
               private adminService: AdminService, private route: ActivatedRoute, public navService: NavService, public toolsServies: ToolsService) {
 
+
+
     this.route.paramMap.subscribe(params => {
       this.userID = +params.get('id');
+
       this.getUser();
     });
 
@@ -340,5 +346,15 @@ export class AdminUserViewPageComponent implements OnInit, OnDestroy, OnChanges 
     panel.componentInstance.border  = border;
 
     panel.componentInstance.callBack = callback;
+  }
+
+  editUser(): void{
+    const panel = this.modalService.open(AdminEditUserComponent, this.ngbModalOptions);
+    panel.componentInstance.user = this.userBundle.user;
+    panel.componentInstance.adminEdit = true;
+    panel.componentInstance.reloadPage.subscribe(() => {
+      this.getUser();
+    });
+
   }
 }

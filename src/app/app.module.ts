@@ -67,6 +67,8 @@ import {UserViewPageComponent} from './user-view-page/user-view-page.component';
 import {ExtendBookingComponent} from './extend-booking/extend-booking.component';
 import {MatSliderModule} from '@angular/material/slider';
 import {ExtensionPaymentComponent} from './extension-payment/extension-payment.component';
+import {AdminCreateUserComponent} from './admin-create-user/admin-create-user.component';
+import {AdminEditUserComponent} from './admin-edit-user/admin-edit-user.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +110,8 @@ import {ExtensionPaymentComponent} from './extension-payment/extension-payment.c
     UserViewPageComponent,
     ExtendBookingComponent,
     ExtensionPaymentComponent,
+    AdminCreateUserComponent,
+    AdminEditUserComponent,
   ],
   imports: [
     BrowserModule,

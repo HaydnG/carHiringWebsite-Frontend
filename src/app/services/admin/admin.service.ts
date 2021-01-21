@@ -41,6 +41,14 @@ export class AdminService {
     })).subscribe(callback);
   }
 
+  CreateUser(firstname: string, names: string, email: string, password: string, dobstring: string, callback?: (value: User) => void): void {
+    this.http.get<User>(this.url + 'createUser?firstname=' + firstname + '&names=' + names + '&email=' +
+      email + '&password=' + password + '&dob=' + dobstring, { withCredentials: true }).pipe(catchError(error => {
+      return new Observable<User>();
+    })).subscribe(callback);
+  }
+
+
   GetCarStats(callback?: (value: any) => void): void{
     this.http.get<UserStat>(this.url + 'getCarStats',
       { withCredentials: true }).pipe(catchError(error => {

@@ -17,6 +17,7 @@ import {ConfirmationComponent} from '../confirmation/confirmation.component';
 import {UserService} from '../services/user/user.service';
 import {User} from '../services/user/User';
 import {BadLoginComponent} from '../navbar/navbar.component';
+import {AdminEditUserComponent} from '../admin-edit-user/admin-edit-user.component';
 
 @Component({
   selector: 'app-user-page',
@@ -61,8 +62,14 @@ import {BadLoginComponent} from '../navbar/navbar.component';
           <div class="row">
             <app-user-card [showAdmin]="false" [user]="this.user"></app-user-card>
           </div>
+          <div class="row" style="margin-top: 17px">
+            <div class="col" style="    min-width: 200px;    padding: 1px 1px 1px 1px;">
+              <button class="button btn form-control edit" (click)="this.editUser()" style="height: 42px;">Edit User</button>
+            </div>
+          </div>
         </div>
-      </div>
+        </div>
+
     </div>
 
   `,
@@ -205,6 +212,19 @@ export class UserViewPageComponent implements OnInit, OnDestroy, OnChanges {
 
   }
 
+
+  editUser(): void{
+    const panel = this.modalService.open(AdminEditUserComponent, this.ngbModalOptions);
+    panel.componentInstance.user = this.user;
+    panel.componentInstance.adminEdit = false;
+    panel.componentInstance.reloadPage.subscribe(() => {
+      this.userService.Get((data) => {
+        console.log(data);
+        this.user = data;
+      });
+    });
+
+  }
 
   ngOnDestroy(): void {
     if (this.userSub !== undefined){

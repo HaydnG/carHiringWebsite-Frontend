@@ -88,6 +88,14 @@ export class UserService {
     });
   }
 
+  EditUser(firstname: string, names: string, email: string, password: string, dobstring: string, userID: string, oldPassword: string, callback?: (value: User) => void): void {
+    this.http.get<User>(this.url + 'edit?firstname=' + firstname + '&names=' + names + '&email=' +
+      email + '&password=' + password + '&dob=' + dobstring + '&id=' + userID + '&oldpassword=' + oldPassword, { withCredentials: true }).pipe(catchError(error => {
+      return new Observable<User>();
+    })).subscribe(callback);
+  }
+
+
   InitSession(session: string): void {
     if (session === ''){
       return;
@@ -121,7 +129,6 @@ export class UserService {
       return new Observable<User>();
     })).subscribe(data => {
       this.repeat = data.Repeat;
-      this.loggedIn = data.SessionToken.length > 10;
       this.isAdmin = data.Admin;
       this.blackListed =  data.Blacklisted;
       this.userID = data.ID;
@@ -134,6 +141,7 @@ export class UserService {
           verticalPosition: 'top'
         });
       }
+      this.userChange.next(data);
       callback(data);
     });
   }

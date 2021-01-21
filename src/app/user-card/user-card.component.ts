@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {Car} from '../services/car/Car';
 import {Router} from '@angular/router';
@@ -69,7 +69,7 @@ import {ToolsService} from '../services/tools/tools.service';
                 Age:
               </div>
               <div class="col-8 data">
-                {{this.toolService.calculateAge(this.dob)}} Years
+                {{this.age}} Years
               </div>
             </div>
           </div>
@@ -174,7 +174,7 @@ import {ToolsService} from '../services/tools/tools.service';
     }
   `]
 })
-export class UserCardComponent implements OnInit {
+export class UserCardComponent implements OnInit, OnChanges {
 
   @Input()
   showAdmin = true;
@@ -185,6 +185,8 @@ export class UserCardComponent implements OnInit {
   dob;
   created;
 
+  age;
+
   constructor(private router: Router, public currencyService: CurrencyService, private modalService: NgbModal,
               private bookingService: BookingService, public navService: NavService, public toolService: ToolsService) {
 
@@ -193,7 +195,24 @@ export class UserCardComponent implements OnInit {
   ngOnInit(): void {
     this.dob = new Date(this.user.DOB * 1000);
     this.created = new Date(this.user.CreatedAt * 1000);
+    this.setAge();
   }
+
+  setAge(): void{
+    if (this.dob !== undefined){
+      this.age = this.toolService.calculateAge(this.dob);
+    }
+
+
+  }
+
+  ngOnChanges(): void {
+    this.dob = new Date(this.user.DOB * 1000);
+    this.created = new Date(this.user.CreatedAt * 1000);
+    this.setAge();
+  }
+
+
 
 
 

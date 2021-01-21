@@ -2,6 +2,9 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {CarService} from '../services/car/car.service';
 import {AdminService} from '../services/admin/admin.service';
 import {NavService} from '../services/nav/nav.service';
+import {RegistrationComponent} from '../registration/registration.component';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {AdminCreateUserComponent} from '../admin-create-user/admin-create-user.component';
 
 @Component({
   selector: 'app-admin-booking-page',
@@ -172,18 +175,26 @@ export class AdminUserComponent implements OnInit {
 
   userSearchInput = '';
 
-  constructor(private adminService: AdminService, public navService: NavService) {
+  ngbModalOptions: NgbModalOptions;
+
+  constructor(private adminService: AdminService, public navService: NavService, public modalService: NgbModal) {
     this.adminService.GetUsers(this.userSearchInput, data => {
       this.userList = data;
     });
+
+    this.ngbModalOptions = {
+      backdrop: 'static',
+      keyboard: false
+    };
   }
 
   ngOnInit(): void {
 
   }
 
-  createUser(): void {
 
+  createUser(): void {
+    this.modalService.open(AdminCreateUserComponent, this.ngbModalOptions);
   }
 
   onSearch(): void {
