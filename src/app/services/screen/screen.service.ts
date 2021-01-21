@@ -3,7 +3,6 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class ScreenService {
-  private url = 'http://' + window.location.hostname + ':8080/userService/';
 
   isScreenSmall;
 

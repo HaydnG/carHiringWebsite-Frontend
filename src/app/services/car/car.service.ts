@@ -7,11 +7,12 @@ import {catchError} from 'rxjs/operators';
 import {User} from '../user/User';
 import {UserService} from '../user/user.service';
 import {Router} from '@angular/router';
+import {ToolsService} from '../tools/tools.service';
 
 
 @Injectable()
 export class CarService {
-  private url = 'http://' + window.location.hostname + ':8080/carService/';
+  private url = 'http://' + this.toolsService.getHostname() + '/carService/';
 
   carListChange: Subject<Car[]> = new Subject<Car[]>();
   accessoryListChange: Subject<Accessory[]> = new Subject<Accessory[]>();
@@ -21,7 +22,9 @@ export class CarService {
 
   currentCarChange: Subject<Car> = new Subject<Car>();
 
-  constructor(private http: HttpClient, private userService: UserService,  private router: Router) {}
+  constructor(private http: HttpClient, private userService: UserService,  private router: Router, private toolsService: ToolsService) {
+
+  }
 
   LoadCars(fuelTypes: string, gearTypes: string, carTypes: string, carSizes: string, colours: string, search: string): void {
     this.http.get<Car[]>(this.url + 'getAll?fuelTypes=' + fuelTypes + '&gearTypes=' + gearTypes + '&carTypes=' + carTypes +

@@ -6,11 +6,12 @@ import {Booking, Status, BookingStatus, ExtensionResponse} from './Booking';
 import {Accessory, Car} from '../car/Car';
 import {catchError} from 'rxjs/operators';
 import {UserService} from '../user/user.service';
+import {ToolsService} from '../tools/tools.service';
 
 
 @Injectable()
 export class BookingService {
-  private url = 'http://' + window.location.hostname + ':8080/bookingService/';
+  private url = 'http://' + this.toolsService.getHostname() + '/bookingService/';
 
 
   bookingAccepted: Subject<Booking> = new Subject<Booking>();
@@ -40,7 +41,7 @@ export class BookingService {
   };
 
 
-  constructor(private http: HttpClient, private  userService: UserService) {}
+  constructor(private http: HttpClient, private  userService: UserService, private toolsService: ToolsService) {}
 
   CreateBooking(input: any): void {
 

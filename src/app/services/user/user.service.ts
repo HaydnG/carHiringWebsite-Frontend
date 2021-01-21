@@ -11,7 +11,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable()
 export class UserService {
-  private url = 'http://' + window.location.hostname + ':8080/userService/';
+  private url = 'http://' + this.toolsService.getHostname() + '/userService/';
 
   userChange: Subject<User> = new Subject<User>();
 
@@ -23,7 +23,7 @@ export class UserService {
   userID = 0;
 
 
-  constructor(private snackBar: MatSnackBar, private http: HttpClient, private cookieService: CookieService, private router: Router, private toolService: ToolsService) {}
+  constructor(private toolsService: ToolsService, private snackBar: MatSnackBar, private http: HttpClient, private cookieService: CookieService, private router: Router, private toolService: ToolsService) {}
 
   Login(email: string, password: string, callback: any): void {
     this.http.get<User>(this.url + 'login?email=' + email + '&password=' + password).pipe(catchError(error => {

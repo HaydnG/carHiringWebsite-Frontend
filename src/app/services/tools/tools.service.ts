@@ -11,6 +11,18 @@ export class ToolsService {
 
   constructor(private http: HttpClient, private decimalPipe: DecimalPipe) {}
 
+  getHostname(): string{
+    const hostname = window.location.hostname;
+
+    let port = window.location.port;
+
+    if (port === '4200'){
+      port = '8080';
+    }
+
+    return hostname + ':' + port;
+
+  }
 
 
   formatCountdown(value: number): string {

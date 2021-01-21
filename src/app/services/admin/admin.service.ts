@@ -7,14 +7,15 @@ import {catchError} from 'rxjs/operators';
 import {UserService} from '../user/user.service';
 import {AccessoryStat, AdminBooking, BookingColumn, BookingStat, BookingStatusType, UserBundle, UserStat} from './admin';
 import {User} from '../user/User';
+import {ToolsService} from '../tools/tools.service';
 
 
 @Injectable()
 export class AdminService {
-  private url = 'http://' + window.location.hostname + ':8080/adminService/';
+  private url = 'http://' + this.toolsService.getHostname() + '/adminService/';
 
 
-  constructor(private http: HttpClient, private  userService: UserService) {}
+  constructor(private http: HttpClient, private  userService: UserService, private toolsService: ToolsService) {}
 
   GetBookingStatuses(callback?: (value: any) => void): void{
     this.http.get<BookingStatusType[]>(this.url + 'getBookingStatuses',
