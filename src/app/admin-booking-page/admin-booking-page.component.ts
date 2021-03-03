@@ -386,9 +386,7 @@ export class AdminBookingComponent implements OnInit, OnDestroy {
       this.selectedStatuses = this.statusesControl.value;
     });
 
-    this.adminService.GetSearchedBookings('', '', '', data => {
-      this.bookingsSearch = data;
-    });
+    this.onSearch();
   }
 
   ngOnInit(): void {

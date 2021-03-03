@@ -12,6 +12,7 @@ import {AdminProgressBookingComponent} from '../admin-progress-booking/admin-pro
 import {CurrencyService} from '../services/currency/currency.service';
 import {AdminRefundResponseComponent} from '../admin-refund-response/admin-refund-response.component';
 import {BookingService} from '../services/booking/booking.service';
+import {AdminValidateDriverComponent} from '../admin-validate-driver/admin-validate-driver.component';
 
 @Component({
   selector: 'app-admin-booking-page',
@@ -257,6 +258,7 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
   init = false;
   tick = 1000;
   ngbModalOptions;
+  largeNgbModalOptions;
   refreshTimer = 2;
 
   constructor(private modalService: NgbModal, public currencyService: CurrencyService,
@@ -270,6 +272,12 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
     this.ngbModalOptions = {
       backdrop: 'static',
       keyboard: false
+    };
+
+    this.largeNgbModalOptions = {
+      backdrop: 'static',
+      keyboard: false,
+      size: 'lg'
     };
 
   }
@@ -345,15 +353,23 @@ export class AdminBookingViewPageComponent implements OnInit, OnDestroy, OnChang
 
   progressBooking(failed: boolean): void {
 
-    this.getBookings(() => {
-      const details = this.modalService.open(AdminProgressBookingComponent, this.ngbModalOptions);
+    if (this.adminBooking.booking.processID === this.bookingConfirmed) {
+      const details = this.modalService.open(AdminValidateDriverComponent, this.largeNgbModalOptions);
       details.componentInstance.adminBooking = this.adminBooking;
       details.componentInstance.failed = failed;
       details.componentInstance.reloadPage.subscribe(data => {
         this.getBookings(undefined);
       });
-    });
-
+    }else{
+      this.getBookings(() => {
+        const details = this.modalService.open(AdminProgressBookingComponent, this.ngbModalOptions);
+        details.componentInstance.adminBooking = this.adminBooking;
+        details.componentInstance.failed = failed;
+        details.componentInstance.reloadPage.subscribe(data => {
+          this.getBookings(undefined);
+        });
+      });
+    }
 
 
 

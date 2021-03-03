@@ -107,7 +107,7 @@ import {ExtensionPaymentComponent} from '../extension-payment/extension-payment.
                   </div>
                   <div class="col-5 paymentrow">
                     <div class="row payment">
-                      <span class="money"> {{this.currencyService.FormatValue(this.booking.carData.Cost)}}</span>
+                      <span class="money">  {{this.currencyService.FormatValue(this.booking.perDay)}}</span>
                     </div>
                     <div class="row payment">
                       <span class="money"> {{this.currencyService.FormatValue(this.booking.totalCost)}}</span>

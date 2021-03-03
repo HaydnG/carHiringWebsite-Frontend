@@ -22,6 +22,7 @@ export class Booking {
   awaitingExtraPayment: boolean;
   isRefund: boolean;
   activeStatuses: BookingStatusType[];
+  perDay: number;
 }
 
 export class ExtensionResponse {

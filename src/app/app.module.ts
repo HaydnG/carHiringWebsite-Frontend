@@ -69,6 +69,8 @@ import {MatSliderModule} from '@angular/material/slider';
 import {ExtensionPaymentComponent} from './extension-payment/extension-payment.component';
 import {AdminCreateUserComponent} from './admin-create-user/admin-create-user.component';
 import {AdminEditUserComponent} from './admin-edit-user/admin-edit-user.component';
+import {AdminValidateDriverComponent} from './admin-validate-driver/admin-validate-driver.component';
+import {IvyCarouselModule} from 'angular-responsive-carousel';
 
 @NgModule({
   declarations: [
@@ -112,6 +114,7 @@ import {AdminEditUserComponent} from './admin-edit-user/admin-edit-user.componen
     ExtensionPaymentComponent,
     AdminCreateUserComponent,
     AdminEditUserComponent,
+    AdminValidateDriverComponent,
   ],
   imports: [
     BrowserModule,
@@ -135,6 +138,7 @@ import {AdminEditUserComponent} from './admin-edit-user/admin-edit-user.componen
     ImageCropperModule,
     MatSnackBarModule,
     MatSliderModule,
+    IvyCarouselModule,
   ],
   providers: [
     UserService,

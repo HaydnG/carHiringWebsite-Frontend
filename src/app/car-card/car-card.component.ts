@@ -31,7 +31,7 @@ import {Router} from '@angular/router';
               </div>
             </div>
             <div class="row">
-              <div class="col-6 cost">£{{this.car.Cost}}/day</div>
+              <div class="col-6 cost"><div *ngIf="this.car.Over25; else under25">Age 25+</div> <ng-template #under25>Age 18+</ng-template></div>
               <div class="col-6" style="padding: 2px 0px 0px 9px;"><a (click)="change(this.car.ID)" class="btn btn-success">View Car</a></div>
             </div>
           </div>

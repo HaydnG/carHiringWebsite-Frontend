@@ -86,11 +86,11 @@ import {ToolsService} from '../services/tools/tools.service';
               <div class="col">Seats: <strong>{{this.booking.carData.Seats}}</strong></div>
             </div>
             <div class="row">
-              <div class="col">PerDay: <strong>{{this.currencyService.FormatValue(this.booking.carData.Cost)}}</strong></div>
+              <div class="col">PerDay: <strong>{{this.currencyService.FormatValue(this.booking.perDay)}}</strong></div>
             </div>
             <div class="row">
               <div class="col">Total Days: <strong>{{this.getAmountofdays()}}</strong></div>
-              <div class="col">Total Cost: <strong>{{this.getTotalPrice()}}</strong></div>
+              <div class="col">Total Cost: <strong>{{this.currencyService.FormatValue(this.booking.totalCost)}}</strong></div>
             </div>
 
             <hr>

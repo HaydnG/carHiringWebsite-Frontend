@@ -95,10 +95,12 @@ import {ToolsService} from '../services/tools/tools.service';
             </div>
             <div class="col-5 paymentrow">
               <div class="row payment">
-                <span class="money"> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}}</span>
+                <span class="money">
+                    {{this.currencyService.FormatValue(this.bookingData.perDay)}}
+                </span>
               </div>
               <div class="row payment calc">
-                <span class=""> {{this.currencyService.FormatValue(this.bookingData.carData.Cost)}}
+                <span class="">  {{this.currencyService.FormatValue(this.bookingData.perDay)}}
                   x {{this.bookingData.bookingLength}}</span>
               </div>
               <div class="row payment"></div>

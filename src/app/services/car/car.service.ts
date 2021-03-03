@@ -39,18 +39,13 @@ export class CarService {
   }
 
   LoadCar(ID: number): void{
-    if (this.cars !== undefined && this.cars.hasOwnProperty(ID)){
-      this.currentCarChange.next(this.cars[ID]);
-
-    }else{
-      this.http.get<Car>(this.url + 'get?id=' + ID).pipe(catchError(error => {
-        this.router.navigate(['']);
-        return new Observable<Car>();
-      })).subscribe(data => {
-        this.currentCarChange.next(data);
-        console.log(data);
-      });
-    }
+    this.http.get<Car>(this.url + 'get?id=' + ID).pipe(catchError(error => {
+      this.router.navigate(['']);
+      return new Observable<Car>();
+    })).subscribe(data => {
+      this.currentCarChange.next(data);
+      console.log(data);
+    });
   }
 
 
