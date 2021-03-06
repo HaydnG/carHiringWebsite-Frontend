@@ -25,11 +25,13 @@
     "@ng-bootstrap/ng-bootstrap": "^8.0.0",
     "angular-responsive-carousel": "^2.0.2",
     "bootstrap": "^4.5.3",
+    "buffer": "^6.0.3",
     "jquery": "^3.5.1",
     "ng-multiselect-dropdown": "^0.2.14",
     "ngx-cookie-service": "^10.1.1",
     "ngx-image-cropper": "^3.3.2",
     "rxjs": "~6.6.0",
+    "tesseract.js": "^2.1.4",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
   },

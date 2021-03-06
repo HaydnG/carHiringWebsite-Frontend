@@ -71,6 +71,7 @@ import {AdminCreateUserComponent} from './admin-create-user/admin-create-user.co
 import {AdminEditUserComponent} from './admin-edit-user/admin-edit-user.component';
 import {AdminValidateDriverComponent} from './admin-validate-driver/admin-validate-driver.component';
 import {IvyCarouselModule} from 'angular-responsive-carousel';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -139,6 +140,7 @@ import {IvyCarouselModule} from 'angular-responsive-carousel';
     MatSnackBarModule,
     MatSliderModule,
     IvyCarouselModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     UserService,

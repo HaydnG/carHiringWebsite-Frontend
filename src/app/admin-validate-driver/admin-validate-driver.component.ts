@@ -12,10 +12,36 @@ import {EditBookingComponent} from '../edit-booking/edit-booking.component';
 import {AdminService} from '../services/admin/admin.service';
 import {AdminBooking} from '../services/admin/admin';
 import {FormBuilder} from '@angular/forms';
+import { createWorker } from 'tesseract.js';
 
 @Component({
   selector: 'app-admin-validtae-driver',
   template: `
+    <div *ngIf="this.loading" style="background-color: #00000080;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 10001;
+    top: 0px;
+    left: 0px;
+}">
+      <mat-progress-spinner color="#305252" mode="indeterminate" style="margin: 0 auto;    position: fixed;
+      left: 46%;
+      top: 35%;
+      z-index: 1;">
+
+      </mat-progress-spinner>
+      <div style="    position: fixed;
+    top: 49%;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    font-size: 33px;
+    color: white;
+    text-shadow: 3px 5px 20px black;
+animation: pulse 2s infinite;">Verifying Driver details</div>
+    </div>
+
         <div >
           <div class="modal-lg-dialog" style="    margin: 0px;">
             <div class="modal-content">
@@ -44,7 +70,7 @@ import {FormBuilder} from '@angular/forms';
                           </div>
                           <div class="form-group row">
                             <div class="col">
-                              <input ngbAutofocus id="firstname" class="form-control" placeholder="Last Name" formControlName="firstname">
+                              <input ngbAutofocus id="lastname" class="form-control" placeholder="Last Name" formControlName="lastname">
                             </div>
                             <div class="col">
                               <input id="names" class="form-control" placeholder="Other Names" formControlName="names">
@@ -97,8 +123,9 @@ import {FormBuilder} from '@angular/forms';
                         <input class="form-control" type="file" (change)="addDocument2($event)">
                       </div>
                       <div class="row">
-                        <input style="margin: 13px" type="checkbox" id="older" name="older" value="older">
-                        <label for="older"> Documents no older than 3 months</label>
+                        <mat-checkbox color="warn" style="    margin: auto;
+      margin-top: 8px;
+      margin-bottom: -10px;" [(ngModel)]="this.older" class="example-margin">Documents no older than 3 months</mat-checkbox>
                       </div>
                     </div>
                     <div class="col-6">
@@ -113,11 +140,10 @@ import {FormBuilder} from '@angular/forms';
                       </carousel>
 
                     </div>
-
                     <div class="form-group col" style="margin-top: 10px">
                       <div class="row">
                         <div class="col">
-                          <button style="    background-color: #3f7171ba;" class="button btn btn-primary form-control" type="submit" (click)="onSubmit(driverForm.value)">Submit Driver Verification</button>
+                          <button style="    background-color: #3f7171ba;" class="button btn btn-primary form-control" type="submit" (click)="onSubmit(driverForm.value)">Submit Driver Verification and Confirm Pickup</button>
                           <div *ngIf="this.required" class="errorMessage"> Please fill in the required feilds </div>
                         </div>
                       </div>
@@ -138,6 +164,20 @@ import {FormBuilder} from '@angular/forms';
         </div>
   `,
   styles: [`
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+      }
+
+      70% {
+        transform: scale(1);
+      }
+
+      100% {
+        transform: scale(0.95);
+      }
+    }
+
     @keyframes slideInFromLeft {
       0% {
         transform: translateX(0%);
@@ -291,18 +331,21 @@ export class AdminValidateDriverComponent implements OnInit {
   document2 = undefined;
   now;
 
+  older = false;
+
   required = false;
 
   driverForm;
+  loading = false;
 
   constructor(private router: Router, private formBuilder: FormBuilder, public currencyService: CurrencyService, private modalService: NgbModal,
               private adminService: AdminService, public bookingService: BookingService, private activeModal: NgbActiveModal) {
     this.now = new Date();
 
     this.driverForm = this.formBuilder.group({
-      firstname: '',
+      lastname: '',
       names: '',
-      dob: '',
+      dob: new Date(),
       address: '',
       postcode: '',
       license: '',
@@ -315,13 +358,50 @@ export class AdminValidateDriverComponent implements OnInit {
   }
 
   onSubmit(data): void {
+
     console.log(data);
+
+    let failed = false;
 
     Object.keys(this.driverForm.controls).forEach(key => {
 
       if (this.driverForm.controls[key].value === '' || this.driverForm.controls[key] ===  undefined){
         this.blinkError();
+        failed = true;
+        return;
       }
+    });
+
+
+    if (failed){
+      return;
+    }
+
+    if (this.driverLicense === undefined || this.document1 === undefined){
+      this.blinkError();
+      return;
+    }
+
+    this.loading = true;
+
+    const dataBundle = {
+      license: this.driverLicense.split(',')[1],
+      document1: this.document1.split(',')[1],
+      document2: '',
+    };
+
+    if (this.document2 === undefined){
+      dataBundle.document2 = 'empty';
+    }else{
+      dataBundle.document2 = this.document2.split(',')[1];
+    }
+
+
+    this.adminService.VerifyDriver(dataBundle, data.lastname, data.names, data.dob, data.address, data.postcode, data.license, this.adminBooking.booking.ID, data => {
+      console.log(data);
+      this.loading = false;
+      this.closeBooking();
+
     });
 
   }
@@ -344,14 +424,22 @@ delay(ms: number): Promise<unknown> {
   return new Promise( resolve => setTimeout(resolve, ms) );
 }
 
-  addLicense(event): void {
+  async addLicense(event): Promise<any> {
 
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
-      reader.onload = (e: any) => {
+      reader.onload = async (e: any) => {
         this.driverLicense = e.target.result;
+
+        const worker = createWorker({
+          logger: m => console.log(m),
+        });
+
+        // const image = this.driverLicense.replace('data:image/png;base64,', '');
       };
       reader.readAsDataURL(event.target.files[0]);
+
+
     }
   }
 

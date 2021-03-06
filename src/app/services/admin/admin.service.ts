@@ -8,6 +8,7 @@ import {UserService} from '../user/user.service';
 import {AccessoryStat, AdminBooking, BookingColumn, BookingStat, BookingStatusType, UserBundle, UserStat} from './admin';
 import {User} from '../user/User';
 import {ToolsService} from '../tools/tools.service';
+import {NgbDate} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Injectable()
@@ -172,5 +173,23 @@ export class AdminService {
       this.userService.handleError(error);
       return new Observable<any>();
     })).subscribe(callback);
+  }
+
+  VerifyDriver(body: any, lastname: string, names: string, dob: NgbDate, address: string, postcode: string, license: string, Id: number,
+               callback?: (value: any) => void): void{
+
+    const dobUnix = new Date(dob.year, dob.month - 1,
+      dob.day).getTime() / 1000;
+
+
+    this.http.post(this.url + 'verifyDriver?lastname=' + lastname + '&names=' + names + '&dob=' + dobUnix +
+      '&address=' + address + '&postcode=' + postcode +
+      '&license=' + license + '&bookingID=' + Id, JSON.stringify(body),
+      { withCredentials: true }).pipe(catchError(error => {
+      this.userService.handleError(error);
+      return new Observable<any>();
+    })).subscribe(callback);
+
+
   }
 }
