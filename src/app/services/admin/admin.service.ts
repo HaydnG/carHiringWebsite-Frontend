@@ -186,7 +186,6 @@ export class AdminService {
       '&address=' + address + '&postcode=' + postcode +
       '&license=' + license + '&bookingID=' + Id, JSON.stringify(body),
       { withCredentials: true }).pipe(catchError(error => {
-      this.userService.handleError(error);
       return new Observable<any>();
     })).subscribe(callback);
 

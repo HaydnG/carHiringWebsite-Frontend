@@ -110,7 +110,14 @@ import {AdminValidateDriverComponent} from '../admin-validate-driver/admin-valid
             ></app-booking-card>
           </div>
 
+
+          <div class="row" *ngIf="this.adminBooking.booking.driver !== null && this.adminBooking.booking.driver !== undefined">
+            <h3 style="    margin-bottom: -14px;">Driver Details</h3>
+              <app-driver-card [booking]="this.adminBooking.booking" [driver]="this.adminBooking.booking.driver"></app-driver-card>
+          </div>
+
           <div class="row">
+            <h3 style="    margin-bottom: -14px;">User Account Details</h3>
             <app-user-card (click)="this.viewUser(this.adminBooking.booking.userID)"     style="cursor: pointer" [user]="this.adminBooking.user"></app-user-card>
           </div>
 

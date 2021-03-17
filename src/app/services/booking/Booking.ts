@@ -23,12 +23,23 @@ export class Booking {
   isRefund: boolean;
   activeStatuses: BookingStatusType[];
   perDay: number;
+  driver: Driver;
 }
 
 export class ExtensionResponse {
   days: number;
 }
 
+export class Driver{
+  ID: number;
+  LastName: string;
+  Names: string;
+  LicenseNumber: string;
+  Address: string;
+  PostCode: string;
+  BlackListed: boolean;
+  DOB: number;
+}
 
 export class Status {
   ID: number;

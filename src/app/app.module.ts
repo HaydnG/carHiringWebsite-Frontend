@@ -72,6 +72,8 @@ import {AdminEditUserComponent} from './admin-edit-user/admin-edit-user.componen
 import {AdminValidateDriverComponent} from './admin-validate-driver/admin-validate-driver.component';
 import {IvyCarouselModule} from 'angular-responsive-carousel';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {DriverCardComponent} from './driver-card/driver-card.component';
+import {AdminBadDriverComponent} from './admin-bad-driver/admin-bad-driver.component';
 
 @NgModule({
   declarations: [
@@ -116,6 +118,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     AdminCreateUserComponent,
     AdminEditUserComponent,
     AdminValidateDriverComponent,
+    DriverCardComponent,
+    AdminBadDriverComponent,
   ],
   imports: [
     BrowserModule,

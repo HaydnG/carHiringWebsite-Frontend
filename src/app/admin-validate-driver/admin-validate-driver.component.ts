@@ -13,6 +13,7 @@ import {AdminService} from '../services/admin/admin.service';
 import {AdminBooking} from '../services/admin/admin';
 import {FormBuilder} from '@angular/forms';
 import { createWorker } from 'tesseract.js';
+import {AdminBadDriverComponent} from '../admin-bad-driver/admin-bad-driver.component';
 
 @Component({
   selector: 'app-admin-validtae-driver',
@@ -60,6 +61,25 @@ animation: pulse 2s infinite;">Verifying Driver details</div>
                 <div class="col">
                   <div class="row" style="margin-top: 20px">
 
+                    <div class="row" style="    color: #e25c5c;
+    font-size: 19px;
+    margin: auto;
+    width: 100%;
+    text-align: center;">
+                      <div class="col">
+                        <div style="    margin: auto;
+    text-align: center !important;
+    display: contents;" *ngIf="this.adminBooking.booking.carData.Over25" class="row">
+                          Driver Must be 25 or Over to drive this Vehicle
+                        </div>
+                        <div style="    margin: auto;
+    text-align: center !important;
+    display: contents;" *ngIf="!this.adminBooking.booking.carData.Over25" class="row">
+                          Driver Must be 18 or Over to drive this Vehicle
+                        </div>
+
+                      </div>
+                    </div>
                     <div class="col-6 col-auto" style="min-width: 300px !important;">
 
 
@@ -90,7 +110,7 @@ animation: pulse 2s infinite;">Verifying Driver details</div>
 
                           <div class="form-group row">
                             <div class="col">
-                              <input class="form-control" [minDate]="{year: 1940, month:1, day: 1}" [maxDate]="{day: this.now.getDate(), month: this.now.getMonth() + 1, year: this.now.getFullYear() - 18}" ngbDatepicker (click)="b.toggle()" ngbDatepicker
+                              <input class="form-control" [minDate]="{year: 1940, month:1, day: 1}" [maxDate]="{day: this.now.getDate(), month: this.now.getMonth() + 1, year: this.now.getFullYear() - (this.adminBooking.booking.carData.Over25 ? 25 : 18)}" ngbDatepicker (click)="b.toggle()" ngbDatepicker
                                      #b="ngbDatepicker" placeholder="D.O.B" value="" id="dob" autocomplete="off" formControlName="dob">
                             </div>
                           </div>
@@ -334,7 +354,6 @@ export class AdminValidateDriverComponent implements OnInit {
   older = false;
 
   required = false;
-
   driverForm;
   loading = false;
 
@@ -350,6 +369,10 @@ export class AdminValidateDriverComponent implements OnInit {
       postcode: '',
       license: '',
     });
+    this.ngbModalOptions = {
+      backdrop: 'static',
+      keyboard: false
+    };
 
   }
 
@@ -397,8 +420,14 @@ export class AdminValidateDriverComponent implements OnInit {
     }
 
 
-    this.adminService.VerifyDriver(dataBundle, data.lastname, data.names, data.dob, data.address, data.postcode, data.license, this.adminBooking.booking.ID, data => {
-      console.log(data);
+    this.adminService.VerifyDriver(dataBundle, data.lastname, data.names, data.dob, data.address, data.postcode, data.license, this.adminBooking.booking.ID, response => {
+      console.log(response);
+      if (response === 'blacklisted' || response === 'fraudulentClaim' || response === 'invalidLicense'){
+        const details = this.modalService.open(AdminBadDriverComponent, this.ngbModalOptions);
+        details.componentInstance.adminBooking = this.adminBooking;
+        details.componentInstance.response = response;
+      }
+
       this.loading = false;
       this.closeBooking();
 
